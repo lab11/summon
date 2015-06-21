@@ -1,5 +1,3 @@
-# summon
-
 Summon (tentative title)
 ========================
 
