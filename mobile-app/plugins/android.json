@@ -1,0 +1,256 @@
+{
+    "prepare_queue": {
+        "installed": [],
+        "uninstalled": []
+    },
+    "config_munge": {
+        "files": {
+            "res/xml/config.xml": {
+                "parents": {
+                    "/widget": [
+                        {
+                            "xml": "<feature name=\"BLE\"><param name=\"android-package\" value=\"com.megster.cordova.ble.central.BLECentralPlugin\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"ChromeSocketsUdp\"><param name=\"android-package\" value=\"org.chromium.ChromeSocketsUdp\" /></feature>",
+                            "count": 1
+                        }
+                    ],
+                    "/*": [
+                        {
+                            "xml": "<feature name=\"Device\"><param name=\"android-package\" value=\"org.apache.cordova.device.Device\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"InAppBrowser\"><param name=\"android-package\" value=\"org.apache.cordova.inappbrowser.InAppBrowser\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"Whitelist\"><param name=\"android-package\" value=\"org.apache.cordova.whitelist.WhitelistPlugin\" /><param name=\"onload\" value=\"true\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"Battery\"><param name=\"android-package\" value=\"org.apache.cordova.batterystatus.BatteryListener\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"Camera\"><param name=\"android-package\" value=\"org.apache.cordova.camera.CameraLauncher\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"Contacts\"><param name=\"android-package\" value=\"org.apache.cordova.contacts.ContactManager\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"Accelerometer\"><param name=\"android-package\" value=\"org.apache.cordova.devicemotion.AccelListener\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"Compass\"><param name=\"android-package\" value=\"org.apache.cordova.deviceorientation.CompassListener\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"Notification\"><param name=\"android-package\" value=\"org.apache.cordova.dialogs.Notification\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"File\"><param name=\"android-package\" value=\"org.apache.cordova.file.FileUtils\" /><param name=\"onload\" value=\"true\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"FileTransfer\"><param name=\"android-package\" value=\"org.apache.cordova.filetransfer.FileTransfer\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"Globalization\"><param name=\"android-package\" value=\"org.apache.cordova.globalization.Globalization\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"Whitelist\"><param name=\"android-package\" value=\"org.apache.cordova.whitelist.LegacyWhitelistPlugin\" /><param name=\"onload\" value=\"true\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"Media\"><param name=\"android-package\" value=\"org.apache.cordova.media.AudioHandler\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"Capture\"><param name=\"android-package\" value=\"org.apache.cordova.mediacapture.Capture\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"NetworkStatus\"><param name=\"android-package\" value=\"org.apache.cordova.networkinformation.NetworkManager\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"SplashScreen\"><param name=\"android-package\" value=\"org.apache.cordova.splashscreen.SplashScreen\" /><param name=\"onload\" value=\"true\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"StatusBar\"><param name=\"android-package\" value=\"org.apache.cordova.statusbar.StatusBar\" /><param name=\"onload\" value=\"true\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"Vibration\"><param name=\"android-package\" value=\"org.apache.cordova.vibration.Vibration\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"Discovery\"><param name=\"android-package\" value=\"com.ionicsdk.discovery.Discovery\" /><param name=\"onload\" value=\"true\" /></feature>",
+                            "count": 1
+                        }
+                    ]
+                }
+            },
+            "AndroidManifest.xml": {
+                "parents": {
+                    "/manifest": [
+                        {
+                            "xml": "<uses-permission android:name=\"android.permission.BLUETOOTH\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<uses-permission android:name=\"android.permission.BLUETOOTH_ADMIN\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<uses-permission android:name=\"android.permission.VIBRATE\" />",
+                            "count": 1
+                        }
+                    ],
+                    "/*": [
+                        {
+                            "xml": "<uses-permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\" />",
+                            "count": 5
+                        },
+                        {
+                            "xml": "<uses-permission android:name=\"android.permission.READ_CONTACTS\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<uses-permission android:name=\"android.permission.WRITE_CONTACTS\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<uses-permission android:name=\"android.permission.GET_ACCOUNTS\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<uses-permission android:name=\"android.permission.ACCESS_COARSE_LOCATION\" />",
+                            "count": 2
+                        },
+                        {
+                            "xml": "<uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\" />",
+                            "count": 2
+                        },
+                        {
+                            "xml": "<uses-permission android:name=\"android.permission.RECORD_AUDIO\" />",
+                            "count": 2
+                        },
+                        {
+                            "xml": "<uses-permission android:name=\"android.permission.MODIFY_AUDIO_SETTINGS\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<uses-permission android:name=\"android.permission.READ_PHONE_STATE\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<uses-permission android:name=\"android.permission.RECORD_VIDEO\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<uses-permission android:name=\"android.permission.ACCESS_WIFI_STATE\" />",
+                            "count": 1
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "installed_plugins": {
+        "com.megster.cordova.ble": {
+            "PACKAGE_NAME": "edu.umich.eecs.lab11.summon"
+        },
+        "cordova-plugin-device": {
+            "PACKAGE_NAME": "edu.umich.eecs.lab11.summon"
+        },
+        "cordova-plugin-inappbrowser": {
+            "PACKAGE_NAME": "edu.umich.eecs.lab11.summon"
+        },
+        "cordova-plugin-whitelist": {
+            "PACKAGE_NAME": "edu.umich.eecs.lab11.summon"
+        },
+        "cordova-plugin-battery-status": {
+            "PACKAGE_NAME": "edu.umich.eecs.lab11.summon"
+        },
+        "cordova-plugin-camera": {
+            "PACKAGE_NAME": "edu.umich.eecs.lab11.summon"
+        },
+        "cordova-plugin-console": {
+            "PACKAGE_NAME": "edu.umich.eecs.lab11.summon"
+        },
+        "cordova-plugin-contacts": {
+            "PACKAGE_NAME": "edu.umich.eecs.lab11.summon"
+        },
+        "cordova-plugin-device-motion": {
+            "PACKAGE_NAME": "edu.umich.eecs.lab11.summon"
+        },
+        "cordova-plugin-device-orientation": {
+            "PACKAGE_NAME": "edu.umich.eecs.lab11.summon"
+        },
+        "cordova-plugin-dialogs": {
+            "PACKAGE_NAME": "edu.umich.eecs.lab11.summon"
+        },
+        "cordova-plugin-file": {
+            "PACKAGE_NAME": "edu.umich.eecs.lab11.summon"
+        },
+        "cordova-plugin-file-transfer": {
+            "PACKAGE_NAME": "edu.umich.eecs.lab11.summon"
+        },
+        "cordova-plugin-geolocation": {
+            "PACKAGE_NAME": "edu.umich.eecs.lab11.summon"
+        },
+        "cordova-plugin-globalization": {
+            "PACKAGE_NAME": "edu.umich.eecs.lab11.summon"
+        },
+        "cordova-plugin-legacy-whitelist": {
+            "PACKAGE_NAME": "edu.umich.eecs.lab11.summon"
+        },
+        "cordova-plugin-media": {
+            "PACKAGE_NAME": "edu.umich.eecs.lab11.summon"
+        },
+        "cordova-plugin-media-capture": {
+            "PACKAGE_NAME": "edu.umich.eecs.lab11.summon"
+        },
+        "cordova-plugin-network-information": {
+            "PACKAGE_NAME": "edu.umich.eecs.lab11.summon"
+        },
+        "cordova-plugin-splashscreen": {
+            "PACKAGE_NAME": "edu.umich.eecs.lab11.summon"
+        },
+        "cordova-plugin-statusbar": {
+            "PACKAGE_NAME": "edu.umich.eecs.lab11.summon"
+        },
+        "cordova-plugin-test-framework": {
+            "PACKAGE_NAME": "edu.umich.eecs.lab11.summon"
+        },
+        "cordova-plugin-vibration": {
+            "PACKAGE_NAME": "edu.umich.eecs.lab11.summon"
+        },
+        "cordova-plugin-chrome-apps-sockets-udp": {
+            "PACKAGE_NAME": "edu.umich.eecs.lab11.summon"
+        },
+        "com.ionicsdk.discovery": {
+            "PACKAGE_NAME": "edu.umich.eecs.lab11.summon"
+        }
+    },
+    "dependent_plugins": {
+        "cordova-plugin-chrome-apps-common": {
+            "PACKAGE_NAME": "edu.umich.eecs.lab11.summon"
+        }
+    }
+}
