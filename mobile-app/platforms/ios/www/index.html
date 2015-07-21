@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+    <head>
+        <!--
+        Customize this policy to fit your own app's needs. For more guidance, see:
+            https://github.com/apache/cordova-plugin-whitelist/blob/master/README.md#content-security-policy
+        Some notes:
+            * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
+            * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+            * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+                * Enable inline JS: add 'unsafe-inline' to default-src
+        -->
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' data: gap: https://ssl.gstatic.com https://summon-caster.appspot.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *">
+        <meta name="format-detection" content="telephone=no">
+        <meta name="msapplication-tap-highlight" content="no">
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+        <link rel="stylesheet" href="css/themes/default/jquery.mobile-1.4.5.min.css">
+        <link rel="stylesheet" href="css/jquery.scrollz.css"/>
+        <link rel="stylesheet" type="text/css" href="css/index.css">
+        <script src="js/jquery.js"></script>
+        <script src="js/jquery.mobile-1.4.5.min.js"></script>
+        <script src="js/jquery.scrollz.min.js"></script>
+        <title>Summon</title>
+    </head>
+    <body>
+        <div data-role="page" data-theme="a">
+            <div data-role="header" data-position="fixed">
+                <a href="#panel" id="gear" data-icon="bars" data-iconpos="notext" data-role="button"></a>
+                <h3>Summon</h3>
+                <a id="count">0</a>
+            </div>
+            <div data-role="content" style="padding:0; overflow-y:visible; min-height:800px !important;">
+                <div role="main" class="ui-content" id="list" data-scrollz="pull">
+                    <ul data-role="listview" data-inset="false" data-split-icon="info" id="devs"></ul>
+                </div>
+            </div>
+            <div data-role="popup" id="dialog" data-overlay-theme="b">
+                <div data-role="header" id="dh">
+                    <img style="float:left; display:inline; height:30px; max-width:30px; padding:5px;">
+                    <h3></h3>
+                    <a href="#" data-icon="delete" data-iconpos="notext" data-rel="back" class="ui-btn-right"></a>
+                </div>
+                <div role="main" class="ui-content" id="dm" style="word-wrap: break-word;">
+                    <p></p><br />
+                    <a href="#" class="ui-btn ui-corner-all ui-shadow" id="go">Open</a>
+                </div>
+            </div>
+            <div data-role="panel" id="panel" data-display="push">
+                <form>
+                    <div data-role="header"><h3>Settings</h3></div>
+                    <ul data-role="listview">
+                        <li><label for="bg">Operate in background:</label><input type="checkbox" class="pref" id="bg" name="bg" data-role="flipswitch" disabled="disabled" /></li>
+                        <li><button class="ui-shadow ui-btn ui-icon-carat-d ui-btn-icon-right" disabled="disabled">Permissions</button></li>
+                        <li><table><tr><td><label for="dv">See Other Devices:</label></td><td><input type="checkbox" class="pref" id="dv" name="dv" data-role="flipswitch"/></td></tr></table></li>
+                    </ul>
+                </form>
+            </div>
+        </div>
+        <script type="text/javascript" src="cordova.js"></script>
+        <script type="text/javascript" src="js/index.js"></script>
+    </body>
+</html>

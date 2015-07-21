@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    id="com.ionicsdk.discovery"
+    version="0.1.0">
+    <name>Discovery</name>
+    <description>Cordova Discovery Plugin</description>
+    <license>Apache 2.0</license>
+    <keywords>cordova,device</keywords>
+    <repo>https://github.com/driftyco/cordova-plugin-discovery.git</repo>
+    <issue>https://github.com/driftyco/cordova-plugin-discovery/issues</issue>
+
+    <js-module src="www/discovery.js" name="discovery">
+        <clobbers target="Discovery" />
+    </js-module>
+
+    <!-- android -->
+    <platform name="android">
+      <config-file target="res/xml/config.xml" parent="/*">
+        <feature name="Discovery" >
+          <param name="android-package" value="com.ionicsdk.discovery.Discovery"/>
+          <param name="onload" value="true" />
+        </feature>
+      </config-file>
+      <config-file target="AndroidManifest.xml" parent="/*">
+        <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+      </config-file>
+
+      <source-file src="src/android/Discovery.java" target-dir="src/com/ionicsdk/discovery" />
+    </platform>
+
+
+    <!-- ios -->
+    <platform name="ios">
+      <config-file target="config.xml" parent="/*">
+        <feature name="Discovery">
+          <param name="ios-package" value="CDVDiscovery"/>
+          <param name="onload" value="true" />
+        </feature>
+      </config-file>
+
+      <header-file src="src/ios/CDVDiscovery.h" />
+      <source-file src="src/ios/CDVDiscovery.m" />
+      <header-file src="src/ios/GCDAsyncUdpSocket.h" />
+      <source-file src="src/ios/GCDAsyncUdpSocket.m" />
+    </platform>
+
+</plugin>
