@@ -94,8 +94,16 @@ td:last-child {
     background-size: 18px 18px;
 }
 
+#other {
+    border-top:1px solid #ccc !important;
+}
+
 li>a>img {
-    padding:0.25em ;
+    padding:0.25em 0 !important;
+}
+
+.ui-icon-info {
+    background:#ccc !important;
 }
 
 

@@ -46,7 +46,7 @@ var app = {
                 app.parseUriBeacon(peripheral,data);
                 $.post("https://summon-caster.appspot.com/resolve-scan",JSON.stringify({objects:[{url:peripheral.uri}]}),function(data){
                     if (data.metadata[0]) {
-                        $("#other").before("<li><a href='#' onclick='window.gateway.setDeviceId(\""+peripheral.id+"\"); window.gateway.setDeviceName(\""+peripheral.name+"\"); location.href=\""+data.metadata[0].url+"\";'><img src='"+data.metadata[0].icon+"'/><h3>" + data.metadata[0].title + "</h3><p>" + data.metadata[0].url + "<br/>"+ peripheral.name+" ("+peripheral.id +")</p></a><a href='#dialog' data-rel='popup' data-position-to='window' onclick='app.infoPopup(\""+peripheral.id+"\")'></a></li>");
+                        $("#other").before("<li><a href='#' onclick='window.gateway.setDeviceId(\""+peripheral.id+"\"); window.gateway.setDeviceName(\""+peripheral.name+"\"); location.href=\""+data.metadata[0].url+"\";'><img src='"+data.metadata[0].icon+"'/><h2>" + data.metadata[0].title + "</h2><p>" + data.metadata[0].url + "<br/>"+ peripheral.name+" ("+peripheral.id +")</p></a><a href='#dialog' data-rel='popup' onclick='app.infoPopup(\""+peripheral.id+"\")'><i class='zmdi zmdi-info'></i></a></li>");
                         peripheral.meta = data.metadata[0];
                     } else $("#other").before("<li><a href='#' onclick='window.gateway.setDeviceId(\""+peripheral.id+"\"); window.gateway.setDeviceName(\""+peripheral.name+"\"); location.href=\""+peripheral.uri+"\";'><p>" + peripheral.uri + "<br/>"+ peripheral.name+" ("+peripheral.id +")</p></a></li>");
                     $.mobile.loading("hide");
