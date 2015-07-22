@@ -1,18 +1,16 @@
-var SERVICE_UUID = 'fed8';
 var PREFIXES = ["http://www.","https://www.","http://","https://","urn:uuid:"];
 var SUFFIXES = [".com/",".org/",".edu/",".net/",".info/",".biz/",".gov/",".com",".org",".edu",".net",".info",".biz",".gov"]; var p;
 var app = {
     initialize: function() {
         this.bindEvents();
-        $.mobile.defaultHomeScroll = 0;
     },
     bindEvents: function() {
         document.addEventListener("deviceready", app.onAppReady, false);
         document.addEventListener('pause', app.onPause, false);
         document.addEventListener('resume', app.onAppReady, false);
-        $('#list').scrollz({ pull : true });
-        $('#list').bind('pulled', app.onAppReady);
+        WebPullToRefresh.init( { loadingFunction: app.onAppReady } );
         $(".pref").change(app.onPrefChange);
+        
     },
     onAppReady: function() {
         $(".pref").each(function(){$(this).prop("checked",window.localStorage.getItem($(this).attr("id"))=="true").flipswitch("refresh")});
@@ -20,13 +18,13 @@ var app = {
         $("#other").hide();
         $("#count").html("0");
         app.peripherals = {};
-        $('#list').scrollz('hidePullHeader');
         $.mobile.loading("show");
         ble.stopScan(function(){
             ble.startScan([],app.onPeripheralFound);
         },app.onAppReady);
         console.log(Discovery);
         console.log(Discovery.identify(app.onDiscover));
+        return new Promise( function( resolve, reject ) {resolve()} );
     },
     onPause: function() {
         ble.stopScan();
@@ -46,15 +44,15 @@ var app = {
                 app.parseUriBeacon(peripheral,data);
                 $.post("https://summon-caster.appspot.com/resolve-scan",JSON.stringify({objects:[{url:peripheral.uri}]}),function(data){
                     if (data.metadata[0]) {
-                        $("#other").before("<li><a href='#' onclick='window.gateway.setDeviceId(\""+peripheral.id+"\"); window.gateway.setDeviceName(\""+peripheral.name+"\"); location.href=\""+data.metadata[0].url+"\";'><img src='"+data.metadata[0].icon+"'/><h2>" + data.metadata[0].title + "</h2><p>" + data.metadata[0].url + "<br/>"+ peripheral.name+" ("+peripheral.id +")</p></a><a href='#dialog' data-rel='popup' onclick='app.infoPopup(\""+peripheral.id+"\")'><i class='zmdi zmdi-info'></i></a></li>");
+                        $("#other").before("<li class='item'><a href='#' onclick='window.gateway.setDeviceId(\""+peripheral.id+"\"); window.gateway.setDeviceName(\""+peripheral.name+"\"); location.href=\""+data.metadata[0].url+"\";'><img src='"+data.metadata[0].icon+"'/><h2>" + data.metadata[0].title + "</h2><p>" + data.metadata[0].url + "<br/>"+ peripheral.name+" ("+peripheral.id +")</p></a><a href='#dialog' data-rel='popup' class='zmdi zmdi-more-vert' onclick='app.infoPopup(\""+peripheral.id+"\")'></a></li>");
                         peripheral.meta = data.metadata[0];
-                    } else $("#other").before("<li><a href='#' onclick='window.gateway.setDeviceId(\""+peripheral.id+"\"); window.gateway.setDeviceName(\""+peripheral.name+"\"); location.href=\""+peripheral.uri+"\";'><p>" + peripheral.uri + "<br/>"+ peripheral.name+" ("+peripheral.id +")</p></a></li>");
+                    } else $("#other").before("<li class='item'><a href='#' onclick='window.gateway.setDeviceId(\""+peripheral.id+"\"); window.gateway.setDeviceName(\""+peripheral.name+"\"); location.href=\""+peripheral.uri+"\";'><p>" + peripheral.uri + "<br/>"+ peripheral.name+" ("+peripheral.id +")</p></a></li>");
                     $.mobile.loading("hide");
                     $("#devs").listview("refresh");
                     $("#count").html($("#count").html()- -1);
                 });
             } else { 
-                $("#other").hide().after($("<li>",{class:"other"}).hide().html(peripheral.name+" ("+peripheral.id +")"));
+                $("#other").hide().after($("<li>",{class:"other item"}).hide().html(peripheral.name+" ("+peripheral.id +")"));
                 $.mobile.loading("hide");
                 $("#devs").listview("refresh");
                 if ($("#dv").prop("checked")) $(".other").show();
@@ -72,10 +70,12 @@ var app = {
                 type = scanRecord[index];
                 if (type == 0) return null; //Done if our record isn't a valid type
                 data = scanRecord.subarray(index + 1, index + length); 
-                if (type==22 && length>4 && data[0]==0xd8 && data[1]==0xfe) return data.subarray(2);
+                if (type==22 && length>4 && data[1]==0xfe && (data[0]==0xd8 || data[0]==0xaa)) return data.subarray(2);
                 index += length; //Advance
             }
-        } else if (advertisingdata.kCBAdvDataServiceData.FED8) return new Uint8Array(advertisingdata.kCBAdvDataServiceData.FED8);
+        } 
+        else if (advertisingdata.kCBAdvDataServiceData.FED8) return new Uint8Array(advertisingdata.kCBAdvDataServiceData.FED8);
+        else if (advertisingdata.kCBAdvDataServiceData.FEAA) return new Uint8Array(advertisingdata.kCBAdvDataServiceData.FEAA);
         return null;
     },
     parseUriBeacon: function(peripheral,data) {
