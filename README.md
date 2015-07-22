@@ -12,7 +12,7 @@ A platform that provides a convenient and scalable mechanism for Bluetooth devic
 
 Bluetooth Devices
 -----------------
-For Bluetooth peripherals to show up in the app's scan, it must advertise the URI for its corresponding website or web app according to the [Uribeaon specification](https://github.com/google/uribeacon/blob/master/specification/AdvertisingMode.md).
+For Bluetooth peripherals to show up in the app's scan, it must advertise the URI for its corresponding website or web app according to the [Uribeacon specification](https://github.com/google/uribeacon/blob/master/specification/AdvertisingMode.md).
 
 Example implementations can be found in `examples/peripherals/`.
 
