@@ -1,10 +1,14 @@
 #This is the cordova makefile
 
+UNAME := $(shell uname)
+
 #can be built on any system
 TARGET_PLATFORMS += android
 
-#can only be build on macs, uncomment for macs
-#TARGET_PLATFORMS += ios
+ifeq ($(UNAME), Darwin)
+#can only be build on macs
+TARGET_PLATFORMS += ios
+endif
 
 
 
