@@ -1,5 +1,5 @@
 var PREFIXES = ["http://www.","https://www.","http://","https://","urn:uuid:"];
-var SUFFIXES = [".com/",".org/",".edu/",".net/",".info/",".biz/",".gov/",".com",".org",".edu",".net",".info",".biz",".gov"]; var p;
+var SUFFIXES = [".com/",".org/",".edu/",".net/",".info/",".biz/",".gov/",".com",".org",".edu",".net",".info",".biz",".gov"]; var p; var q;
 var app = {
     initialize: function() {
         this.bindEvents();
@@ -10,9 +10,10 @@ var app = {
         document.addEventListener('resume', app.onAppReady, false);
         WebPullToRefresh.init( { loadingFunction: app.onAppReady } );
         $(".pref").change(app.onPrefChange);
-        
+
     },
     onAppReady: function() {
+        $('body').addClass(device.platform.toLowerCase());
         $(".pref").each(function(){$(this).prop("checked",window.localStorage.getItem($(this).attr("id"))=="true").flipswitch("refresh")});
         $('#devs').html('<li data-role="list-divider" id="other" class="other">Other BLE Devices</li>');
         $("#other").hide();
@@ -22,15 +23,10 @@ var app = {
         ble.stopScan(function(){
             ble.startScan([],app.onPeripheralFound);
         },app.onAppReady);
-        console.log(Discovery);
-        console.log(Discovery.identify(app.onDiscover));
         return new Promise( function( resolve, reject ) {resolve()} );
     },
     onPause: function() {
         ble.stopScan();
-    },
-    onDiscover: function(data) {
-        console.log(data);
     },
     onPrefChange: function() {
         window.localStorage.setItem($(this).attr("id"),$(this).prop("checked"));
@@ -38,26 +34,35 @@ var app = {
         if ($("#other").is( "li:last-child" )) $("#other").hide();
     },
     onPeripheralFound: function(peripheral) {
-        if (typeof app.peripherals[peripheral.id] == "undefined") {
+       if (typeof app.peripherals[peripheral.id] == "undefined") {
             data = app.getServiceData(peripheral.advertising);
             if (typeof data != "undefined" && data) {
                 app.parseUriBeacon(peripheral,data);
                 $.post("https://summon-caster.appspot.com/resolve-scan",JSON.stringify({objects:[{url:peripheral.uri}]}),function(data){
                     if (data.metadata[0]) {
-                        $("#other").before("<li class='item'><a href='#' onclick='window.gateway.setDeviceId(\""+peripheral.id+"\"); window.gateway.setDeviceName(\""+peripheral.name+"\"); location.href=\""+data.metadata[0].url+"\";'><img src='"+data.metadata[0].icon+"'/><h2>" + data.metadata[0].title + "</h2><p>" + data.metadata[0].url + "<br/>"+ peripheral.name+" ("+peripheral.id +")</p></a><a href='#dialog' data-rel='popup' class='zmdi zmdi-more-vert' onclick='app.infoPopup(\""+peripheral.id+"\")'></a></li>");
                         peripheral.meta = data.metadata[0];
+                        $("#other").before("<li class='item'><a href='#' onclick='window.gateway.setDeviceId(\""+peripheral.id+"\"); window.gateway.setDeviceName(\""+peripheral.name+"\"); location.href=\""+peripheral.meta.url+"\";'><img src='"+peripheral.meta.icon+"'/><h2>" + peripheral.meta.title + "</h2><p>" + peripheral.meta.url + "<br/>"+ peripheral.name+" ("+peripheral.id +")</p></a><a href='#dialog' data-rel='popup' class='zmdi zmdi-more-vert' onclick='app.infoPopup(\""+peripheral.id+"\")'></a></li>");
                     } else $("#other").before("<li class='item'><a href='#' onclick='window.gateway.setDeviceId(\""+peripheral.id+"\"); window.gateway.setDeviceName(\""+peripheral.name+"\"); location.href=\""+peripheral.uri+"\";'><p>" + peripheral.uri + "<br/>"+ peripheral.name+" ("+peripheral.id +")</p></a></li>");
                     $.mobile.loading("hide");
                     $("#devs").listview("refresh");
-                    $("#count").html($("#count").html()- -1);
+                }).fail(function(){
+                    q = app.getStoredObject('peripherals');
+                    console.log(q);
+                    if (typeof q[peripheral.id] != "undefined" && typeof (q[peripheral.id]).meta != undefined) {
+                        peripheral.meta = (q[peripheral.id]).meta;
+                        $("#other").before("<li class='item'><a href='#' onclick='window.gateway.setDeviceId(\""+peripheral.id+"\"); window.gateway.setDeviceName(\""+peripheral.name+"\"); location.href=\""+peripheral.meta.url+"\";'><img src='"+peripheral.meta.icon+"'/><h2>" + peripheral.meta.title + "</h2><p>" + peripheral.meta.url + "<br/>"+ peripheral.name+" ("+peripheral.id +")</p></a><a href='#dialog' data-rel='popup' class='zmdi zmdi-more-vert' onclick='app.infoPopup(\""+peripheral.id+"\")'></a></li>");
+                    } else $("#other").before("<li class='item'><a href='#' onclick='window.gateway.setDeviceId(\""+peripheral.id+"\"); window.gateway.setDeviceName(\""+peripheral.name+"\"); location.href=\""+peripheral.uri+"\";'><p>" + peripheral.uri + "<br/>"+ peripheral.name+" ("+peripheral.id +")</p></a></li>");
+                    $.mobile.loading("hide");
+                    $("#devs").listview("refresh");
                 });
             } else { 
                 $("#other").hide().after($("<li>",{class:"other item"}).hide().html(peripheral.name+" ("+peripheral.id +")"));
-                $.mobile.loading("hide");
-                $("#devs").listview("refresh");
                 if ($("#dv").prop("checked")) $(".other").show();
             }
+            $.mobile.loading("hide");
+            $("#devs").listview("refresh");
             app.peripherals[peripheral.id] = peripheral;
+            window.localStorage.setItem('peripherals',JSON.stringify($.extend(true,{},app.getStoredObject('peripherals'),app.peripherals)));
         }
     },
     getServiceData: function(advertisingdata) {
@@ -91,6 +96,7 @@ var app = {
             else uri += String.fromCharCode(uriData[x]); // regular character, just append
         }
         peripheral.uri = uri;
+        console.log(peripheral);
     },
     infoPopup: function(id) {
         p = app.peripherals[id];
@@ -98,6 +104,10 @@ var app = {
         $('#dh h3').html(p.meta.title)
         $("#dm p").html("<b>Device</b><br/>"+p.name+" ("+p.id+")<br/><br/><b>UI</b><br/>"+p.meta.url+"<br/><i>"+p.meta.description+"</i><br/><br/><b>Type</b><br/>"+(p.meta.cordova ? "Application<br /><br/><b>Plugins Used</b><br/>"+JSON.stringify(p.meta.cordova,null,4).replace(/[{},]/g,'') : "Website"));
         $("#dm #go").click(function(){window.gateway.setDeviceId(p.id); window.gateway.setDeviceName(p.name); location.href=p.meta.url;})
+    },
+    getStoredObject: function(name) {
+        try { return JSON.parse(window.localStorage.getItem(name)); } 
+        catch (e) { return {} }
     },
     peripherals: {}
 };

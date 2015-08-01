@@ -34,6 +34,7 @@ body {
 .ui-panel-wrapper, .ui-page {
     background: #eee !important;
     overflow-y:visible;
+    min-height:100%;
 }
 
 /* Portrait layout (default) */
@@ -99,6 +100,15 @@ h3 {
     font-weight:200 ;
     margin:0 ;
     overflow:visible;
+}
+
+.ios>.ui-page>.ui-header>*{
+    margin-top:10px;
+}
+
+.ui-panel-dismiss-open.ui-panel-dismiss-position-left {
+    background-color:rgba(0,0,0,0);
+    left: 17em;
 }
 
 .ui-input-text {margin-top:0 ; -webkit-box-shadow: none ; box-shadow: none ;}
