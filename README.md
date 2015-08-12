@@ -1,11 +1,11 @@
-Summon (tentative title)
+Summon (tentative name)
 ========================
 
 The user interface medium for the Internet of Things.
 A platform that provides a convenient and scalable mechanism for Bluetooth device interactivity using web-based interfaces.
 
-![Screenshot 1](https://lh3.googleusercontent.com/HQo8-OAGtVeAedlhAipLLzNVZLlubxFHcu4WW09LoBjLGzsBJT56m7LrAUerYMG8xw=w350-rw) 
-![Screenshot 2](https://lh3.googleusercontent.com/FHabz1A3LCvMvS_y3jkElmvXKGOBr6nExPP6EaU8hKKeP2gOV_apEPtNgDVEqtsrN6I=w350-rw)
+![Screenshot 1](https://lh3.googleusercontent.com/mZjhpdgXmufctor4O-_kJTROVItbnK9V5HSfcl_FOZ448S1yFL-w90dxBAgC1rkpuA=w350-rw) 
+![Screenshot 2](https://lh3.googleusercontent.com/6sl6v2lT4HHC83cJZSPoOz9BgIvs_WEhd-C3ZqEJdoTXMuNNJTDlzXzWxy1kmPVSLA=w350-rw)
 
 [![Google Play](https://developer.android.com/images/brand/en_app_rgb_wo_45.png)](https://play.google.com/store/apps/details?id=edu.umich.eecs.lab11.summon)
 
