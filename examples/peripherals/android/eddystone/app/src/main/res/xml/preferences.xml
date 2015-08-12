@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <SwitchPreference android:title="ADVERTISE NOW"
+        android:key="advertise_switch"
+        android:defaultValue="false"/>
+    <edu.umich.eecs.lab11.eddystone.ListPreference
+        android:defaultValue="Eddystone-URL"
+        android:key="beacontype"
+        android:summary="%s"
+        android:entries="@array/entries"
+        android:entryValues="@array/entries"
+        android:title="Beacon Type"
+        android:selectable="false"/>
+    <edu.umich.eecs.lab11.eddystone.EditTextPreference
+        android:defaultValue=""
+        android:key="advertisement_value"
+        android:summary="%s"
+        android:title="Advertisement Value"
+        android:selectable="false"/>
+    <PreferenceCategory android:title="Parameters" android:key="url">
+        <edu.umich.eecs.lab11.eddystone.EditTextPreference
+            android:defaultValue="goo.gl/XMRl3M"
+            android:key="ip_text"
+            android:summary="%s"
+            android:title="Destination URL" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Parameters" android:key="uid">
+        <edu.umich.eecs.lab11.eddystone.EditTextPreference
+            android:defaultValue="FF"
+            android:digits="0123456789ABCDEF"
+            android:inputType="textCapCharacters"
+            android:key="data_text"
+            android:summary="%s"
+            android:title="Data" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Parameters" android:key="tlm">
+    </PreferenceCategory>
+
+</PreferenceScreen>

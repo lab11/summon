@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Eddystone</string>
+    <string-array name="entries">
+        <item>Eddystone-URL</item>
+        <item>Eddystone-UID</item>
+        <item>Eddystone-TLM</item>
+    </string-array>
+</resources>
