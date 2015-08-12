@@ -33,7 +33,7 @@ body {
 
 .ui-panel-wrapper, .ui-page {
     background: #eee !important;
-    overflow-y:visible;
+    overflow:visible;
     min-height:100%;
 }
 

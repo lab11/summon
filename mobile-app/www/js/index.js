@@ -10,7 +10,11 @@ var app = {
         document.addEventListener('resume', app.onAppReady, false);
         WebPullToRefresh.init( { loadingFunction: app.onAppReady } );
         $(".pref").change(app.onPrefChange);
-
+        $(".other").click(function(){
+            window.gateway.setDeviceId($(this).attr('dev-id'));
+            window.gateway.setDeviceName("hi"); 
+            location.href='generated.html';
+        });
     },
     onAppReady: function() {
         $('body').addClass(device.platform.toLowerCase());
@@ -27,6 +31,9 @@ var app = {
     },
     onPause: function() {
         ble.stopScan();
+    },
+    onDiscover: function(data) {
+        console.log(data);
     },
     onPrefChange: function() {
         window.localStorage.setItem($(this).attr("id"),$(this).prop("checked"));
@@ -56,7 +63,7 @@ var app = {
                     $("#devs").listview("refresh");
                 });
             } else { 
-                $("#other").hide().after($("<li>",{class:"other item"}).hide().html(peripheral.name+" ("+peripheral.id +")"));
+                $("#other").hide().after($("<li>",{class:"other item"}).attr('dev-id',peripheral.id).hide().html("<a href='#' onclick='window.gateway.setDeviceId(\""+peripheral.id+"\"); window.gateway.setDeviceName(\""+peripheral.name+"\"); location.href=\"generated.html\";'>"+peripheral.name+" ("+peripheral.id +")</a>"));
                 if ($("#dv").prop("checked")) $(".other").show();
             }
             $.mobile.loading("hide");
@@ -104,6 +111,7 @@ var app = {
         $('#dh h3').html(p.meta.title)
         $("#dm p").html("<b>Device</b><br/>"+p.name+" ("+p.id+")<br/><br/><b>UI</b><br/>"+p.meta.url+"<br/><i>"+p.meta.description+"</i><br/><br/><b>Type</b><br/>"+(p.meta.cordova ? "Application<br /><br/><b>Plugins Used</b><br/>"+JSON.stringify(p.meta.cordova,null,4).replace(/[{},]/g,'') : "Website"));
         $("#dm #go").click(function(){window.gateway.setDeviceId(p.id); window.gateway.setDeviceName(p.name); location.href=p.meta.url;})
+        $("#dm #gen").click(function(){window.gateway.setDeviceId(p.id); window.gateway.setDeviceName(p.name); location.href="generated.html";})
     },
     getStoredObject: function(name) {
         try { return JSON.parse(window.localStorage.getItem(name)); } 
