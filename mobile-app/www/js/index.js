@@ -27,6 +27,7 @@ var app = {
         ble.stopScan(function(){ ble.startScan([],app.onPeripheralFound); },app.onAppReady);
         ZeroConf.watch("_http._tcp.local.",app.onDiscover); 
         ZeroConf.watch("_tcp.local.",app.onDiscover); 
+        return new Promise( function( resolve, reject ) {resolve()} );
     },
     onPause: function() {
         ble.stopScan();
@@ -40,6 +41,7 @@ var app = {
                 $(".other:last-child").hide().after($("<li>",{class:"other item"}).attr('dev-id',peripheral.service.qualifiedname).hide().html(""+peripheral.service.name+" ("+peripheral.service.application +")"));
                 if ($("#dv").prop("checked")) $(".other").show();
             }
+            $.mobile.loading("hide");
             $("#devs").listview("refresh");
             app.peripherals[peripheral.service.qualifiedname] = peripheral;
         }

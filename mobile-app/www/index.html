@@ -1,34 +1,7 @@
 <!DOCTYPE html>
-<!--
-    Licensed to the Apache Software Foundation (ASF) under one
-    or more contributor license agreements.  See the NOTICE file
-    distributed with this work for additional information
-    regarding copyright ownership.  The ASF licenses this file
-    to you under the Apache License, Version 2.0 (the
-    "License"); you may not use this file except in compliance
-    with the License.  You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing,
-    software distributed under the License is distributed on an
-    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-     KIND, either express or implied.  See the License for the
-    specific language governing permissions and limitations
-    under the License.
--->
 <html>
     <head>
-        <!--
-        Customize this policy to fit your own app's needs. For more guidance, see:
-            https://github.com/apache/cordova-plugin-whitelist/blob/master/README.md#content-security-policy
-        Some notes:
-            * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
-            * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
-            * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
-                * Enable inline JS: add 'unsafe-inline' to default-src
-        -->
-        <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' data: gap: https://ssl.gstatic.com https://summon-caster.appspot.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *">
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' data: gap: https://ssl.gstatic.com https://summon-caster.appspot.com 'unsafe-eval'; style-src 'self' 'unsafe-inline' http://fonts.googleapis.com; font-src 'self' http://fonts.googleapis.com http://fonts.gstatic.com; media-src *">
         <meta name="format-detection" content="telephone=no">
         <meta name="msapplication-tap-highlight" content="no">
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
@@ -45,37 +18,35 @@
         <title>Summon</title>
     </head>
     <body>
-        <div data-role="page" data-theme="a" class="wow fadeIn" data-wow-delay="0.2s">
-            <div data-role="header" data-position="fixed" class="wow fadeInDown" data-wow-delay="0.2s">
-                <a href="#panel" class="ui-btn ui-btn-left wow fadeIn" data-wow-delay='0.8s'><i class="zmdi zmdi-menu"></i></a>
-                <h1 class="wow fadeIn" data-wow-delay='0.4s'>Summon</h1>
+        <div data-role="page" data-theme="a" class="wow fadeIn">
+            <div data-role="header" data-position="fixed" class="wow fadeInDown">
+                <a href="#panel" class="ui-btn ui-btn-left wow fadeIn" data-wow-delay='0s'><i class="zmdi zmdi-menu"></i></a>
+                <h1 class="wow fadeIn" data-wow-delay='0s'>Summon</h1>
             </div>
-            <div data-role="content" style="padding:0; overflow:visible">
+            <div data-role="content">
                 <div id="ptr">
                     <span class="zmdi zmdi-arrow-forward"></span>
-                    <div class="loading"><!--<span class="fa fa-refresh fa-spin"></span>--></div>
+                    <span class="loading zmdi zmdi-arrow-forward"></span>
                 </div>
-                <div role="main" class="ui-content" id="content" style="overflow:visible;">
-                    <div id="list">
-                        <ul data-role="listview" data-split-icon="info" id="devs"></ul>
-                    </div>
+                <div role="main" id="content">
+                    <ul data-role="listview" data-split-icon="info" id="devs"></ul>
                 </div>
             </div>
             <div data-role="popup" id="dialog" data-overlay-theme="b">
                 <div data-role="header" id="dh">
-                    <img class="ui-btn ui-btn-left" style="-webkit-filter:drop-shadow(1px 1px 0 #eee8)">
+                    <img class="ui-btn ui-btn-left">
                     <h3></h3>
-                    <a href="#" class="ui-btn ui-btn-right wow fadeIn" data-wow-delay='0.8s' data-rel="back"><i class="zmdi zmdi-close"></i></a>
+                    <a href="#" class="ui-btn ui-btn-right wow fadeIn" data-wow-delay='0s' data-rel="back"><i class="zmdi zmdi-close"></i></a>
                 </div>
-                <div role="main" class="ui-content" id="dm" style="word-wrap: break-word;">
-                    <p></p><br />
+                <div role="main" id="dm">
+                    <p></p>
                     <a href="#" class="ui-btn ui-btn-raised clr-primary" id="go">Open</a><br />
                     <a href="#" class="ui-btn ui-btn-raised" id="gen">Generate UI from BLE</a>
                 </div>
             </div>
-            <div data-role="panel" id="panel" data-display="reveal" data-position-fixed="true" style="width:272px; color:#888">
+            <div data-role="panel" id="panel" data-display="reveal" data-position-fixed="true">
                 <form>
-                    <h3 style="padding:20px">Settings</h3>
+                    <h3>Settings</h3>
                     <ul data-role="listview" data-icon="false">
                         <li><table><tr><td><label for="bg">Operate in background:</label></td><td><input type="checkbox" class="pref" id="bg" name="bg" data-role="flipswitch" disabled="disabled" /></td></tr></table></li>
                         <li><button class="ui-shadow ui-btn ui-icon-carat-d ui-btn-icon-right" disabled="disabled">Permissions</button></li>
