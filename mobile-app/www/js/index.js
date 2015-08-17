@@ -1,5 +1,6 @@
-var PREFIXES = ["http://www.","https://www.","http://","https://","urn:uuid:"];
-var SUFFIXES = [".com/",".org/",".edu/",".net/",".info/",".biz/",".gov/",".com",".org",".edu",".net",".info",".biz",".gov"]; var p; var q;
+var PWPREFIXES = ["http://www.","https://www.","http://","https://","urn:uuid:"];
+var PWSUFFIXES = [".com/",".org/",".edu/",".net/",".info/",".biz/",".gov/",".com",".org",".edu",".net",".info",".biz",".gov"]; var p; var q;
+var BSPREFIXES = [undefined,undefined,"aaa:","aaas:","about:","acap:","acct:","cap:","cid:","coap:","coaps:","crid:","data:","dav:","dict:","dns:","file:","ftp:","geo:","go:","gopher:","h323:","http:","https:","iax:","icap:","im:","imap:","info:","ipp:","ipps:","iris:","iris.beep:","iris.xpc:","iris.xpcs:","iris.lwz:","jabber:","ldap:","mailto:","mid:","msrp:","msrps:","mtqp:","mupdate:","news:","nfs:","ni:","nih:","nntp:","opaquelocktoken:","pop:","pres:","reload:","rtsp:","rtsps:","rtspu:","service:","session:","shttp:","sieve:","sip:","sips:","sms:","snmp:","soap.beep:","soap.beeps:","stun:","stuns:","tag:","tel:","telnet:","tftp:","thismessage:","tn3270:","tip:","turn:","turns:","tv:","urn:","vemmi:","ws:","wss:","xcon:","xcon-userid:","xmlrpc.beep:","xmlrpc.beeps:","xmpp:","z39.50r:","z39.50s:","acr:","adiumxtra:","afp:","afs:","aim:","apt:","attachment:","aw:","barion:","beshare:","bitcoin:","bolo:","callto:","chrome:","chrome-extension:","com-eventbrite-attendee:","content:","cvs:","dlna-playsingle:","dlna-playcontainer:","dtn:","dvb:","ed2k:","facetime:","feed:","feedready:","finger:","fish:","gg:","git:","gizmoproject:","gtalk:","ham:","hcp:","icon:","ipn:","irc:","irc6:","ircs:","itms:","jar:","jms:","keyparc:","lastfm:","ldaps:","magnet:","maps:","market:","message:","mms:","ms-help:","ms-settings-power:","msnim:","mumble:","mvn:","notes:","oid:","palm:","paparazzi:","pkcs11:","platform:","proxy:","psyc:","query:","res:","resource:","rmi:","rsync:","rtmfp:","rtmp:","secondlife:","sftp:","sgn:","skype:","smb:","smtp:","soldat:","spotify:","ssh:","steam:","submit:","svn:","teamspeak:","teliaeid:","things:","udp:","unreal:","ut2004:","ventrilo:","view-source:","webcal:","wtai:","wyciwyg:","xfire:","xri:","ymsgr:","example:","ms-settings-cloudstorage:"]
 var app = {
     initialize: function() {
         this.bindEvents();
@@ -53,9 +54,9 @@ var app = {
     },
     onPeripheralFound: function(peripheral) {
        if (typeof app.peripherals[peripheral.id] == "undefined") {
-            data = app.getServiceData(peripheral.advertising);
-            if (typeof data != "undefined" && data) {
-                app.parseUriBeacon(peripheral,data);
+            adData = app.getServiceData(peripheral.advertising);
+            if (typeof adData != "undefined" && adData) {
+                app.parseAdData(peripheral,adData);
                 $.post("https://summon-caster.appspot.com/resolve-scan",JSON.stringify({objects:[{url:peripheral.uri}]}),function(data){
                     if (data.metadata[0]) {
                         peripheral.meta = data.metadata[0];
@@ -93,7 +94,8 @@ var app = {
                 type = scanRecord[index];
                 if (type == 0) return null; //Done if our record isn't a valid type
                 data = scanRecord.subarray(index + 1, index + length); 
-                if (type==22 && length>4 && data[1]==0xfe && (data[0]==0xd8 || data[0]==0xaa)) return data.subarray(2);
+                if (type==22 && length>4 && data[1]==0xfe && (data[0]==0xd8 || data[0]==0xaa)) return {uri:data.subarray(2),ad:false};
+                if (type==36) return {uri:data,ad:true};
                 index += length; //Advance
             }
         } 
@@ -101,16 +103,22 @@ var app = {
         else if (advertisingdata.kCBAdvDataServiceData.FEAA) return new Uint8Array(advertisingdata.kCBAdvDataServiceData.FEAA);
         return null;
     },
-    parseUriBeacon: function(peripheral,data) {
-        peripheral.flags = data[0]; // flag is the 1st byte
-        peripheral.txPower = data[1]; // TX Power is 2nd byte
-        uriScheme = data[2];
-        uriData = data.subarray(3); // remainder in the URI
+    parseAdData: function(peripheral,adData) {
+        if (!adData.ad) {
+            peripheral.flags = adData.uri[0]; // flag is the 1st byte
+            peripheral.txPower = adData.uri[1]; // TX Power is 2nd byte
+            uriScheme = adData.uri[2];
+            uriData = adData.uri.subarray(3); // remainder in the URI
+        } else {
+            uriScheme = adData.uri[0];
+            uriData = adData.uri.subarray(1); // remainder in the URI
+        }
         uri = '';
-        if (uriScheme < PREFIXES.length) uri = PREFIXES[uriScheme]; // valid prefix, uncompress
+        if (adData.ad && typeof BSPREFIXES[uriScheme] != "undefined") uri = BSPREFIXES[uriScheme];
+        else if (uriScheme < PWPREFIXES.length) uri = PWPREFIXES[uriScheme]; // valid prefix, uncompress
         else uri = String.fromCharCode(uriScheme); // invalid prefix, just append character
         for (x = 0; x < uriData.length; x++) {
-            if (uriData[x] < SUFFIXES.length) uri += SUFFIXES[uriData[x]]; // valid suffix, uncompress
+            if (uriData[x] < PWSUFFIXES.length) uri += PWSUFFIXES[uriData[x]]; // valid suffix, uncompress
             else uri += String.fromCharCode(uriData[x]); // regular character, just append
         }
         peripheral.uri = uri;
