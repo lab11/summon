@@ -34,6 +34,14 @@ Getting Started
         cordova run
 
 
+Additional Info
+---------------
+
+[Documentation for Cordova](http://cordova.apache.org/docs/en/edge/)
+
+[Documentation for the Bluetooth Plugin](https://github.com/don/cordova-plugin-ble-central)
+
+
 Summoning the App
 -----------------
 
