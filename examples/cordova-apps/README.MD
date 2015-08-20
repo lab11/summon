@@ -25,7 +25,7 @@ Getting Started
         cordova platform add android
         cordova plugin add com.megster.cordova.ble
 
-5.  Copy directory `www` from a template app into your project directory.
+5.  Copy directory `www` from `template` into your project directory.
 
 6.  Modify `www/index.html`, `www/css/index.css`, & `www/js/index.js` to your liking.
 
