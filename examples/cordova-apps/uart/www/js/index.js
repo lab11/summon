@@ -40,7 +40,6 @@ var app = {
         input.addEventListener('change', this.onChange, false);                                                                 // user inputted message event
     },
     onDeviceReady: function() {
-        // deviceID = "E0:44:D5:5D:84:F2";
         deviceID = window.gateway.getDeviceId();                                                                                // get device ID from Gateway
         ble.isEnabled(app.onEnable, app.log("BLE","Bluetooth Off."));                                                           // if BLE enabled, goto: onEnable
     },
