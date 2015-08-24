@@ -47,9 +47,11 @@ Summoning the App
 
 If the app is hosted online, a BLE device can advertise the URL to display as the UI for the device in Summon.
 
-If you do not have anywhere host web content, you might want to try [hosting from Google Drive](https://support.google.com/drive/answer/2881970?hl=en).
+In order to work with Summon, the contents of your generated `platforms/android/www` directory must be uploaded to a publicly accessible location.
 
-To fit the URL in a BLE advertisement, you will likely have to create a short URL link. Google provides a [service for this](http://goo.gl).
+If you do not have anywhere to host web content, you might want to try [hosting from Google Drive](https://support.google.com/drive/answer/2881970?hl=en).
+
+To fit the URL of the app in a BLE advertisement, you will likely have to create a short URL link. Google provides a [service for this](http://goo.gl).
 
 Setup the BLE device to advertise the short URL using the [Eddystone-URL specification](https://github.com/google/eddystone/tree/master/eddystone-url) or the BLE URI ad type. 
 
