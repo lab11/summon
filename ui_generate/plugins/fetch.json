@@ -1,0 +1,101 @@
+{
+    "cordova-plugin-whitelist": {
+        "source": {
+            "type": "registry",
+            "id": "cordova-plugin-whitelist@1"
+        },
+        "is_top_level": true,
+        "variables": {}
+    },
+    "com.megster.cordova.ble": {
+        "source": {
+            "type": "registry",
+            "id": "com.megster.cordova.ble"
+        },
+        "is_top_level": true,
+        "variables": {}
+    },
+    "cordova-plugin-chrome-apps-sockets-udp": {
+        "source": {
+            "type": "registry",
+            "id": "cordova-plugin-chrome-apps-sockets-udp"
+        },
+        "is_top_level": true,
+        "variables": {}
+    },
+    "cordova-plugin-chrome-apps-common": {
+        "source": {
+            "type": "registry",
+            "id": "cordova-plugin-chrome-apps-common@1"
+        },
+        "is_top_level": false,
+        "variables": {}
+    },
+    "de.neofonie.cordova.plugin.progressview": {
+        "source": {
+            "type": "registry",
+            "id": "de.neofonie.cordova.plugin.progressview"
+        },
+        "is_top_level": true,
+        "variables": {}
+    },
+    "org.chromium.storage": {
+        "source": {
+            "type": "registry",
+            "id": "org.chromium.storage"
+        },
+        "is_top_level": true,
+        "variables": {}
+    },
+    "org.chromium.common": {
+        "source": {
+            "type": "registry",
+            "id": "org.chromium.common"
+        },
+        "is_top_level": false,
+        "variables": {}
+    },
+    "com.synconset.cordovaHTTP": {
+        "source": {
+            "type": "git",
+            "url": "https://github.com/wymsee/cordova-HTTP.git",
+            "subdir": "."
+        },
+        "is_top_level": true,
+        "variables": {}
+    },
+    "org.apache.cordova.file": {
+        "source": {
+            "type": "git",
+            "url": "https://github.com/apache/cordova-plugin-file",
+            "subdir": ".",
+            "ref": "r0.2.5"
+        },
+        "is_top_level": false,
+        "variables": {}
+    },
+    "org.chromium.runtime": {
+        "source": {
+            "type": "registry",
+            "id": "org.chromium.runtime"
+        },
+        "is_top_level": true,
+        "variables": {}
+    },
+    "cordova-plugin-zip": {
+        "source": {
+            "type": "registry",
+            "id": "cordova-plugin-zip"
+        },
+        "is_top_level": true,
+        "variables": {}
+    },
+    "cordova-plugin-file": {
+        "source": {
+            "type": "registry",
+            "id": "cordova-plugin-file"
+        },
+        "is_top_level": false,
+        "variables": {}
+    }
+}

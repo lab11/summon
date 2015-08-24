@@ -1,0 +1,10 @@
+/* Empty. Add your own CSS if you like */
+
+.home {
+    background-image: url("../img/bg.png");
+    background-size: cover;
+}
+
+.bar.bar-dark .title {
+    color: #ef4e3a;
+}

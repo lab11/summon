@@ -1,0 +1,30 @@
+{
+    "version": "3.0.1",
+    "name": "de.neofonie.cordova.plugin.progressview",
+    "cordova_name": "Cordova ProgressView",
+    "description": "Cordova/PhoneGap extension for displaying a native, determinate progress dialog view. Uses MRProgress in iOS and native UI controls in Android.",
+    "license": "MIT",
+    "repo": "https://github.com/sidneys/cordova-plugin-progressview.git",
+    "issue": "https://github.com/sidneys/cordova-plugin-progressview/issues",
+    "keywords": [
+        "activity",
+        "indicator",
+        "loading",
+        "progress",
+        "loadingbar",
+        "mrprogress",
+        "mbprogresshud",
+        "spinner",
+        "throbber"
+    ],
+    "platforms": [
+        "ios",
+        "android"
+    ],
+    "engines": [
+        {
+            "name": "cordova",
+            "version": ">=3.5"
+        }
+    ]
+}

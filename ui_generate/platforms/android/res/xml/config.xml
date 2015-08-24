@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="com.lab11.monoxalyze" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <preference name="loglevel" value="DEBUG" />
+    <feature name="BLE">
+        <param name="android-package" value="com.megster.cordova.ble.central.BLECentralPlugin" />
+    </feature>
+    <feature name="ChromeSocketsUdp">
+        <param name="android-package" value="org.chromium.ChromeSocketsUdp" />
+    </feature>
+    <feature name="Zip">
+        <param name="android-package" value="org.apache.cordova.Zip" />
+    </feature>
+    <feature name="ChromeStorage">
+        <param name="android-package" value="org.chromium.ChromeStorage" />
+    </feature>
+    <feature name="File">
+        <param name="android-package" value="org.apache.cordova.file.FileUtils" />
+    </feature>
+    <feature name="CordovaHttpPlugin">
+        <param name="android-package" value="com.synconset.CordovaHttpPlugin" />
+    </feature>
+    <feature name="Whitelist">
+        <param name="android-package" value="org.apache.cordova.whitelist.WhitelistPlugin" />
+        <param name="onload" value="true" />
+    </feature>
+    <feature name="ProgressView">
+        <param name="android-package" value="de.neofonie.cordova.plugin.progressview.ProgressView" />
+    </feature>
+    <allow-intent href="market:*" />
+    <name>UI Generate</name>
+    <description>
+    </description>
+    <author email="adkinsjd@umich.edu" href="http://joshuaadkins.com">
+		Joshua Adkins
+    </author>
+    <content src="index.html" />
+    <allow-navigation href="http://*/*" />
+    <access origin="*" />
+    <allow-intent href="http://*/*" />
+    <allow-intent href="https://*/*" />
+    <allow-intent href="tel:*" />
+    <allow-intent href="sms:*" />
+    <allow-intent href="mailto:*" />
+    <allow-intent href="geo:*" />
+</widget>

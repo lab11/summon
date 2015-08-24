@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+        id="de.neofonie.cordova.plugin.progressview"
+        version="3.0.1">
+
+    <name>Cordova ProgressView</name>
+    <description>Cordova/PhoneGap extension for displaying a native, determinate progress dialog view. Uses MRProgress in iOS and native UI controls in Android.</description>
+    <license>MIT</license>
+    <keywords>activity,indicator,loading,progress,loadingbar,mrprogress,mbprogresshud,spinner,throbber</keywords>
+    <repo>https://github.com/sidneys/cordova-plugin-progressview.git</repo>
+    <issue>https://github.com/sidneys/cordova-plugin-progressview/issues</issue>
+
+    <engines>
+        <engine name="cordova" version=">=3.5"/>
+    </engines>
+
+    <js-module src="www/progressview.js" name="progressview">
+        <clobbers target="window.plugins.ProgressView"/>
+    </js-module>
+
+    <!-- ios -->
+    <platform name="ios">
+
+        <config-file target="config.xml" parent="/*">
+            <feature name="ProgressView">
+                <param name="ios-package" value="ProgressView"/>
+            </feature>
+        </config-file>
+
+        <framework src="Foundation.framework"/>
+        <framework src="UIKit.framework"/>
+        <framework src="CoreGraphics.framework"/>
+        <framework src="QuartzCore.framework"/>
+        <framework src="Accelerate.framework"/>
+
+        <framework src="src/ios/M13Progress.framework" custom="true"/>
+
+        <header-file src="src/ios/ProgressView.h"/>
+        <source-file src="src/ios/ProgressView.m"/>
+
+
+    </platform>
+
+    <!-- android -->
+    <platform name="android">
+
+        <config-file target="res/xml/config.xml" parent="/*">
+            <feature name="ProgressView">
+                <param name="android-package" value="de.neofonie.cordova.plugin.progressview.ProgressView"/>
+            </feature>
+        </config-file>
+
+        <source-file src="src/android/ProgressView.java" target-dir="src/de/neofonie/cordova/plugin/progressview"/>
+
+    </platform>
+
+</plugin>
