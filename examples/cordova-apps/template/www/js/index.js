@@ -16,7 +16,7 @@ var app = {
     // App Ready Event Handler
     onAppReady: function() {
         if (window.gateway) {                                                       // if UI opened through Summon,
-            deviceId = window.gateway.getdeviceId();                                // get device ID from Summon
+            deviceId = window.gateway.getDeviceId();                                // get device ID from Summon
             deviceName = window.gateway.getDeviceName();                            // get device name from Summon
         }
         ble.isEnabled(app.onEnable);                                                // if BLE enabled, goto: onEnable
