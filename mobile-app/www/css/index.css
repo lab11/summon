@@ -43,6 +43,10 @@ html, body {
     transition:all 0.2s !important;
 }
 
+.ui-btn-raised {
+    margin:1em 0;
+}
+
 .item {
     background:#fff;
     margin:.5em !important;
@@ -120,7 +124,7 @@ h3 {
 
 #dm {
     word-wrap: break-word;
-    padding:0 1em;
+    padding:0 1em .5em 1em;
 }
 
 #ptr {
