@@ -93,7 +93,7 @@ public class MainActivity extends CordovaActivity
             for (ResolveInfo ri : mContext.getPackageManager().queryIntentActivities(new Intent(Intent.ACTION_VIEW,Uri.parse(s)),0))
                 if (!browsers.contains(ri.activityInfo.packageName)) 
                     apps += ",{\"package\":\"" + ri.activityInfo.packageName + "\",\"activity\":\"" + ri.activityInfo.name + "\",\"name\":\"" + ri.activityInfo.applicationInfo.loadLabel(mContext.getPackageManager()) + "\",\"icon\":\"" + ri.activityInfo.applicationInfo.loadIcon(mContext.getPackageManager()).toString() + "\"}";
-            return "[" + apps.substring(1) + "]";
+            return "[" + (apps.length()>0 ? apps.substring(1) : "") + "]";
         }
     }
 

@@ -71,10 +71,12 @@
           for (n in peripheral.characteristics) {
             c = peripheral.characteristics[n];
             if (!$("#c"+c.characteristic).length) {
-              $('#s'+c.service).after($("<li>",{"id":"c"+c.characteristic}).html(CHARACTS[c.characteristic]||c.characteristic).append($("<div>",{"class":"value"}))); 
+              $('#s'+c.service).after($("<li>",{"id":"c"+c.characteristic,value:""}).append($("<span>").html(CHARACTS[c.characteristic]||c.characteristic)).append($("<div>",{"class":"value"})).click(function(){if ($(this).hasClass("write")) app.write($(this).attr("id").substr(1),app.hex2ab(prompt($(this).find("span").html(),$(this).attr("value"))));})); 
               for (p in c.properties) $("#c"+c.characteristic).addClass(c.properties[p].toLowerCase());
               $("#list").listview("refresh");
             }
+            if (app.writeQueue.length && app.writeQueue[0].characteristic==c.characteristic)
+                ble.write(deviceID,c.service,c.characteristic,app.writeQueue[0].value,app.onWrite,ble.writeWithoutResponse(deviceID,c.service,c.characteristic,app.writeQueue[0].value,app.onWrite,app.onRWError));
             if (c.properties.indexOf("Read")>=0) {
               app.read(c)                                                                   // read characteristic; if read is good,goto: onRead 
               // if (c.properties.indexOf("Notify")>=0||c.properties.indexOf("Indicate")>=0)  // setup notifications for all who allow it
@@ -83,6 +85,7 @@
         },
         onRead: function(data) {
           c = app.readQueue.shift().characteristic;
+          $("#c"+c).attr("value",Array.prototype.map.call(new Uint8Array(data),function(m){return ("0"+m.toString(16)).substr(-2);}).join(''));
           $("#c"+c+">.value").html(String.fromCharCode.apply(null, new Uint8Array(data))+" ["+Array.prototype.map.call(new Uint8Array(data),function(m){return ("0"+m.toString(16)).substr(-2);}).join('')+"]");
           if (app.readQueue.length) ble.read(deviceID,app.readQueue[0].service,app.readQueue[0].characteristic,app.onRead,app.onRWError);
           else {
@@ -90,11 +93,19 @@
             app.updateHead(p,"<a href='#' id='refresh' onclick='app.onAppReady()'>Refresh</a>");
           }
         },
+        onWrite: function() {
+          console.log("written " + JSON.stringify(app.writeQueue.shift()));
+          if (app.writeQueue.length)
+            for (n in p.characteristics)
+              if (app.writeQueue[0].characteristic==p.characteristics[n].characteristic)
+                ble.write(deviceID,p.characteristics[n].service,p.characteristics[n].characteristic,app.writeQueue[0].value,app.onWrite,ble.writeWithoutResponse(deviceID,p.characteristics[n].service,p.characteristics[n].characteristic,app.writeQueue[0].value,app.onWrite,app.onRWError));
+        },
         onPause: function() {                                                               // if user leaves app,stop BLE
           ble.disconnect(deviceID,function(){deviceID="";});
           ble.stopScan();
         },
         onRWError: function() {                                                             // on error,try restarting BLE
+          console.log("error");
           ble.isEnabled(deviceID,function(){},app.onAppReady);
           ble.isConnected(deviceID,function(){},app.onAppReady);
         },
@@ -108,7 +119,25 @@
           app.readQueue.push(characteristic);
           if (app.readQueue.length==1) ble.read(deviceID,characteristic.service,characteristic.characteristic,app.onRead,app.onRWError);
         },
+        write: function(characteristic,value) {
+          app.writeQueue.push({characteristic:characteristic,value:value});
+          ble.isConnected(deviceID,function(){
+            if (app.writeQueue.length==1)
+              for (n in p.characteristics)
+                if (characteristic==p.characteristics[n].characteristic)
+                  ble.write(deviceID,p.characteristics[n].service,p.characteristics[n].characteristic,value,app.onWrite,ble.writeWithoutResponse(deviceID,p.characteristics[n].service,p.characteristics[n].characteristic,value,app.onWrite,app.onRWError));
+          },app.onAppReady);
+        },
+        hex2ab: function(str) { 
+            var result = [];
+            while (str.length >= 2) { 
+                result.push(parseInt(str.substring(0, 2), 16));
+                str = str.substring(2, str.length);
+            }
+            return (new Uint8Array(result)).buffer;
+        },
         readQueue:[],
+        writeQueue:[]
       };
       app.initialize();
     </script>
