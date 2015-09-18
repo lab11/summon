@@ -52,4 +52,5 @@
     <plugin name="cordova-plugin-test-framework" spec="^1.0.0" />
     <plugin name="cordova-plugin-vibration" spec="^1.1.0" />
     <plugin name="com.randdusing.bluetoothle" spec="https://github.com/randdusing/BluetoothLE" />
+    <plugin name="cordova-plugin-zip" spec="^3.0.0" />
 </widget>

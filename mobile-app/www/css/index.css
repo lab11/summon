@@ -127,6 +127,25 @@ h3 {
     padding:0 1em .5em 1em;
 }
 
+#lm {
+    word-wrap: break-word;
+    padding:1em 1em .5em 1em;
+    text-align: center;
+}
+
+#lm .ui-slider-handle, #lm input {
+    display:none;
+}
+
+#lm .ui-slider-track {
+    margin: 0 15px;
+    pointer-events: none;
+}
+
+#lm .ui-slider-bg {
+    transition:width 1s;
+}
+
 #ptr {
     position:absolute;
     top:0;

@@ -1,6 +1,13 @@
 var PWPREFIXES = ["http://www.","https://www.","http://","https://","urn:uuid:"];
 var PWSUFFIXES = [".com/",".org/",".edu/",".net/",".info/",".biz/",".gov/",".com",".org",".edu",".net",".info",".biz",".gov"]; var p; var q;
 var BSPREFIXES = [undefined,undefined,"aaa:","aaas:","about:","acap:","acct:","cap:","cid:","coap:","coaps:","crid:","data:","dav:","dict:","dns:","file:","ftp:","geo:","go:","gopher:","h323:","http:","https:","iax:","icap:","im:","imap:","info:","ipp:","ipps:","iris:","iris.beep:","iris.xpc:","iris.xpcs:","iris.lwz:","jabber:","ldap:","mailto:","mid:","msrp:","msrps:","mtqp:","mupdate:","news:","nfs:","ni:","nih:","nntp:","opaquelocktoken:","pop:","pres:","reload:","rtsp:","rtsps:","rtspu:","service:","session:","shttp:","sieve:","sip:","sips:","sms:","snmp:","soap.beep:","soap.beeps:","stun:","stuns:","tag:","tel:","telnet:","tftp:","thismessage:","tn3270:","tip:","turn:","turns:","tv:","urn:","vemmi:","ws:","wss:","xcon:","xcon-userid:","xmlrpc.beep:","xmlrpc.beeps:","xmpp:","z39.50r:","z39.50s:","acr:","adiumxtra:","afp:","afs:","aim:","apt:","attachment:","aw:","barion:","beshare:","bitcoin:","bolo:","callto:","chrome:","chrome-extension:","com-eventbrite-attendee:","content:","cvs:","dlna-playsingle:","dlna-playcontainer:","dtn:","dvb:","ed2k:","facetime:","feed:","feedready:","finger:","fish:","gg:","git:","gizmoproject:","gtalk:","ham:","hcp:","icon:","ipn:","irc:","irc6:","ircs:","itms:","jar:","jms:","keyparc:","lastfm:","ldaps:","magnet:","maps:","market:","message:","mms:","ms-help:","ms-settings-power:","msnim:","mumble:","mvn:","notes:","oid:","palm:","paparazzi:","pkcs11:","platform:","proxy:","psyc:","query:","res:","resource:","rmi:","rsync:","rtmfp:","rtmp:","secondlife:","sftp:","sgn:","skype:","smb:","smtp:","soldat:","spotify:","ssh:","steam:","submit:","svn:","teamspeak:","teliaeid:","things:","udp:","unreal:","ut2004:","ventrilo:","view-source:","webcal:","wtai:","wyciwyg:","xfire:","xri:","ymsgr:","example:","ms-settings-cloudstorage:"]
+var cperipheral = null;
+var UI_Array;
+var read_count = 0;
+var read_to = 0;
+var size = 0;
+var fileUrl = null;
+var dirUrl = null;
 var app = {
     initialize: function() {
         this.bindEvents();
@@ -60,24 +67,29 @@ var app = {
             adData = app.getServiceData(peripheral.advertising);
             if (typeof adData != "undefined" && adData) {
                 app.parseAdData(peripheral,adData);
-                $.post("https://summon-caster.appspot.com/resolve-scan",JSON.stringify({objects:[{url:peripheral.uri}]}),function(data){
-                    if (data.metadata[0]) {
-                        peripheral.meta = data.metadata[0];
-                        peripheral.apps = JSON.parse(window.gateway.checkApps(peripheral.meta.url));
-                        $("#other").before($("<li>",{class:'ble item'}).append($("<a>",{href:'#',onclick:"window.gateway.setDeviceId(\""+peripheral.id+"\"); window.gateway.setDeviceName(\""+peripheral.name+"\"); window.gateway.go(\""+peripheral.meta.url+"\""+(peripheral.apps.length?",\""+peripheral.apps[0].package+"\",\""+peripheral.apps[0].activity+"\"":"")+");"}).append($("<img>",{src:peripheral.meta.icon})).append($("<h2>").html(peripheral.meta.title)).append($("<p>").html(peripheral.meta.url+"<br/>"+peripheral.name+" ("+peripheral.id +")"))).append($("<a>",{href:'#dialog',"data-rel":'popup',class:'zmdi zmdi-more-vert',onclick:"app.infoPopup(\""+peripheral.id+"\",\"ble\")"})));
-                    } else $("#other").before($("<li>",{class:'ble item'}).append("<a>",{href:'#',onclick:"window.gateway.setDeviceId(\""+peripheral.id+"\"); window.gateway.setDeviceName(\""+peripheral.name+"\"); window.gateway.go(\""+peripheral.uri+"\");"}).append($("<p>").html(peripheral.uri+"<br/>"+peripheral.name+" ("+peripheral.id +")")));
-                    $.mobile.loading("hide");
-                    $("#devs").listview("refresh");
-                }).fail(function(){
-                    q = app.getStoredObject('peripherals');
-                    console.log(q);
-                    if (typeof q[peripheral.id] != "undefined" && typeof (q[peripheral.id]).meta != undefined) {
-                        peripheral.meta = (q[peripheral.id]).meta;
-                        $("#other").before($("<li>",{class:'item'}).append($("<a>",{href:'#'}).click(function(){window.gateway.setDeviceId(peripheral.id); window.gateway.setDeviceName(peripheral.name); location.href=peripheral.meta.url;}).append($("<img>",{src:peripheral.meta.icon})).append($("<h2>").html(peripheral.meta.title)).append($("<p>").html(peripheral.meta.url+"<br/>"+peripheral.name+" ("+peripheral.id+")"))).append($("<a>",{href:"#dialog","data-rel":"popup",class:"zmdi zmdi-more-vert"}).click(function(){app.infoPopup(peripheral.id,"ble")})));
-                    } else $("#other").before($("<li>",{class:'item'}).append($("<a>",{href:'#'}).click(function(){window.gateway.setDeviceId(peripheral.id); window.gateway.setDeviceName(peripheral.name); location.href=peripheral.uri;}).append($("<p>").html(peripheral.uri+"<br/>"+peripheral.name+" ("+peripheral.id+")"))));
-                    $.mobile.loading("hide");
-                    $("#devs").listview("refresh");
-                });
+                $("#other").before($("<li>",{class:"item","dev-id":peripheral.id}).append($("<a>",{href:'#'}).append($("<img>",{src:"img/ble.svg"})).append($("<h2>").html(peripheral.name+" ("+peripheral.id+")")).append($("<p>").html(peripheral.uri+"<br/>"+peripheral.name+" ("+peripheral.id+")"))));
+                if (peripheral.uri != "Local") {
+                    $.post("https://summon-caster.appspot.com/resolve-scan",JSON.stringify({objects:[{url:peripheral.uri}]}),function(data){
+                        if (data.metadata[0]) {
+                            peripheral.meta = data.metadata[0];
+                            peripheral.apps = JSON.parse(window.gateway.checkApps(peripheral.meta.url));
+                            $('li[dev-id="'+peripheral.id+'"]').addClass("ble").html($("<a>",{href:'#',onclick:"window.gateway.setDeviceId(\""+peripheral.id+"\"); window.gateway.setDeviceName(\""+peripheral.name+"\"); window.gateway.go(\""+peripheral.meta.url+"\""+(peripheral.apps.length?",\""+peripheral.apps[0].package+"\",\""+peripheral.apps[0].activity+"\"":"")+");"}).append($("<img>",{src:peripheral.meta.icon})).append($("<h2>").html(peripheral.meta.title)).append($("<p>").html(peripheral.meta.url+"<br/>"+peripheral.name+" ("+peripheral.id +")"))).append($("<a>",{href:'#dialog',"data-rel":'popup',class:'zmdi zmdi-more-vert',onclick:"app.infoPopup(\""+peripheral.id+"\",\"ble\")"}));
+                        } else $('li[dev-id="'+peripheral.id+'"]').addClass("ble").html("<a>",{href:'#',onclick:"window.gateway.setDeviceId(\""+peripheral.id+"\"); window.gateway.setDeviceName(\""+peripheral.name+"\"); window.gateway.go(\""+peripheral.uri+"\");"}).append($("<p>").html(peripheral.uri+"<br/>"+peripheral.name+" ("+peripheral.id +")"));
+                        $.mobile.loading("hide");
+                        $("#devs").listview("refresh");
+                    }).fail(function(){
+                        q = app.getStoredObject('peripherals');
+                        console.log(q);
+                        if (typeof q[peripheral.id] != "undefined" && typeof (q[peripheral.id]).meta != undefined) {
+                            peripheral.meta = (q[peripheral.id]).meta;
+                            $('li[dev-id="'+peripheral.id+'"]').html($("<a>",{href:'#'}).click(function(){window.gateway.setDeviceId(peripheral.id); window.gateway.setDeviceName(peripheral.name); location.href=peripheral.meta.url;}).append($("<img>",{src:peripheral.meta.icon})).append($("<h2>").html(peripheral.meta.title)).append($("<p>").html(peripheral.meta.url+"<br/>"+peripheral.name+" ("+peripheral.id+")"))).append($("<a>",{href:"#dialog","data-rel":"popup",class:"zmdi zmdi-more-vert"}).click(function(){app.infoPopup(peripheral.id,"ble")}));
+                        } else if(peripheral.ad==2) {
+                            $('li[dev-id="'+peripheral.id+'"]').addClass("ble").html($("<a>",{href:"#loadview","data-rel":"popup"}).click(function(){window.gateway.setDeviceId(peripheral.id); window.gateway.setDeviceName(peripheral.name); app.uiLoad(peripheral.id);}).append($("<img>",{src:"img/ble.svg"})).append($("<h2>").html(peripheral.name+" ("+peripheral.id+")")).append($("<p>").html(peripheral.uri+"<br/>"+peripheral.name+" ("+peripheral.id+")")));
+                        } else $('li[dev-id="'+peripheral.id+'"]').html($("<a>",{href:'#'}).click(function(){window.gateway.setDeviceId(peripheral.id); window.gateway.setDeviceName(peripheral.name); location.href=peripheral.uri;}).append($("<p>").html(peripheral.uri+"<br/>"+peripheral.name+" ("+peripheral.id+")")));
+                        $.mobile.loading("hide");
+                        $("#devs").listview("refresh");
+                    });
+                } else $('li[dev-id="'+peripheral.id+'"]').addClass("ble").html($("<a>",{href:"#loadview","data-rel":"popup"}).click(function(){window.gateway.setDeviceId(peripheral.id); window.gateway.setDeviceName(peripheral.name); app.uiLoad(peripheral.id);}).append($("<img>",{src:"img/ble.svg"})).append($("<h2>").html(peripheral.name+" ("+peripheral.id+")")).append($("<p>").html(peripheral.uri+"<br/>"+peripheral.name+" ("+peripheral.id+")")));
             } else { 
                 $(".other:last-child").hide().after($("<li>",{class:"other item","dev-id":peripheral.id}).hide().append($("<a>",{href:"#"}).click(function(){window.gateway.setDeviceId(peripheral.id); window.gateway.setDeviceName(peripheral.name); location.href="generated.html";}).html(peripheral.name+" ("+peripheral.id +")")));
                 if ($("#dv").prop("checked")) $(".other").show();
@@ -92,14 +104,18 @@ var app = {
         if (device.platform=="Android") {
             scanRecord = new Uint8Array(advertisingdata);
             index = 0;
+            provided = false;
             while (index < scanRecord.length) {
                 length = scanRecord[index++];
                 if (length == 0) return null; //Done once we run out of records
                 type = scanRecord[index];
                 if (type == 0) return null; //Done if our record isn't a valid type
                 data = scanRecord.subarray(index + 1, index + length); 
-                if (type==22 && length>4 && data[1]==0xfe && (data[0]==0xd8 || data[0]==0xaa)) return {uri:data.subarray(2),ad:false};
-                if (type==36) return {uri:data,ad:true};
+                if ((type==8 || type==9) && String.fromCharCode.apply(null,data)=="UI_GEN") return {uri:new Uint8Array("Local".split('').map(function(c){return c.charCodeAt(0);})),ad:2};
+                if (type==22 && length>4 && data[1]==0xfe && (data[0]==0xd8 || data[0]==0xaa)) return {uri:data.subarray(2),ad:0};
+                if (type==22 && length>4 && data[1]==0xfd && (data[0]==0xd8 || data[0]==0xaa)) return {uri:data.subarray(2),ad:2};
+                if (type==36) return {uri:data,ad:1};
+                if (type==37) return {uri:data,ad:2};
                 index += length; //Advance
             }
         } 
@@ -108,7 +124,7 @@ var app = {
         return null;
     },
     parseAdData: function(peripheral,adData) {
-        if (!adData.ad) {
+        if (adData.ad==0) {
             peripheral.flags = adData.uri[0]; // flag is the 1st byte
             peripheral.txPower = adData.uri[1]; // TX Power is 2nd byte
             uriScheme = adData.uri[2];
@@ -116,9 +132,9 @@ var app = {
         } else {
             uriScheme = adData.uri[0];
             uriData = adData.uri.subarray(1); // remainder in the URI
-        }
+        } 
         uri = '';
-        if (adData.ad && typeof BSPREFIXES[uriScheme] != "undefined") uri = BSPREFIXES[uriScheme];
+        if (adData.ad==1 && typeof BSPREFIXES[uriScheme] != "undefined") uri = BSPREFIXES[uriScheme];
         else if (uriScheme < PWPREFIXES.length) uri = PWPREFIXES[uriScheme]; // valid prefix, uncompress
         else uri = String.fromCharCode(uriScheme); // invalid prefix, just append character
         for (x = 0; x < uriData.length; x++) {
@@ -126,13 +142,14 @@ var app = {
             else uri += String.fromCharCode(uriData[x]); // regular character, just append
         }
         peripheral.uri = uri;
+        peripheral.ad = adData.ad;
         console.log(peripheral);
     },
     infoPopup: function(id,type) {
         p = app.peripherals[id];
         if (type=="ble") {
             $('#dh img').attr("src",p.meta.icon);
-            $('#dh h3').html(p.meta.title)
+            $('#dh h3').html(p.meta.title);
             $('#dm #dev').html(p.name+" ("+p.id+")<br/>"+p.meta.url);
             $("#dm #ui").html("");
             for (n in p.apps) $("#dm #ui").append($("<span>").html("NATIVE APP : "+p.apps[n].name+"<br/>").append($("<a>",{href:"#",class:"ui-btn ui-btn-raised clr-primary"}).html("Open "+p.apps[n].name).click(function(){window.gateway.setDeviceId(p.id); window.gateway.setDeviceName(p.name); window.gateway.go(p.meta.url,p.apps[n].package,p.apps[n].activity);})).append("<br/>"));
@@ -153,6 +170,100 @@ var app = {
     getStoredObject: function(name) {
         try { return JSON.parse(window.localStorage.getItem(name)); } 
         catch (e) { return {} }
+    },
+    uiLoad: function(id) {
+        p = app.peripherals[id];
+        $('#lh h3').html(p.name + "(" + p.id + ")");
+        $('#lm h4').html('Connecting.').attr("dev-id",id);
+        $('#lm .ui-slider-track').css("margin","0 15px");
+        $('#lm input').val(0).slider("refresh");
+        window.requestFileSystem(TEMPORARY, 0, function(fs) {
+            fs.root.getDirectory('temp', {create: true}, function(dirEntry) {
+                dirEntry.removeRecursively(function() { console.log('Directory removed.'); }, function(e) {console.log("ERROR",e)});
+            });
+        });
+        ble.connect(id, app.onConnect, app.onDisconnect);
+    },
+    onConnect: function(peripheral) {
+        $('#lm h4').html('Connected. Reading.');
+        $('#lm input').val(10).slider("refresh");
+        cperipheral = peripheral;
+        //find out how long the UI is by reading len
+        ble.read(peripheral.id, peripheral.services[2], peripheral.characteristics[3].characteristic, app.onData, app.onError);
+        ble.stopScan(function(){},function(reason){});
+    },
+    onData: function(buffer) {
+        if(read_count == 0) {
+            var data = new Uint8Array(buffer);
+            console.log(data[0]);
+            read_count += 1;
+            ble.read(cperipheral.id, cperipheral.services[2], cperipheral.characteristics[4].characteristic, app.onData, app.onError);
+            $('#lm input').val(15).slider("refresh");
+        } else if(read_count == 1) {
+            var data = new Uint32Array(buffer);
+            console.log(data[0]);
+            size = data[0];
+            UI_Array = new Uint8Array(size);
+            read_to = Math.ceil(data[0]/512) + 1;
+            $('#lm input').val(20).slider("refresh");
+            ble.read(cperipheral.id, cperipheral.services[2], cperipheral.characteristics[5].characteristic, app.onData, app.onError);
+            read_count += 1;
+        } else if(read_count > 1 && read_count < read_to) {
+            UI_Array.set(new Uint8Array(buffer), (read_count-2)*512);
+            console.log(read_count);
+            $('#lm input').val(20- -Math.round(read_count/read_to*50)).slider("refresh");
+            console.log(20- -Math.round(read_count/read_to*55));
+            ble.read(cperipheral.id, cperipheral.services[2], cperipheral.characteristics[read_count + 4].characteristic, app.onData, app.onError);
+            read_count += 1;
+        } else {
+            //finish off byte array
+            UI_Array.set(new Uint8Array(buffer), (read_count-2)*512);
+            ble.disconnect(cperipheral.id);
+
+            console.log(UI_Array.byteLength);
+            console.log(String.fromCharCode.apply(null, UI_Array));
+
+            onError = function(e) {console.log("ERROR: " + e)};
+            window.requestFileSystem(TEMPORARY, 0, function(fs) {
+                fs.root.getDirectory('temp', {create: true}, function(dirEntry) {
+                    dirUrl = dirEntry.toURL();
+                    console.log("dir success"); 
+                    fs.root.getFile('www.bin', {create: true}, function(fileEntry) {
+                        fileEntry.createWriter(function(writer) {
+                            console.log(writer);
+                            fileUrl = fileEntry.toURL();
+                            writer.onwrite = function(d) {
+                                console.log("write success",d); 
+                                console.log(fileUrl + " -> " + dirUrl);
+                                if (fileUrl!=null && dirUrl!=null) 
+                                    zip.unzip(fileUrl, dirUrl, function(result) {
+                                        console.log("write zip " + result);
+                                        if (result==0) {
+                                            $('#lm h4').html('Connected. Read. Loaded. Opening.');
+                                            $('#lm input').val(100).slider("refresh");
+                                            dirEntry.createReader().readEntries (function(results) { console.log(results) }, onError);
+                                            window.location = dirUrl+"/www/index.html";
+                                        } else {
+                                            app.onError("Failed to load.")
+                                        }
+                                    }, function(progressEvent) { 
+                                        $('#lm h4').html('Connected. Read. Loading.');
+                                        $('#lm input').val(75+Math.round(progressEvent.loaded/progressEvent.total*25)).slider("refresh");
+                                        console.log(progressEvent.loaded,progressEvent.total); 
+                                    });
+                            };
+                            writer.onerror = onError;
+                            writer.write(UI_Array.buffer);
+                        }, onError);
+                    }, onError);
+                }, onError);
+            }, onError);
+        }
+    },
+    onDisconnect: function(){},
+    onError: function(e) {
+        ble.disconnect(cperipheral.id);
+        $('#lm h4').html('Error. ' + e + '<br /><a href="#" onclick="app.uiLoad('+cperipheral.id+')">Retry</a> | <a href="#" data-rel="back" onclick="app.onAppReady()">Close</a>');
     },
     peripherals: {}
 };
