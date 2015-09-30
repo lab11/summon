@@ -7,7 +7,6 @@
     <author email="tzachari@umich.edu" href="http://lab11.eecs.umich.edu">
         Lab11
     </author>
-    <icon src="res/icon.png" />
     <content src="index.html" />
     <preference name="android-minSdkVersion" value="17" />
     <preference name="android-targetSdkVersion" value="17" />
@@ -21,14 +20,25 @@
     <allow-intent href="mailto:*" />
     <allow-intent href="geo:*" />
     <platform name="android">
+        <icon src="res/icon-android.png" />
         <allow-intent href="market:*" />
     </platform>
     <platform name="ios">
+        <icon src="res/icon-ios.png" />
+        <splash src="res/splash.png" width="320" height="480"/>
+        <splash src="res/splash.png" width="640" height="960"/>
+        <splash src="res/splash.png" width="768" height="1024"/>
+        <splash src="res/splash.png" width="1536" height="2048"/>
+        <splash src="res/splash.png" width="1024" height="768"/>
+        <splash src="res/splash.png" width="2048" height="1536"/>
+        <splash src="res/splash.png" width="640" height="1136"/>
+        <splash src="res/splash.png" width="750" height="1334"/>
+        <splash src="res/splash.png" width="1242" height="2208"/>
+        <splash src="res/splash.png" width="2208" height="1242"/>
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
     </platform>
     <plugin name="com.triggertrap.ZeroConf" spec="https://github.com/vstirbu/ZeroConf" />
-    <plugin name="com.megster.cordova.ble" spec="^0.1.9" />
     <plugin name="cordova-plugin-console" spec="^1.0.0" />
     <plugin name="cordova-plugin-device" spec="^1.0.0" />
     <plugin name="cordova-plugin-chrome-apps-sockets-udp" spec="^1.2.2" />
@@ -53,4 +63,5 @@
     <plugin name="cordova-plugin-vibration" spec="^1.1.0" />
     <plugin name="com.randdusing.bluetoothle" spec="https://github.com/randdusing/BluetoothLE" />
     <plugin name="cordova-plugin-zip" spec="^3.0.0" />
+    <plugin name="cordova-plugin-ble-central" spec="^1.0.1" />
 </widget>
