@@ -1,8 +1,8 @@
 Summon (tentative name)
 ========================
 
-The user interface medium for the Internet of Things.
-A platform that provides a convenient and scalable mechanism for Bluetooth device interactivity using web-based interfaces.
+<img src="mobile-app/res/icon-android.png" alt="Summon" height="80" align="left"><i>The browser for the Web of Things. </i>
+<br />A platform for mobile devices that provides a convenient and scalable mechanism for IoT device interactivity, driven by the devices themselves and enabled by web-based interfaces.
 
 ![Screenshot 1](https://lh3.googleusercontent.com/mZjhpdgXmufctor4O-_kJTROVItbnK9V5HSfcl_FOZ448S1yFL-w90dxBAgC1rkpuA=w350-rw) 
 ![Screenshot 2](https://lh3.googleusercontent.com/6sl6v2lT4HHC83cJZSPoOz9BgIvs_WEhd-C3ZqEJdoTXMuNNJTDlzXzWxy1kmPVSLA=w350-rw)
@@ -12,7 +12,7 @@ A platform that provides a convenient and scalable mechanism for Bluetooth devic
 
 Bluetooth Devices
 -----------------
-For Bluetooth peripherals to show up in the app's scan, it must advertise the URI for its corresponding website or web app according to the [Uribeacon specification](https://github.com/google/uribeacon/blob/master/specification/AdvertisingMode.md).
+For Bluetooth peripherals to show up in the app's scan, it must advertise the URI for its corresponding website or web app according to the [Bluetooth URI AD type specification](https://www.bluetooth.org/DocMan/handlers/DownloadDoc.ashx?doc_id=302735) (page 27), or the [Eddystone-URL specification](https://github.com/google/eddystone/blob/master/protocol-specification.md).
 
 Example implementations can be found in `examples/peripherals/`.
 
