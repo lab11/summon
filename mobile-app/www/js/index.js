@@ -10,7 +10,7 @@ var fileUrl = null;
 var dirUrl = null;
 var app = {
     initialize: function() {
-        this.bindEvents();
+        try { this.bindEvents(); } catch (e) {alert(e);}
     },
     bindEvents: function() {
         document.addEventListener("deviceready", app.onAppReady, false);
@@ -18,11 +18,6 @@ var app = {
         document.addEventListener('resume', app.onAppReady, false);
         WebPullToRefresh.init( { loadingFunction: app.onAppReady } );
         $(".pref").change(app.onPrefChange);
-        $(".other").click(function(){
-            window.gateway.setDeviceId($(this).attr('dev-id'));
-            window.gateway.setDeviceName("hi"); 
-            location.href='generated.html';
-        });
     },
     onAppReady: function() {
         $('body').addClass(device.platform.toLowerCase());
@@ -32,9 +27,11 @@ var app = {
         $("#count").html("0");
         app.peripherals = {};
         $.mobile.loading("show");
-        ble.stopScan(function(){ ble.startScan([],app.onPeripheralFound); },app.onAppReady);
-        ZeroConf.watch("_http._tcp.local.",app.onDiscover); 
-        ZeroConf.watch("_tcp.local.",app.onDiscover); 
+        ble.isEnabled(function(){ble.stopScan(function(){ble.startScan([],app.onPeripheralFound);},app.onAppReady)},function(){ble.enable(app.onAppReady,null)});
+        try {
+            ZeroConf.watch("_http._tcp.local.",app.onDiscover); 
+            ZeroConf.watch("_tcp.local.",app.onDiscover); 
+        } catch(e) {}
         return new Promise( function( resolve, reject ) {resolve()} );
     },
     onPause: function() {
@@ -65,17 +62,19 @@ var app = {
     onPeripheralFound: function(peripheral) {
        if (typeof app.peripherals[peripheral.id] == "undefined") {
             adData = app.getServiceData(peripheral.advertising);
+            if (!peripheral.name) peripheral.name = "";
             if (typeof adData != "undefined" && adData) {
                 app.parseAdData(peripheral,adData);
-                $("#other").before($("<li>",{class:"item","dev-id":peripheral.id}).append($("<a>",{href:'#'}).append($("<img>",{src:"img/ble.svg"})).append($("<h2>").html(peripheral.name+" ("+peripheral.id+")")).append($("<p>").html(peripheral.uri+"<br/>"+peripheral.name+" ("+peripheral.id+")"))));
+                $("#other").before($("<li>",{class:"item","dev-id":peripheral.id}).append($("<a>",{href:'#',style:"opacity:.5; pointer-events:none"}).append($("<img>",{src:"img/ble.svg"})).append($("<h2>").html(peripheral.name+" ("+peripheral.id+")")).append($("<p>").html(peripheral.uri+"<br/>"+peripheral.name+" ("+peripheral.id+")"))));
                 if (peripheral.uri != "Local") {
                     $.post("https://summon-caster.appspot.com/resolve-scan",JSON.stringify({objects:[{url:peripheral.uri}]}),function(data){
                         if (data.metadata[0]) {
                             peripheral.meta = data.metadata[0];
                             peripheral.apps = JSON.parse(window.gateway.checkApps(peripheral.meta.url));
                             $('li[dev-id="'+peripheral.id+'"]').addClass("ble").html($("<a>",{href:'#',onclick:"window.gateway.setDeviceId(\""+peripheral.id+"\"); window.gateway.setDeviceName(\""+peripheral.name+"\"); window.gateway.go(\""+peripheral.meta.url+"\""+(peripheral.apps.length?",\""+peripheral.apps[0].package+"\",\""+peripheral.apps[0].activity+"\"":"")+");"}).append($("<img>",{src:peripheral.meta.icon})).append($("<h2>").html(peripheral.meta.title)).append($("<p>").html(peripheral.meta.url+"<br/>"+peripheral.name+" ("+peripheral.id +")"))).append($("<a>",{href:'#dialog',"data-rel":'popup',class:'zmdi zmdi-more-vert',onclick:"app.infoPopup(\""+peripheral.id+"\",\"ble\")"}));
-                        } else $('li[dev-id="'+peripheral.id+'"]').addClass("ble").html("<a>",{href:'#',onclick:"window.gateway.setDeviceId(\""+peripheral.id+"\"); window.gateway.setDeviceName(\""+peripheral.name+"\"); window.gateway.go(\""+peripheral.uri+"\");"}).append($("<p>").html(peripheral.uri+"<br/>"+peripheral.name+" ("+peripheral.id +")"));
+                        } else $('li[dev-id="'+peripheral.id+'"]').addClass("ble").html($("<a>",{href:'#',onclick:"window.gateway.setDeviceId(\""+peripheral.id+"\"); window.gateway.setDeviceName(\""+peripheral.name+"\"); window.gateway.go(\""+peripheral.uri+"\");"}).append($("<p>").html(peripheral.uri+"<br/>"+peripheral.name+" ("+peripheral.id +")")));
                         $.mobile.loading("hide");
+                        window.localStorage.setItem("peripherals",JSON.stringify($.extend(true,{},app.getStoredObject("peripherals"),app.peripherals)));
                         $("#devs").listview("refresh");
                     }).fail(function(){
                         q = app.getStoredObject('peripherals');

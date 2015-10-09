@@ -58,9 +58,8 @@
                 <form>
                     <h3>Settings</h3>
                     <ul data-role="listview" data-icon="false">
-                        <li><table><tr><td><label for="bg">Operate in background:</label></td><td><input type="checkbox" class="pref" id="bg" name="bg" data-role="flipswitch" disabled="disabled" /></td></tr></table></li>
-                        <li><button class="ui-shadow ui-btn ui-icon-carat-d ui-btn-icon-right" disabled="disabled">Permissions</button></li>
-                        <li><table><tr><td><label for="dv">See Other Devices:</label></td><td><input type="checkbox" class="pref" id="dv" name="dv" data-role="flipswitch"/></td></tr></table></li>
+                        <li><button class="ui-shadow ui-btn" href="#" onclick="window.gateway.clearCache()" disabled="disabled">Clear Cache</button></li>
+                        <li><table><tr><td><label for="dv">See Other Devices:</label></td><td><input type="checkbox" class="pref" id="dv" name="dv" data-role="flipswitch" value="true"/></td></tr></table></li>
                     </ul>
                 </form>
             </div>
