@@ -8,6 +8,7 @@ var read_to = 0;
 var size = 0;
 var fileUrl = null;
 var dirUrl = null;
+var scanEnabled = false;
 var app = {
     initialize: function() {
         try { this.bindEvents(); } catch (e) {alert(e);}
@@ -27,7 +28,7 @@ var app = {
         $("#count").html("0");
         app.peripherals = {};
         $.mobile.loading("show");
-        ble.isEnabled(function(){ble.stopScan(function(){ble.startScan([],app.onPeripheralFound);},app.onAppReady)},function(){ble.enable(app.onAppReady,null)});
+        ble.isEnabled(app.scan,function(){ble.enable(app.onAppReady,null)});
         try {
             ZeroConf.watch("_http._tcp.local.",app.onDiscover); 
             ZeroConf.watch("_tcp.local.",app.onDiscover); 
@@ -36,6 +37,14 @@ var app = {
     },
     onPause: function() {
         ble.stopScan();
+        scanEnabled = false;
+    },
+    scan: function() {
+        scanEnabled = true;
+        ble.stopScan(function(){
+            ble.startScan([],app.onPeripheralFound,function(e){console.log(e)});
+            setTimeout(function(){if (scanEnabled) app.scan()},5000);
+        },app.onAppReady);
     },
     onDiscover: function(peripheral) {
         if (typeof app.peripherals[peripheral.service.qualifiedname] == "undefined") {
@@ -60,44 +69,41 @@ var app = {
         if ($("#other").is( "li:last-child" )) $("#other").hide();
     },
     onPeripheralFound: function(peripheral) {
-       if (typeof app.peripherals[peripheral.id] == "undefined") {
-            adData = app.getServiceData(peripheral.advertising);
-            if (!peripheral.name) peripheral.name = "";
-            if (typeof adData != "undefined" && adData) {
-                app.parseAdData(peripheral,adData);
-                $("#other").before($("<li>",{class:"item","dev-id":peripheral.id}).append($("<a>",{href:'#',style:"opacity:.5; pointer-events:none"}).append($("<img>",{src:"img/ble.svg"})).append($("<h2>").html(peripheral.name+" ("+peripheral.id+")")).append($("<p>").html(peripheral.uri+"<br/>"+peripheral.name+" ("+peripheral.id+")"))));
-                if (peripheral.uri != "Local") {
-                    $.post("https://summon-caster.appspot.com/resolve-scan",JSON.stringify({objects:[{url:peripheral.uri}]}),function(data){
-                        if (data.metadata[0]) {
-                            peripheral.meta = data.metadata[0];
-                            peripheral.apps = JSON.parse(window.gateway.checkApps(peripheral.meta.url));
-                            $('li[dev-id="'+peripheral.id+'"]').addClass("ble").html($("<a>",{href:'#',onclick:"window.gateway.setDeviceId(\""+peripheral.id+"\"); window.gateway.setDeviceName(\""+peripheral.name+"\"); window.gateway.go(\""+peripheral.meta.url+"\""+(peripheral.apps.length?",\""+peripheral.apps[0].package+"\",\""+peripheral.apps[0].activity+"\"":"")+");"}).append($("<img>",{src:peripheral.meta.icon})).append($("<h2>").html(peripheral.meta.title)).append($("<p>").html(peripheral.meta.url+"<br/>"+peripheral.name+" ("+peripheral.id +")"))).append($("<a>",{href:'#dialog',"data-rel":'popup',class:'zmdi zmdi-more-vert',onclick:"app.infoPopup(\""+peripheral.id+"\",\"ble\")"}));
-                        } else $('li[dev-id="'+peripheral.id+'"]').addClass("ble").html($("<a>",{href:'#',onclick:"window.gateway.setDeviceId(\""+peripheral.id+"\"); window.gateway.setDeviceName(\""+peripheral.name+"\"); window.gateway.go(\""+peripheral.uri+"\");"}).append($("<p>").html(peripheral.uri+"<br/>"+peripheral.name+" ("+peripheral.id +")")));
-                        $.mobile.loading("hide");
-                        window.localStorage.setItem("peripherals",JSON.stringify($.extend(true,{},app.getStoredObject("peripherals"),app.peripherals)));
-                        $("#devs").listview("refresh");
-                    }).fail(function(){
-                        q = app.getStoredObject('peripherals');
-                        console.log(q);
-                        if (typeof q[peripheral.id] != "undefined" && typeof (q[peripheral.id]).meta != undefined) {
-                            peripheral.meta = (q[peripheral.id]).meta;
-                            $('li[dev-id="'+peripheral.id+'"]').html($("<a>",{href:'#'}).click(function(){window.gateway.setDeviceId(peripheral.id); window.gateway.setDeviceName(peripheral.name); location.href=peripheral.meta.url;}).append($("<img>",{src:peripheral.meta.icon})).append($("<h2>").html(peripheral.meta.title)).append($("<p>").html(peripheral.meta.url+"<br/>"+peripheral.name+" ("+peripheral.id+")"))).append($("<a>",{href:"#dialog","data-rel":"popup",class:"zmdi zmdi-more-vert"}).click(function(){app.infoPopup(peripheral.id,"ble")}));
-                        } else if(peripheral.ad==2) {
-                            $('li[dev-id="'+peripheral.id+'"]').addClass("ble").html($("<a>",{href:"#loadview","data-rel":"popup"}).click(function(){window.gateway.setDeviceId(peripheral.id); window.gateway.setDeviceName(peripheral.name); app.uiLoad(peripheral.id);}).append($("<img>",{src:"img/ble.svg"})).append($("<h2>").html(peripheral.name+" ("+peripheral.id+")")).append($("<p>").html(peripheral.uri+"<br/>"+peripheral.name+" ("+peripheral.id+")")));
-                        } else $('li[dev-id="'+peripheral.id+'"]').html($("<a>",{href:'#'}).click(function(){window.gateway.setDeviceId(peripheral.id); window.gateway.setDeviceName(peripheral.name); location.href=peripheral.uri;}).append($("<p>").html(peripheral.uri+"<br/>"+peripheral.name+" ("+peripheral.id+")")));
-                        $.mobile.loading("hide");
-                        $("#devs").listview("refresh");
-                    });
-                } else $('li[dev-id="'+peripheral.id+'"]').addClass("ble").html($("<a>",{href:"#loadview","data-rel":"popup"}).click(function(){window.gateway.setDeviceId(peripheral.id); window.gateway.setDeviceName(peripheral.name); app.uiLoad(peripheral.id);}).append($("<img>",{src:"img/ble.svg"})).append($("<h2>").html(peripheral.name+" ("+peripheral.id+")")).append($("<p>").html(peripheral.uri+"<br/>"+peripheral.name+" ("+peripheral.id+")")));
-            } else { 
-                $(".other:last-child").hide().after($("<li>",{class:"other item","dev-id":peripheral.id}).hide().append($("<a>",{href:"#"}).click(function(){window.gateway.setDeviceId(peripheral.id); window.gateway.setDeviceName(peripheral.name); location.href="generated.html";}).html(peripheral.name+" ("+peripheral.id +")")));
-                if ($("#dv").prop("checked")) $(".other").show();
-            }
-            $.mobile.loading("hide");
-            $("#devs").listview("refresh");
-            app.peripherals[peripheral.id] = peripheral;
-            window.localStorage.setItem("peripherals",JSON.stringify($.extend(true,{},app.getStoredObject("peripherals"),app.peripherals)));
+        adData = app.getServiceData(peripheral.advertising);
+        if (!peripheral.name) peripheral.name = "";
+        if (typeof adData != "undefined" && adData) {
+            app.parseAdData(peripheral,adData);
+            if ($('li[dev-id="'+peripheral.id+'"]:not(.other)').length==0) $("#other").before($("<li>",{class:"item","dev-id":peripheral.id}).append($("<a>",{href:'#',style:"opacity:.5; pointer-events:none"}).append($("<img>",{src:"img/ble.svg"})).append($("<h2>").html(peripheral.name+" ("+peripheral.id+")")).append($("<p>").html(peripheral.uri+"<br/>"+peripheral.name+" ("+peripheral.id+")"))));
+            if (peripheral.uri != "Local") {
+                $.post("https://summon-caster.appspot.com/resolve-scan",JSON.stringify({objects:[{url:peripheral.uri}]}),function(data){
+                    if (data.metadata[0]) {
+                        peripheral.meta = data.metadata[0];
+                        peripheral.apps = JSON.parse(window.gateway.checkApps(peripheral.meta.url));
+                        $('li[dev-id="'+peripheral.id+'"]').addClass("ble").html($("<a>",{href:'#',onclick:"window.gateway.setDeviceId(\""+peripheral.id+"\"); window.gateway.setDeviceName(\""+peripheral.name+"\"); window.gateway.go(\""+peripheral.meta.url+"\""+(peripheral.apps.length?",\""+peripheral.apps[0].package+"\",\""+peripheral.apps[0].activity+"\"":"")+");"}).append($("<img>",{src:peripheral.meta.icon})).append($("<h2>").html(peripheral.meta.title)).append($("<p>").html(peripheral.meta.url+"<br/>"+peripheral.name+" ("+peripheral.id +")"))).append($("<a>",{href:'#dialog',"data-rel":'popup',class:'zmdi zmdi-more-vert',onclick:"app.infoPopup(\""+peripheral.id+"\",\"ble\")"}));
+                    } else $('li[dev-id="'+peripheral.id+'"]').addClass("ble").html($("<a>",{href:'#',onclick:"window.gateway.setDeviceId(\""+peripheral.id+"\"); window.gateway.setDeviceName(\""+peripheral.name+"\"); window.gateway.go(\""+peripheral.uri+"\");"}).append($("<p>").html(peripheral.uri+"<br/>"+peripheral.name+" ("+peripheral.id +")")));
+                    $.mobile.loading("hide");
+                    window.localStorage.setItem("peripherals",JSON.stringify($.extend(true,{},app.getStoredObject("peripherals"),app.peripherals)));
+                    $("#devs").listview("refresh");
+                }).fail(function(){
+                    q = app.getStoredObject('peripherals');
+                    if (typeof q[peripheral.id] != "undefined" && typeof (q[peripheral.id]).meta != undefined) {
+                        peripheral.meta = (q[peripheral.id]).meta;
+                        $('li[dev-id="'+peripheral.id+'"]').html($("<a>",{href:'#'}).click(function(){window.gateway.setDeviceId(peripheral.id); window.gateway.setDeviceName(peripheral.name); location.href=peripheral.meta.url;}).append($("<img>",{src:peripheral.meta.icon})).append($("<h2>").html(peripheral.meta.title)).append($("<p>").html(peripheral.meta.url+"<br/>"+peripheral.name+" ("+peripheral.id+")"))).append($("<a>",{href:"#dialog","data-rel":"popup",class:"zmdi zmdi-more-vert"}).click(function(){app.infoPopup(peripheral.id,"ble")}));
+                    } else if(peripheral.ad==2) {
+                        $('li[dev-id="'+peripheral.id+'"]').addClass("ble").html($("<a>",{href:"#loadview","data-rel":"popup"}).click(function(){window.gateway.setDeviceId(peripheral.id); window.gateway.setDeviceName(peripheral.name); app.uiLoad(peripheral.id);}).append($("<img>",{src:"img/ble.svg"})).append($("<h2>").html(peripheral.name+" ("+peripheral.id+")")).append($("<p>").html(peripheral.uri+"<br/>"+peripheral.name+" ("+peripheral.id+")")));
+                    } else $('li[dev-id="'+peripheral.id+'"]').html($("<a>",{href:'#'}).click(function(){window.gateway.setDeviceId(peripheral.id); window.gateway.setDeviceName(peripheral.name); location.href=peripheral.uri;}).append($("<p>").html(peripheral.uri+"<br/>"+peripheral.name+" ("+peripheral.id+")")));
+                    $.mobile.loading("hide");
+                    $("#devs").listview("refresh");
+                });
+            } else $('li[dev-id="'+peripheral.id+'"]').addClass("ble").html($("<a>",{href:"#loadview","data-rel":"popup"}).click(function(){window.gateway.setDeviceId(peripheral.id); window.gateway.setDeviceName(peripheral.name); app.uiLoad(peripheral.id);}).append($("<img>",{src:"img/ble.svg"})).append($("<h2>").html(peripheral.name+" ("+peripheral.id+")")).append($("<p>").html(peripheral.uri+"<br/>"+peripheral.name+" ("+peripheral.id+")")));
+        } else { 
+            if ($('li.other[dev-id="'+peripheral.id+'"]').length==0) $(".other:last-child").hide().after($("<li>",{class:"other item","dev-id":peripheral.id}).hide().append($("<a>",{href:"#"}).click(function(){window.gateway.setDeviceId(peripheral.id); window.gateway.setDeviceName(peripheral.name); location.href="generated.html";}).html(peripheral.name+" ("+peripheral.id +")")));
+            if ($("#dv").prop("checked")) $(".other").show();
         }
+        $.mobile.loading("hide");
+        $("#devs").listview("refresh");
+        app.peripherals[peripheral.id] = peripheral;
+        window.localStorage.setItem("peripherals",JSON.stringify($.extend(true,{},app.getStoredObject("peripherals"),app.peripherals)));
     },
     getServiceData: function(advertisingdata) {
         if (device.platform=="Android") {
@@ -142,7 +148,6 @@ var app = {
         }
         peripheral.uri = uri;
         peripheral.ad = adData.ad;
-        console.log(peripheral);
     },
     infoPopup: function(id,type) {
         p = app.peripherals[id];
@@ -152,7 +157,7 @@ var app = {
             $('#dm #dev').html(p.name+" ("+p.id+")<br/>"+p.meta.url);
             $("#dm #ui").html("");
             for (n in p.apps) $("#dm #ui").append($("<span>").html("NATIVE APP : "+p.apps[n].name+"<br/>").append($("<a>",{href:"#",class:"ui-btn ui-btn-raised clr-primary"}).html("Open "+p.apps[n].name).click(function(){window.gateway.setDeviceId(p.id); window.gateway.setDeviceName(p.name); window.gateway.go(p.meta.url,p.apps[n].package,p.apps[n].activity);})).append("<br/>"));
-            $("#dm #ui").append("WEB CONTENT : "+p.meta.title+"<br/><i>"+p.meta.description+"</i><br/>"+(p.meta.cordova ? "Plugins Used:<br/>"+JSON.stringify(p.meta.cordova,null,4).replace(/[{},]/g,'') : ""));
+            $("#dm #ui").append("WEB CONTENT : "+p.meta.title+"<br/><i>"+p.meta.description+"</i><br/>"+(p.meta.cordova ? "<br/>Plugins Used:<br/>"+JSON.stringify(p.meta.cordova,null,"<br/>").replace(/[{},]/g,'') : "<br>"));
             $("#dm #go").click(function(){window.gateway.setDeviceId(p.id); window.gateway.setDeviceName(p.name); location.href=p.meta.url;})
             $("#dm #gen").show().click(function(){window.gateway.setDeviceId(p.id); window.gateway.setDeviceName(p.name); location.href="generated.html";})
         } else if (type=="nsd") {
@@ -190,6 +195,7 @@ var app = {
         //find out how long the UI is by reading len
         ble.read(peripheral.id, peripheral.services[2], peripheral.characteristics[3].characteristic, app.onData, app.onError);
         ble.stopScan(function(){},function(reason){});
+        scanEnabled = false;
     },
     onData: function(buffer) {
         if(read_count == 0) {
