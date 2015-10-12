@@ -73,6 +73,7 @@ var app = {
         if (!peripheral.name) peripheral.name = "";
         if (typeof adData != "undefined" && adData) {
             app.parseAdData(peripheral,adData);
+            $('li.other[dev-id="'+peripheral.id+'"]').remove(); 
             if ($('li[dev-id="'+peripheral.id+'"]:not(.other)').length==0) $("#other").before($("<li>",{class:"item","dev-id":peripheral.id}).append($("<a>",{href:'#',style:"opacity:.5; pointer-events:none"}).append($("<img>",{src:"img/ble.svg"})).append($("<h2>").html(peripheral.name+" ("+peripheral.id+")")).append($("<p>").html(peripheral.uri+"<br/>"+peripheral.name+" ("+peripheral.id+")"))));
             if (peripheral.uri != "Local") {
                 $.post("https://summon-caster.appspot.com/resolve-scan",JSON.stringify({objects:[{url:peripheral.uri}]}),function(data){
@@ -96,7 +97,7 @@ var app = {
                     $("#devs").listview("refresh");
                 });
             } else $('li[dev-id="'+peripheral.id+'"]').addClass("ble").html($("<a>",{href:"#loadview","data-rel":"popup"}).click(function(){window.gateway.setDeviceId(peripheral.id); window.gateway.setDeviceName(peripheral.name); app.uiLoad(peripheral.id);}).append($("<img>",{src:"img/ble.svg"})).append($("<h2>").html(peripheral.name+" ("+peripheral.id+")")).append($("<p>").html(peripheral.uri+"<br/>"+peripheral.name+" ("+peripheral.id+")")));
-        } else { 
+        } else if ($('li[dev-id="'+peripheral.id+'"]:not(.other)').length==0) { 
             if ($('li.other[dev-id="'+peripheral.id+'"]').length==0) $(".other:last-child").hide().after($("<li>",{class:"other item","dev-id":peripheral.id}).hide().append($("<a>",{href:"#"}).click(function(){window.gateway.setDeviceId(peripheral.id); window.gateway.setDeviceName(peripheral.name); location.href="generated.html";}).html(peripheral.name+" ("+peripheral.id +")")));
             if ($("#dv").prop("checked")) $(".other").show();
         }
