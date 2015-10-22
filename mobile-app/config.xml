@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="edu.umich.eecs.lab11.summon" version="0.0.8" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="edu.umich.eecs.lab11.summon" version="0.1.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Summon</name>
     <description>
         The user interface medium for the Internet of Things.
@@ -26,6 +26,7 @@
     <platform name="ios">
         <icon src="res/icon-ios.png" />
         <splash src="res/splash.png" width="320" height="480"/>
+        <splash src="res/splash.png" width="320" height="568"/>
         <splash src="res/splash.png" width="640" height="960"/>
         <splash src="res/splash.png" width="768" height="1024"/>
         <splash src="res/splash.png" width="1536" height="2048"/>

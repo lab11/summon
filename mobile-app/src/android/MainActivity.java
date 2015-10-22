@@ -52,7 +52,7 @@ public class MainActivity extends CordovaActivity
         wv.getSettings().setSupportZoom(false);
         wv.getSettings().setAllowFileAccess(true);
         wv.getSettings().setAppCacheEnabled(true);
-        wv.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+        wv.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
         String cachePath = wv.getContext().getCacheDir().getAbsolutePath();
         wv.getSettings().setAppCachePath(cachePath);
         // Set by <content src="index.html" /> in config.xml
@@ -79,6 +79,9 @@ public class MainActivity extends CordovaActivity
 
         @JavascriptInterface
         public void go(String s) { loadUrl(s); }
+
+        @JavascriptInterface
+        public void cache(String s) { ((WebView) appView.getEngine().getView()).getSettings().setCacheMode(s.equals("true") ? WebSettings.LOAD_DEFAULT : WebSettings.LOAD_NO_CACHE); }
 
         @JavascriptInterface
         public void go(String s, String p, String n) {

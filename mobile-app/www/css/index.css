@@ -59,6 +59,10 @@ html, body {
     margin:.5em !important;
 }
 
+#panel li {
+    padding:0 1em;
+}
+
 table {
     width:100%;
 }
