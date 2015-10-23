@@ -1,5 +1,5 @@
 var PWPREFIXES = ["http://www.","https://www.","http://","https://","urn:uuid:"];
-var PWSUFFIXES = [".com/",".org/",".edu/",".net/",".info/",".biz/",".gov/",".com",".org",".edu",".net",".info",".biz",".gov"]; var p; var q;
+var PWSUFFIXES = [".com/",".org/",".edu/",".net/",".info/",".biz/",".gov/",".com",".org",".edu",".net",".info",".biz",".gov"]; var q;
 var BSPREFIXES = [undefined,undefined,"aaa:","aaas:","about:","acap:","acct:","cap:","cid:","coap:","coaps:","crid:","data:","dav:","dict:","dns:","file:","ftp:","geo:","go:","gopher:","h323:","http:","https:","iax:","icap:","im:","imap:","info:","ipp:","ipps:","iris:","iris.beep:","iris.xpc:","iris.xpcs:","iris.lwz:","jabber:","ldap:","mailto:","mid:","msrp:","msrps:","mtqp:","mupdate:","news:","nfs:","ni:","nih:","nntp:","opaquelocktoken:","pop:","pres:","reload:","rtsp:","rtsps:","rtspu:","service:","session:","shttp:","sieve:","sip:","sips:","sms:","snmp:","soap.beep:","soap.beeps:","stun:","stuns:","tag:","tel:","telnet:","tftp:","thismessage:","tn3270:","tip:","turn:","turns:","tv:","urn:","vemmi:","ws:","wss:","xcon:","xcon-userid:","xmlrpc.beep:","xmlrpc.beeps:","xmpp:","z39.50r:","z39.50s:","acr:","adiumxtra:","afp:","afs:","aim:","apt:","attachment:","aw:","barion:","beshare:","bitcoin:","bolo:","callto:","chrome:","chrome-extension:","com-eventbrite-attendee:","content:","cvs:","dlna-playsingle:","dlna-playcontainer:","dtn:","dvb:","ed2k:","facetime:","feed:","feedready:","finger:","fish:","gg:","git:","gizmoproject:","gtalk:","ham:","hcp:","icon:","ipn:","irc:","irc6:","ircs:","itms:","jar:","jms:","keyparc:","lastfm:","ldaps:","magnet:","maps:","market:","message:","mms:","ms-help:","ms-settings-power:","msnim:","mumble:","mvn:","notes:","oid:","palm:","paparazzi:","pkcs11:","platform:","proxy:","psyc:","query:","res:","resource:","rmi:","rsync:","rtmfp:","rtmp:","secondlife:","sftp:","sgn:","skype:","smb:","smtp:","soldat:","spotify:","ssh:","steam:","submit:","svn:","teamspeak:","teliaeid:","things:","udp:","unreal:","ut2004:","ventrilo:","view-source:","webcal:","wtai:","wyciwyg:","xfire:","xri:","ymsgr:","example:","ms-settings-cloudstorage:"]
 var cperipheral = null;
 var UI_Array;
@@ -22,10 +22,10 @@ var app = {
     },
     onAppReady: function() {
         $('body').addClass(device.platform.toLowerCase());
-        $(".pref").each(function(){$(this).prop("checked",window.localStorage.getItem($(this).attr("id"))!="false").flipswitch("refresh")});
+        $(".pref").each(function(){$(this).prop("checked",localStorage.getItem($(this).attr("id"))!="false").flipswitch("refresh")});
         $('#devs').html($("<li>",{"data-role":"list-divider",id:"other",class:"other"}).html("Other Devices"));
         $("#other").hide();
-        window.gateway.cache($("#ch").prop("checked"));
+        gateway.cache($("#ch").prop("checked"));
         $("#count").html("0");
         app.peripherals = {};
         $.mobile.loading("show");
@@ -54,7 +54,7 @@ var app = {
             if (peripheral.service.application=="http") {
                 n = peripheral.service.qualifiedname;
                 (function(n){
-                    $("#other").before($("<li>",{class:"nsd item","dev-rssi":-200}).append($("<a>",{href:peripheral.service.urls[0]}).append($("<img>",{src:"img/dnssd.svg"})).append($("<h2>").html(peripheral.service.name)).append($("<p>").html(peripheral.service.urls[0]+"<br/>"+peripheral.service.server+" ("+peripheral.service.application+")"))).append($("<a>",{href:"#dialog","data-rel":"popup",class:"zmdi zmdi-more-vert",onclick:"app.infoPopup(n,'nsd')"})));
+                    $("#other").before($("<li>",{class:"nsd item","dev-rssi":-200}).append($("<a>",{href:peripheral.service.urls[0]}).append($("<img>",{src:"img/dnssd.svg"})).append($("<h2>").html(peripheral.service.name)).append($("<p>").html(peripheral.service.urls[0]+"<br/>"+peripheral.service.server+" ("+peripheral.service.application+")"))).append($("<a>",{href:"#dialog","data-rel":"popup","data-transition":"pop",class:"zmdi zmdi-more-vert",onclick:"app.infoPopup(n,'nsd')"})));
                 })(n);
             } else {
                 $(".other:last-child").hide().after($("<li>",{class:"other item"}).attr('dev-id',peripheral.service.qualifiedname).hide().html(""+peripheral.service.name+" ("+peripheral.service.application +")"));
@@ -65,9 +65,9 @@ var app = {
         }
     },
     onPrefChange: function() {
-        window.localStorage.setItem($(this).attr("id"),$(this).prop("checked"));
+        localStorage.setItem($(this).attr("id"),$(this).prop("checked"));
         if ($(this).attr("id")=="dv") $(this).prop("checked") ? $(".other").show() : $(".other").hide();
-        else if ($(this).attr("id")=="ch") window.gateway.cache($(this).prop("checked"));
+        else if ($(this).attr("id")=="ch") gateway.cache($(this).prop("checked"));
         if ($("#other").is( "li:last-child" )) $("#other").hide();
     },
     onPeripheralFound: function(peripheral) {
@@ -87,33 +87,34 @@ var app = {
                 $.post("https://summon-caster.appspot.com/resolve-scan",JSON.stringify({objects:[{url:peripheral.uri}]}),function(data){
                     if (data.metadata[0]) {
                         peripheral.meta = data.metadata[0];
-                        peripheral.apps = JSON.parse(window.gateway.checkApps(peripheral.meta.url));
-                        $('li[dev-id="'+peripheral.id+'"]').addClass("ble").html($("<a>",{href:'#',onclick:"window.gateway.setDeviceId(\""+peripheral.id+"\"); window.gateway.setDeviceName(\""+peripheral.name+"\"); window.gateway.go(\""+peripheral.meta.url+"\""+(peripheral.apps.length?",\""+peripheral.apps[0].package+"\",\""+peripheral.apps[0].activity+"\"":"")+");"}).append($("<img>",{src:peripheral.meta.icon})).append($("<h2>").html(peripheral.meta.title)).append($("<p>").html(peripheral.meta.url+"<br/>"+peripheral.name+" ("+peripheral.id +")"))).append($("<a>",{href:'#dialog',"data-rel":'popup',class:'zmdi zmdi-more-vert',onclick:"app.infoPopup(\""+peripheral.id+"\",\"ble\")"}));
-                    } else $('li[dev-id="'+peripheral.id+'"]').addClass("ble").html($("<a>",{href:'#',onclick:"window.gateway.setDeviceId(\""+peripheral.id+"\"); window.gateway.setDeviceName(\""+peripheral.name+"\"); window.gateway.go(\""+peripheral.uri+"\");"}).append($("<p>").html(peripheral.uri+"<br/>"+peripheral.name+" ("+peripheral.id +")")));
+                        peripheral.apps = JSON.parse(gateway.checkApps(peripheral.meta.url));
+                        $('li[dev-id="'+peripheral.id+'"]').addClass("ble").html($("<a>",{href:'#'}).click(function(){app.go(peripheral.id)}).append($("<img>",{src:peripheral.meta.icon})).append($("<h2>").html(peripheral.meta.title)).append($("<p>").html(peripheral.meta.url+"<br/>"+peripheral.name+" ("+peripheral.id +")"))).append($("<a>",{href:'#dialog',"data-rel":'popup',"data-transition":"pop",class:'zmdi zmdi-more-vert',onclick:"app.infoPopup(\""+peripheral.id+"\",\"ble\")"}));
+                    } else $('li[dev-id="'+peripheral.id+'"]').addClass("ble").html($("<a>",{href:'#',onclick:"gateway.setDeviceId(\""+peripheral.id+"\"); gateway.setDeviceName(\""+peripheral.name+"\"); gateway.go(\""+peripheral.uri+"\");"}).append($("<p>").html(peripheral.uri+"<br/>"+peripheral.name+" ("+peripheral.id +")")));
                     $.mobile.loading("hide");
-                    app.peripherals[peripheral.id] = peripheral
-                    window.localStorage.setItem("peripherals",JSON.stringify($.extend(true,{},app.getStoredObject("peripherals"),app.peripherals)));
+                    app.peripherals[peripheral.id] = peripheral;
+                    localStorage.setItem("peripherals",JSON.stringify($.extend(true,{},app.getStoredObject("peripherals"),app.peripherals)));
                     $("#devs").listview("refresh");
                 }).fail(function(){
                     q = app.getStoredObject('peripherals');
                     if (typeof q[peripheral.id] != "undefined" && typeof (q[peripheral.id]).meta != undefined) {
                         peripheral.meta = (q[peripheral.id]).meta;
-                        $('li[dev-id="'+peripheral.id+'"]').html($("<a>",{href:'#'}).click(function(){window.gateway.setDeviceId(peripheral.id); window.gateway.setDeviceName(peripheral.name); location.href=peripheral.meta.url;}).append($("<img>",{src:peripheral.meta.icon})).append($("<h2>").html(peripheral.meta.title)).append($("<p>").html(peripheral.meta.url+"<br/>"+peripheral.name+" ("+peripheral.id+")"))).append($("<a>",{href:"#dialog","data-rel":"popup",class:"zmdi zmdi-more-vert"}).click(function(){app.infoPopup(peripheral.id,"ble")}));
+                        $('li[dev-id="'+peripheral.id+'"]').html($("<a>",{href:'#'}).click(function(){app.go(peripheral.id)}).append($("<img>",{src:peripheral.meta.icon})).append($("<h2>").html(peripheral.meta.title)).append($("<p>").html(peripheral.meta.url+"<br/>"+peripheral.name+" ("+peripheral.id+")"))).append($("<a>",{href:"#dialog","data-rel":"popup","data-transition":"pop",class:"zmdi zmdi-more-vert"}).click(function(){app.infoPopup(peripheral.id,"ble")}));
+                        app.peripherals[peripheral.id] = peripheral;
                     } else if(peripheral.ad==2) {
-                        $('li[dev-id="'+peripheral.id+'"]').addClass("ble").html($("<a>",{href:"#loadview","data-rel":"popup"}).click(function(){window.gateway.setDeviceId(peripheral.id); window.gateway.setDeviceName(peripheral.name); app.uiLoad(peripheral.id);}).append($("<img>",{src:"img/ble.svg"})).append($("<h2>").html(peripheral.name+" ("+peripheral.id+")")).append($("<p>").html(peripheral.uri+"<br/>"+peripheral.name+" ("+peripheral.id+")")));
-                    } else $('li[dev-id="'+peripheral.id+'"]').html($("<a>",{href:'#'}).click(function(){window.gateway.setDeviceId(peripheral.id); window.gateway.setDeviceName(peripheral.name); location.href=peripheral.uri;}).append($("<p>").html(peripheral.uri+"<br/>"+peripheral.name+" ("+peripheral.id+")")));
+                        $('li[dev-id="'+peripheral.id+'"]').addClass("ble").html($("<a>",{href:"#loadview","data-rel":"popup","data-transition":"pop",}).click(function(){app.uiLoad(peripheral.id);}).append($("<img>",{src:"img/ble.svg"})).append($("<h2>").html(peripheral.name+" ("+peripheral.id+")")).append($("<p>").html(peripheral.uri+"<br/>"+peripheral.name+" ("+peripheral.id+")")));
+                    } else $('li[dev-id="'+peripheral.id+'"]').html($("<a>",{href:'#'}).click(function(){gateway.setDeviceId(peripheral.id); gateway.setDeviceName(peripheral.name); location.href=peripheral.uri;}).append($("<p>").html(peripheral.uri+"<br/>"+peripheral.name+" ("+peripheral.id+")")));
                     $.mobile.loading("hide");
                     $("#devs").listview("refresh");
                 });
-            } else $('li[dev-id="'+peripheral.id+'"]').addClass("ble").html($("<a>",{href:"#loadview","data-rel":"popup"}).click(function(){window.gateway.setDeviceId(peripheral.id); window.gateway.setDeviceName(peripheral.name); app.uiLoad(peripheral.id);}).append($("<img>",{src:"img/ble.svg"})).append($("<h2>").html(peripheral.name+" ("+peripheral.id+")")).append($("<p>").html(peripheral.uri+"<br/>"+peripheral.name+" ("+peripheral.id+")")));
+            } else $('li[dev-id="'+peripheral.id+'"]').addClass("ble").html($("<a>",{href:"#loadview","data-rel":"popup","data-transition":"pop",}).click(function(){gateway.setDeviceId(peripheral.id); gateway.setDeviceName(peripheral.name); app.uiLoad(peripheral.id);}).append($("<img>",{src:"img/ble.svg"})).append($("<h2>").html(peripheral.name+" ("+peripheral.id+")")).append($("<p>").html(peripheral.uri+"<br/>"+peripheral.name+" ("+peripheral.id+")")));
         } else if ($('li[dev-id="'+peripheral.id+'"]:not(.other)').length==0) { 
-            if ($('li.other[dev-id="'+peripheral.id+'"]').length==0) $(".other:last-child").hide().after($("<li>",{class:"other item","dev-id":peripheral.id}).hide().append($("<a>",{href:"#"}).click(function(){window.gateway.setDeviceId(peripheral.id); window.gateway.setDeviceName(peripheral.name); location.href="generated.html";}).html(peripheral.name+" ("+peripheral.id +")")));
+            if ($('li.other[dev-id="'+peripheral.id+'"]').length==0) $(".other:last-child").hide().after($("<li>",{class:"other item","dev-id":peripheral.id}).hide().append($("<a>",{href:"#"}).click(function(){gateway.setDeviceId(peripheral.id); gateway.setDeviceName(peripheral.name); location.href="generated.html";}).html(peripheral.name+" ("+peripheral.id +")")));
             if ($("#dv").prop("checked")) $(".other").show();
         }
         $.mobile.loading("hide");
         $("#devs").listview("refresh");
         app.peripherals[peripheral.id] = peripheral;
-        window.localStorage.setItem("peripherals",JSON.stringify($.extend(true,{},app.getStoredObject("peripherals"),app.peripherals)));
+        localStorage.setItem("peripherals",JSON.stringify($.extend(true,{},app.getStoredObject("peripherals"),app.peripherals)));
     },
     getServiceData: function(advertisingdata) {
         if (device.platform=="Android") {
@@ -159,39 +160,49 @@ var app = {
         peripheral.uri = uri;
         peripheral.ad = adData.ad;
     },
+    go: function(id) {
+        p = app.peripherals[id];
+        gateway.setDeviceId(p.id); 
+        gateway.setDeviceName(p.name); 
+        gateway.setDeviceAdvertisement(new Uint8Array(p.advertising)); 
+        (p.apps && p.apps.length) ? gateway.go(p.meta.url,p.apps[0].package,p.apps[0].activity) : gateway.go(p.meta.url);
+    },
     infoPopup: function(id,type) {
         p = app.peripherals[id];
         if (type=="ble") {
-            $('#dh img').attr("src",p.meta.icon);
+            if (p.id!=id) {setTimeout(function(){app.infoPopup(id,type)},50); return;}
+            $('#dh img').attr("src",p.meta.icon||"img/ble.svg");
             $('#dh h3').html(p.meta.title);
             $('#dm #dev').html(p.name+" ("+p.id+")<br/>"+p.meta.url);
             $("#dm #ui").html("");
-            for (n in p.apps) $("#dm #ui").append($("<span>").html("NATIVE APP : "+p.apps[n].name+"<br/>").append($("<a>",{href:"#",class:"ui-btn ui-btn-raised clr-primary"}).html("Open "+p.apps[n].name).click(function(){window.gateway.setDeviceId(p.id); window.gateway.setDeviceName(p.name); window.gateway.go(p.meta.url,p.apps[n].package,p.apps[n].activity);})).append("<br/>"));
+            for (n in p.apps) $("#dm #ui").append($("<span>").html("NATIVE APP : "+p.apps[n].name+"<br/>").append($("<a>",{href:"#",class:"ui-btn ui-btn-raised clr-primary"}).html("Open "+p.apps[n].name).click(function(){gateway.setDeviceId(p.id); gateway.setDeviceName(p.name); gateway.go(p.meta.url,p.apps[n].package,p.apps[n].activity);})).append("<br/>"));
             $("#dm #ui").append("WEB CONTENT : "+p.meta.title+"<br/><i>"+p.meta.description+"</i><br/>"+(p.meta.cordova ? "<br/>Plugins Used:<br/>"+JSON.stringify(p.meta.cordova,null,"<br/>").replace(/[{},]/g,'') : "<br>"));
-            $("#dm #go").click(function(){window.gateway.setDeviceId(p.id); window.gateway.setDeviceName(p.name); location.href=p.meta.url;})
-            $("#dm #gen").show().click(function(){window.gateway.setDeviceId(p.id); window.gateway.setDeviceName(p.name); location.href="generated.html";})
+            $("#dm #go").click(function(){gateway.setDeviceId(p.id); gateway.setDeviceName(p.name); location.href=p.meta.url;})
+            $("#dm #gen").show().click(function(){gateway.setDeviceId(p.id); gateway.setDeviceName(p.name); location.href="generated.html";})
         } else if (type=="nsd") {
             $('#dh img').attr("src",'img/dnssd.svg');
             $('#dh h3').html(p.service.name)
             $('#dm #dev').html(p.service.server+" ("+p.service.application+")<br/>"+p.service.urls[0]);
             $("#dm #ui").html("");
-            for (n in p.apps) $("#dm #ui").append($("<span>").html("NATIVE APP : "+p.apps[n].name+"<br/>").append($("<a>",{href:"#",class:"ui-btn ui-btn-raised clr-primary"}).html("Open "+p.apps[n].name).click(function(){window.gateway.setDeviceId(p.id); window.gateway.setDeviceName(p.name); window.gateway.go(p.meta.url,p.apps[n].package,p.apps[n].activity);})).append("<br/>"));
+            for (n in p.apps) $("#dm #ui").append($("<span>").html("NATIVE APP : "+p.apps[n].name+"<br/>").append($("<a>",{href:"#",class:"ui-btn ui-btn-raised clr-primary"}).html("Open "+p.apps[n].name).click(function(){gateway.setDeviceId(p.id); gateway.setDeviceName(p.name); gateway.go(p.meta.url,p.apps[n].package,p.apps[n].activity);})).append("<br/>"));
             $("#dm #ui").append("LOCAL WEB CONTENT : "+p.service.name+"<br/><i>"+p.service.qualifiedname+"<br/>"+p.service.description+"</i><br/>");
             $("#dm #go").click(function(){location.href=p.service.urls[0];});
             $("#dm #gen").hide();
         }
     },
     getStoredObject: function(name) {
-        try { return JSON.parse(window.localStorage.getItem(name)); } 
+        try { return JSON.parse(localStorage.getItem(name)); } 
         catch (e) { return {} }
     },
     uiLoad: function(id) {
         p = app.peripherals[id];
+        gateway.setDeviceId(p.id); 
+        gateway.setDeviceName(p.name); 
         $('#lh h3').html(p.name + "(" + p.id + ")");
         $('#lm h4').html('Connecting.').attr("dev-id",id);
         $('#lm .ui-slider-track').css("margin","0 15px");
         $('#lm input').val(0).slider("refresh");
-        window.requestFileSystem(TEMPORARY, 0, function(fs) {
+        requestFileSystem(TEMPORARY, 0, function(fs) {
             fs.root.getDirectory('temp', {create: true}, function(dirEntry) {
                 dirEntry.removeRecursively(function() { console.log('Directory removed.'); }, function(e) {console.log("ERROR",e)});
             });
@@ -239,7 +250,7 @@ var app = {
             console.log(String.fromCharCode.apply(null, UI_Array));
 
             onError = function(e) {console.log("ERROR: " + e)};
-            window.requestFileSystem(TEMPORARY, 0, function(fs) {
+            requestFileSystem(TEMPORARY, 0, function(fs) {
                 fs.root.getDirectory('temp', {create: true}, function(dirEntry) {
                     dirUrl = dirEntry.toURL();
                     console.log("dir success"); 
@@ -257,7 +268,7 @@ var app = {
                                             $('#lm h4').html('Connected. Read. Loaded. Opening.');
                                             $('#lm input').val(100).slider("refresh");
                                             dirEntry.createReader().readEntries (function(results) { console.log(results) }, onError);
-                                            window.location = dirUrl+"/www/index.html";
+                                            location = dirUrl+"/www/index.html";
                                         } else {
                                             app.onError("Failed to load.")
                                         }

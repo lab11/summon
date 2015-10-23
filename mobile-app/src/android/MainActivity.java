@@ -30,6 +30,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 import org.apache.cordova.CordovaActivity;
+import org.json.JSONArray;
 
 import java.util.Arrays;
 import java.util.List;
@@ -38,13 +39,15 @@ public class MainActivity extends CordovaActivity
 {
     private String deviceId = "";
     private String deviceName = "";
+    private JSONArray deviceAdvertisement;
+    private WebView wv;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         super.init();
-        WebView wv = ((WebView) appView.getEngine().getView());
+        wv = ((WebView) appView.getEngine().getView());
         wv.addJavascriptInterface(new JavaScriptInterface(this), "gateway");
         wv.getSettings().setJavaScriptEnabled(true);
         wv.getSettings().setSupportMultipleWindows(false);
@@ -72,16 +75,27 @@ public class MainActivity extends CordovaActivity
         public String getDeviceName() { return deviceName; }
 
         @JavascriptInterface
+        public String getDeviceAdvertisement() { return deviceAdvertisement.toString(); }
+
+        @JavascriptInterface
         public void setDeviceId(String s) { deviceId = s; }
 
         @JavascriptInterface
         public void setDeviceName(String s) { deviceName = s; }
 
         @JavascriptInterface
+        public void setDeviceAdvertisement(final int [] o) {  try { deviceAdvertisement = new JSONArray(o); } catch (Exception e) {} }
+
+        @JavascriptInterface
         public void go(String s) { loadUrl(s); }
 
         @JavascriptInterface
-        public void cache(String s) { ((WebView) appView.getEngine().getView()).getSettings().setCacheMode(s.equals("true") ? WebSettings.LOAD_DEFAULT : WebSettings.LOAD_NO_CACHE); }
+        public void cache(final String s) { wv.post(new Runnable() {
+            @Override
+            public void run() {
+                wv.getSettings().setCacheMode(s.equals("true") ? WebSettings.LOAD_DEFAULT : WebSettings.LOAD_NO_CACHE);
+            }
+        }); }
 
         @JavascriptInterface
         public void go(String s, String p, String n) {
@@ -94,7 +108,7 @@ public class MainActivity extends CordovaActivity
         public String checkApps(String s) {
             String apps = "";
             for (ResolveInfo ri : mContext.getPackageManager().queryIntentActivities(new Intent(Intent.ACTION_VIEW,Uri.parse(s)),0))
-                if (!browsers.contains(ri.activityInfo.packageName)) 
+                if (!browsers.contains(ri.activityInfo.packageName))
                     apps += ",{\"package\":\"" + ri.activityInfo.packageName + "\",\"activity\":\"" + ri.activityInfo.name + "\",\"name\":\"" + ri.activityInfo.applicationInfo.loadLabel(mContext.getPackageManager()) + "\",\"icon\":\"" + ri.activityInfo.applicationInfo.loadIcon(mContext.getPackageManager()).toString() + "\"}";
             return "[" + (apps.length()>0 ? apps.substring(1) : "") + "]";
         }
