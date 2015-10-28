@@ -31,15 +31,14 @@ import android.webkit.WebView;
 
 import org.apache.cordova.CordovaActivity;
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends CordovaActivity
 {
-    private String deviceId = "";
-    private String deviceName = "";
-    private JSONArray deviceAdvertisement;
+    private String deviceAdvertisement = "";
     private WebView wv;
 
     @Override
@@ -69,22 +68,16 @@ public class MainActivity extends CordovaActivity
         JavaScriptInterface(Context c) { mContext = c; }
 
         @JavascriptInterface
-        public String getDeviceId(){ return deviceId; }
+        public String getDeviceId(){ try {return (new JSONObject(deviceAdvertisement).getString("id"));} catch (Exception e) {return "";} }
 
         @JavascriptInterface
-        public String getDeviceName() { return deviceName; }
+        public String getDeviceName() { try {return (new JSONObject(deviceAdvertisement).getString("name"));} catch (Exception e) {return "";} }
 
         @JavascriptInterface
-        public String getDeviceAdvertisement() { return deviceAdvertisement.toString(); }
+        public String getDeviceAdvertisement() { return deviceAdvertisement; }
 
         @JavascriptInterface
-        public void setDeviceId(String s) { deviceId = s; }
-
-        @JavascriptInterface
-        public void setDeviceName(String s) { deviceName = s; }
-
-        @JavascriptInterface
-        public void setDeviceAdvertisement(final int [] o) {  try { deviceAdvertisement = new JSONArray(o); } catch (Exception e) {} }
+        public void setDeviceAdvertisement(String s) { deviceAdvertisement = s; }
 
         @JavascriptInterface
         public void go(String s) { loadUrl(s); }
