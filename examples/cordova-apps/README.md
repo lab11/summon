@@ -56,3 +56,12 @@ To fit the URL of the app in a BLE advertisement, you will likely have to create
 Setup the BLE device to advertise the short URL using the [Eddystone-URL specification](https://github.com/google/eddystone/tree/master/eddystone-url) or the BLE URI ad type. 
 
 Check out [peripheral examples](../peripherals/) to see implementation of software for various BLE devices.
+
+
+Debugging
+---------
+
+One way to debug a Summon app is to use the Android logging utility. To get log
+messages pertinent to Summon:
+
+    adb logcat -s "chromium"
