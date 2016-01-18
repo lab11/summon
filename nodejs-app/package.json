@@ -1,0 +1,19 @@
+{
+  "name": "summon-scanner",
+  "version": "0.0.1",
+  "description": "Finds nearby Summon-compatible devices and corresponding UI locations",
+  "main": "summon-scanner.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lab11/summon.git"
+  },
+  "author": "Thomas Zachariah",
+  "license": "MIT",
+  "dependencies": {
+    "noble": "^1.3.0",
+    "request": "^2.67.0"
+  }
+}
