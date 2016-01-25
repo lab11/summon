@@ -14,11 +14,11 @@ user.
 
 The makefile:
 
-1) makes sure all possible platforms are created
-2) copies our source files into the right location in the platform
-3) calls cordova build
+1. makes sure all possible platforms are created
+2. copies our source files into the right location in the platform
+3. calls cordova build
 
 Instructions:
 
-1) add your platforms to 'TARGE_PLATFORMS'
-2) make
+1. add your platforms to 'TARGET_PLATFORMS'
+2. make
