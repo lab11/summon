@@ -21,7 +21,13 @@ document.addEventListener("deviceready", function () {
     peripheral.advertising = {};
     if (navigator.platform.startsWith("iP")) // iOS
       for (var n in advertising)
-        peripheral.advertising[n[10].toLowerCase()+n.substr(11)] = advertising[n];
+        if (n == "kCBAdvDataManufacturerData")
+          peripheral.advertising[n[10].toLowerCase()+n.substr(11)] = new Uint8Array(advertising[n]);
+        else if (n == "kCBAdvDataServiceData") {
+          peripheral.advertising[n[10].toLowerCase()+n.substr(11)] = {};
+          for (v in advertising[n])
+            peripheral.advertising[n[10].toLowerCase()+n.substr(11)][v] = new Uint8Array(advertising[n][v]);
+        } else peripheral.advertising[n[10].toLowerCase()+n.substr(11)] = advertising[n];
     else { // Android
       var scanRecord = new Uint8Array(advertising);
       var index = 0;
