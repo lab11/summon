@@ -10,7 +10,7 @@ document.addEventListener("deviceready", function () {
     }, failure);
   };
   
-  bluetooth.startScan = function(services,seconds,success,failure) {
+  bluetooth.startScan = function(services,success,failure) {
     ble.startScan(services, function (peripheral) {
       win(peripheral, success);
     }, failure);
