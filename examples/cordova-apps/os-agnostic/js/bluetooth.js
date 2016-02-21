@@ -30,10 +30,11 @@ document.addEventListener("deviceready", function () {
       localName: undefined,
       txPowerLevel: undefined,
       manufacturerData: undefined,
-      channel: undefined,   // ios only
-      flags: undefined,     // android only
-      serviceData: [],
       serviceUuids: [],
+      serviceData: [],
+      channel: undefined,       // ios only
+      isConnectable: undefined, // ios only
+      flags: undefined,         // android only
     };
 
     // this is a hack and only has to be in place until this code gets pulled
@@ -43,7 +44,7 @@ document.addEventListener("deviceready", function () {
 
       // we are on iOS (iPad, iPod, iPhone)
       peripheral.advertisement.channel = advertising.kCBAdvDataChannel;
-      peripheral.isConnectable = advertising.kCBAdvDataIsConnectable;
+      peripheral.advertisement.isConnectable = advertising.kCBAdvDataIsConnectable;
 
       // directly copy fields as long as they exist
       if (advertising.kCBAdvDataLocalName) {
