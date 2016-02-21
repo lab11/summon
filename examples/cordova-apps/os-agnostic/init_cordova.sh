@@ -7,7 +7,6 @@ pushd _build
 cordova platform add android
 cordova plugin add cordova-plugin-whitelist
 cordova plugin add cordova-plugin-console
-cordova plugin add com.randdusing.bluetoothle
 cordova plugin add cordova-plugin-ble-central
 
 pushd www
