@@ -72,7 +72,6 @@ document.addEventListener("deviceready", function () {
 
     } else {
       // we are on android
-      //XXX: can we determine `connectable` on android?
       var scanRecord = new Uint8Array(advertising);
       var index = 0;
       while (index < scanRecord.length) {
@@ -144,34 +143,30 @@ document.addEventListener("deviceready", function () {
     success(peripheral);
   };
 
-  //XXX: This needs to be tested!!
   // convert an array of bytes representing a UUID into a hex string
   //    Note that all arrays need to be reversed before presenting to the user
   uuid = function (id) {
-    if (id.length == 2) {
-      return hex(id[1]) + hex(id[0]);
-
-    } else if (id.length <= 4) {
-      return hex(id[3]) + hex(id[2]) + hex(id[1]) + hex(id[0]);
-
-    } else if (id.length == 16) {
-      return hex(id[15]) + hex(id[14]) + hex(id[13]) + hex(id[12]) + '-' +
-             hex(id[11]) + hex(id[10]) + '-' +
-             hex(id[9])  + hex(id[8])  + '-' +
-             hex(id[7])  + hex(id[6])  + '-' +
-             hex(id[5])  + hex(id[4])  + hex(id[3])  + hex(id[2])  + hex(id[1])  + hex(id[0]);
+    if (id.length == 16) {
+      // 128-bit UUIDs should be formatted specially
+      return hex(id.subarray(12, 16)) + '-' +
+             hex(id.subarray(10, 12)) + '-' +
+             hex(id.subarray( 8, 10)) + '-' +
+             hex(id.subarray( 6,  8)) + '-' +
+             hex(id.subarray( 0,  6));
 
     } else {
-      // invalid number of bytes
-      return "";
+        return hex(id);
     }
   };
 
   // convert an array of bytes into hex data
-  hex = function (ab) {
-    return Array.prototype.map.call(ab, function (m) {
-      return ("0"+m.toString(16)).substr(-2);
-    }).join('').toUpperCase();
-  };
+  //    assumes data needs to be in reverse order
+  hex = function (byte_array) {
+      var hexstr = '';
+      for (var i=(byte_array.length-1); i>=0; i--) {
+          hexstr += byte_array[i].toString(16).toUpperCase();
+      }
+      return hexstr;
+  }
 
 });
