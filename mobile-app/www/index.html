@@ -1,79 +1,88 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' data: gap: https://ssl.gstatic.com https://summon-caster.appspot.com 'unsafe-eval'; style-src 'self' 'unsafe-inline' http://fonts.googleapis.com; font-src 'self' http://fonts.googleapis.com http://fonts.gstatic.com; media-src *">
-        <meta name="format-detection" content="telephone=no">
-        <meta name="msapplication-tap-highlight" content="no">
-        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
-        <meta name="mobile-web-app-capable" content="yes">
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-        <link rel="stylesheet" href="theme/vendor/font-awesome/css/font-awesome.min.css">
-        <link rel="stylesheet" href="css/themes/default/jquery.mobile-1.4.5.min.css">
-        <link rel="stylesheet" href="theme/vendor/waves/waves.min.css">
-        <link rel="stylesheet" href="theme/vendor/wow/animate.css">
-        <link rel="stylesheet" href="theme/css/nativedroid2.css">
-        <link rel="stylesheet" href="theme/css/nativedroid2.color.amber.css">
-        <link rel="stylesheet" type="text/css" href="css/index.css">
-        <title>Summon</title>
-    </head>
-    <body>
-        <div data-role="page" data-theme="a" class="wow fadeIn">
-            <div data-role="header" data-position="fixed" class="wow fadeInDown">
-                <a href="#panel" class="ui-btn ui-btn-left wow fadeIn" data-wow-delay='0s'><i class="zmdi zmdi-menu"></i></a>
-                <h1 class="wow fadeIn" data-wow-delay='0s'>Summon</h1>
-            </div>
-            <div data-role="content">
-                <div id="ptr">
-                    <span class="zmdi zmdi-arrow-forward"></span>
-                    <span class="loading zmdi zmdi-arrow-forward"></span>
-                </div>
-                <div role="main" id="content">
-                    <ul data-role="listview" data-split-icon="info" id="devs"></ul>
-                </div>
-            </div>
-            <div data-role="popup" id="dialog" data-overlay-theme="b">
-                <div data-role="header" id="dh">
-                    <img class="ui-btn ui-btn-left">
-                    <h3></h3>
-                    <a href="#" class="ui-btn ui-btn-right wow fadeIn" data-wow-delay='0s' data-rel="back"><i class="zmdi zmdi-close"></i></a>
-                </div>
-                <div role="main" id="dm">
-                    <p>
-                        <b>Device</b><br/><span id="dev"></span><br/><br/>
-                        <b>UI Options</b><br/><br/><span id="ui"></span>
-                        <a href="#" class="ui-btn ui-btn-raised clr-primary" id="go">Open</a>
-                        <a href="#" class="ui-btn ui-btn-raised" id="gen">Generate UI from BLE</a>
-                    </p>
-                </div>
-            </div>
-            <div data-role="popup" id="loadview" data-overlay-theme="b" data-dismissible="false">
-                <div data-role="header" id="lh"><h3></h3></div>
-                <div role="main" id="lm">
-                    <h4></h4>
-                    <input type="range" value="0" min="0" max="100" data-highlight="true">
-                </div>
-            </div>
-            <div data-role="panel" id="panel" data-display="reveal" data-position-fixed="true">
-                <form>
-                    <h3>Settings</h3>
-                    <ul data-role="listview" data-icon="false">
-                        <li><table><tr><td><label for="dv">See Other Devices:</label></td><td><input type="checkbox" class="pref" id="dv" name="dv" data-role="flipswitch"/></td></tr></table></li>
-                        <li><table><tr><td><label for="ch">Allow Caching:    </label></td><td><input type="checkbox" class="pref" id="ch" name="ch" data-role="flipswitch"/></td></tr></table></li>
-                    </ul>
-                </form>
-            </div>
+  <head>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' data: gap: gateway: https://ssl.gstatic.com https://summon-caster.appspot.com * 'unsafe-eval'; style-src 'self' 'unsafe-inline' http://fonts.googleapis.com; font-src 'self' http://fonts.googleapis.com http://fonts.gstatic.com;">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="msapplication-tap-highlight" content="no">
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <link rel="stylesheet" href="css/themes/default/jquery.mobile-1.4.5.min.css">
+    <link rel="stylesheet" href="theme/vendor/wow/animate.css">
+    <link rel="stylesheet" href="theme/css/nativedroid2.css">
+    <link rel="stylesheet" href="theme/css/nativedroid2.color.amber.css">
+    <link rel="stylesheet" href="css/xpull.css">
+    <link rel="stylesheet" href="css/index.css">
+    <title>Summon</title>
+  </head>
+  <body class="wow fadeIn">
+    <div data-role="page" id="page1">
+      <div data-role="header" data-position="fixed" data-tap-toggle="false" class="ph">
+        <a href="#panel" class="ui-btn ui-btn-left"><i class="zmdi zmdi-menu zmd-lg"></i></a>
+        <h1>Summon<!--<form class="ui-filterable"><input id="filter" data-type="search"></form>--></h1>
+        <!--<a href="#panel" class="ui-btn ui-btn-left"><i class="zmdi zmdi-menu zmd-lg"></i></a>-->
+      </div>
+      <div data-role="content">
+        <div role="main" id="content">
+          <ul data-role="listview" data-split-icon="info" data-filter="true" data-input="#filter" id="devs"></ul>
         </div>
-        <script src="js/jquery.min.js"></script>
-        <script src="js/jquery-ui.min.js"></script>
-        <script src="js/jquery.mobile-1.4.5.min.js"></script>
-        <script src="js/hammer.2.0.4.js"></script>
-        <script src="js/wptr.1.1.js"></script>
-        <script src="theme/vendor/waves/waves.min.js"></script>
-        <script src="theme/vendor/wow/wow.min.js"></script>
-        <script src="theme/js/nativedroid2.js"></script>
-        <script src="theme/nd2settings.js"></script>
-        <script type="text/javascript" src="cordova.js"></script>
-        <script type="text/javascript" src="js/index.js"></script>
-    </body>
+      </div>
+      <div data-role="popup" id="dialog" data-position-to="window" data-history="false">
+        <div data-role="header" id="dh">
+          <img class="ui-btn ui-btn-left">
+          <h3></h3>
+          <a href="#" class="ui-btn ui-btn-right" data-rel="back"><i class="zmdi zmdi-close"></i></a>
+        </div>
+        <div role="main" id="dm">
+          <p>
+            <b>Device</b><br/><span id="dev"></span><br/><br/>
+            <b>Options</b><span id="ui"></span>
+            <a href="#page2" class="ui-btn ui-btn-raised" id="gen" data-transition="slide"></a>
+          </p>
+        </div>
+      </div>
+      <div data-role="panel" id="panel" data-display="reveal" data-position-fixed="true">
+        <form>
+          <ul data-role="listview" data-icon="false">
+            <li>Settings</li>
+            <li><select id="br" name="br" data-native-menu="false" disabled="true"><option value="bt">Browse All</option><option value="bt">Browse Bluetooth</option><option value="bt">Browse mDNS (Wi-Fi)</option></select></li>
+            <li><table><tr><td><label for="dv">See Other Devices:</label></td><td><input type="checkbox" class="pref" id="dv" name="dv" data-role="flipswitch"/></td></tr></table></li>
+            <li><table><tr><td><label for="ch">Allow Caching:    </label></td><td><input type="checkbox" class="pref" id="ch" name="ch" data-role="flipswitch"/></td></tr></table></li>
+            <li class="pa"><a href="https://github.com/lab11/summon"> Summon Project</a></li>
+            <li class="pa"><a href="http://lab11.eecs.umich.edu" style="background-image:url(img/lab11.svg) !important;"> Lab11</a></li>
+          </ul>
+        </form>
+      </div>
+    </div>
+    <div data-role="page" id="page2">
+      <div data-role="header" data-position="fixed" data-tap-toggle="false" class="ph">
+        <a href="#page1" data-rel="back" class="ui-btn ui-btn-left" data-transition="slide" data-direction="reverse"><i class="zmdi zmdi-arrow-back zmd-lg"></i></a>
+        <a class="ui-btn ui-btn-right status"><i class="zmdi zmdi-spinner zmd-lg"></i></a>
+        <h1><span class="nameplate"><span class="name"></span> <span class="rssi"></span></span><br/><span class="id"></span></h1>
+      </div>
+      <div data-role="content">
+        <ul data-role="listview" id="list"></ul>
+      </div>
+    </div>
+    <div data-role="page" id="page3">
+      <div data-role="header" data-position="fixed" data-tap-toggle="false" class="ph" id="lh">
+        <a href="#page1" data-rel="back" class="ui-btn ui-btn-left" data-transition="slide" data-direction="reverse"><i class="zmdi zmdi-arrow-back zmd-lg"></i></a>
+        <h1><span class="nameplate"><span class="name"></span> <span class="rssi"></span></span><br/><span class="id"></span></h1>
+      </div>
+      <div role="main" id="lm">
+        <h4></h4>
+        <input type="range" value="0" min="0" max="100" data-highlight="true">
+      </div>
+    </div>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/jquery-ui.min.js"></script>
+    <script src="js/jquery.mobile-1.4.5.min.js"></script>
+    <script src="js/xpull.min.js"></script>
+    <script src="theme/vendor/wow/wow.min.js"></script>
+    <script src="theme/js/nativedroid2.js"></script>
+    <script src="theme/nd2settings.js"></script>
+    <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+  </body>
 </html>

@@ -40,6 +40,8 @@ public class MainActivity extends CordovaActivity
 {
     private String deviceAdvertisement = "";
     private WebView wv;
+//    private float lat;
+//    private float lon;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -57,6 +59,7 @@ public class MainActivity extends CordovaActivity
         wv.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
         String cachePath = wv.getContext().getCacheDir().getAbsolutePath();
         wv.getSettings().setAppCachePath(cachePath);
+//        lat=0;lon=0;
         // Set by <content src="index.html" /> in config.xml
         loadUrl(launchUrl);
     }
@@ -68,16 +71,21 @@ public class MainActivity extends CordovaActivity
         JavaScriptInterface(Context c) { mContext = c; }
 
         @JavascriptInterface
-        public String getDeviceId(){ try {return (new JSONObject(deviceAdvertisement).getString("id"));} catch (Exception e) {return "";} }
+        public String getDeviceId(){
+//            wv.post(new Runnable() { @Override public void run() { loadUrl("javascript:a=document.createElement('div');t=document.createTextNode('Bob & Betty Beyster Building ("+lat+","+lon+")'); a.appendChild(t); a.setAttribute('style','padding:5px; margin:0; background:#eee;color:#666;font-size:20px !important;font-family:sans-serif-thin !important;position:fixed;bottom:0;text-align:center;vertical-align:middle;width:100%; white-space: nowrap; overflow: hidden; text-overflow:ellipsis;'); document.body.appendChild(a);"); } });
+            try {return (new JSONObject(deviceAdvertisement).getString("id"));} catch (Exception e) {return "";} }
 
         @JavascriptInterface
         public String getDeviceName() { try {return (new JSONObject(deviceAdvertisement).getString("name"));} catch (Exception e) {return "";} }
 
         @JavascriptInterface
-        public String getDeviceAdvertisement() { return deviceAdvertisement; }
+        public String getDeviceAdvertisement() { return deviceAdvertisement;  }
 
         @JavascriptInterface
         public void setDeviceAdvertisement(String s) { deviceAdvertisement = s; }
+
+//        @JavascriptInterface
+//        public void setLocation(float t, float n) {lat=t; lon=n; }
 
         @JavascriptInterface
         public void go(String s) { loadUrl(s); }

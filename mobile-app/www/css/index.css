@@ -1,5 +1,17 @@
 * {
-    -webkit-tap-highlight-color:rgba(0,0,0,0); /* make transparent link selection, adjust last value opacity 0 to 1.0 */
+    -webkit-tap-highlight-color:rgba(0,0,0,0);
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+::-webkit-scrollbar { 
+    width:0px;
+}
+
+@font-face {
+    font-family: pacifico;
+    src: url(../fonts/Pacifico.ttf);
 }
 
 html, body {
@@ -7,6 +19,7 @@ html, body {
     margin:0;
     padding:0;
     width:100%;
+    background:#eee;
 }
 
 .ui-page{
@@ -22,11 +35,53 @@ html, body {
 
 .ui-panel {
     width:272px !important; 
-    color:#888
+    background:#ffc107 !important; 
 }
 
-.ui-panel h3 {
+#panel h3 {
     padding:20px;
+}
+
+#panel li {
+    color:rgba(0,0,0,.5) !important;
+    text-shadow:none;
+    padding-top:0; padding-bottom:0; background:none;
+}
+
+#panel li:first-child {
+    margin-top:1em; margin-bottom:1em;
+}
+
+#panel li>a {
+    background:url(../img/icon.svg) rgba(0,0,0,0) no-repeat 1em 50% / 1.5em 1.5em !important; 
+    padding-left:3em;
+    opacity:.75;
+    color:rgba(0,0,0,.67) !important;
+}
+
+#panel li>a:hover, #panel li>a:active {
+    opacity:1 !important;
+    box-shadow: 0 0 3px rgba(0, 0, 0, .15);
+    color:#eee !important;
+}
+
+table {
+    width:100%;
+}
+
+td:last-child {
+    text-align:right;
+}
+
+.ui-panel-inner {
+    padding:0;
+    background:#ccc;
+    top:0 !important;
+    box-shadow: inset -5px 0px 5px 0px rgba(0,0,0,0.1);
+}
+
+#page1 h1 {
+    font-family:pacifico;
 }
 
 .ui-content {
@@ -41,38 +96,50 @@ html, body {
 
 .ui-flipswitch {
     transition:all 0.2s !important;
+    opacity:.75;
 }
 
 .ui-btn-raised {
     margin:1em 0;
 }
 
+.ph {
+    overflow:hidden;
+}
+
 .item {
     background:#fff;
     margin:.5em !important;
     border-radius:2px !important;
-    box-shadow:0 2px 1px rgba(0,0,0,0.1), 0 0 2px rgba(0,0,0,0.1) !important;
+    box-shadow:0 1px 2px rgba(0,0,0,0.1), 0 0 2px rgba(0,0,0,0.1) !important;
 }
 
 .item img {
-    left:0 !important;
-    margin:.5em !important;
+    left:0 !important; margin:.5em !important;
 }
 
-#panel li {
-    padding:0 1em;
+.item .zmdi-network-wifi-alt {
+    background:#009688;color:#fff;position:absolute;left:0;bottom:0;padding:5px 2px; border-top-right-radius:4px;
 }
 
-table {
-    width:100%;
+.item.nsd a:active {
+    background:#009688; color:#fff;
 }
 
-td:last-child {
-    text-align:right;
+.item .zmdi-bluetooth {
+    background:#2196F3;color:#fff;position:absolute;left:0;bottom:0;padding:5px 2px; border-top-right-radius:4px;
 }
 
-.ui-panel-inner {
-    padding:0;
+.item.ble a:active {
+    background:#2196F3; color:#fff;
+}
+
+.other a {
+    padding-left:2.25em;
+}
+
+.other i {
+    padding:1.05em 5px !important; font-weight:normal; font-size:14px; border-radius:0 !important;
 }
 
 #count {
@@ -96,14 +163,19 @@ td:last-child {
     border-radius:0 !important;
 }
 
+.ui-icon-info:active {
+    background:#39b !important;
+}
+
 h3 {
     font-weight:200 ;
     margin:0 ;
     overflow:visible;
 }
 
-.ios>.ui-page>.ui-header>*{
-    margin-top:10px;
+.ios>.ui-page>.ui-header>*,.ios .ui-panel h3{
+    margin-top:-5px;
+    margin-bottom:-5px;
 }
 
 .ui-panel-dismiss-open.ui-panel-dismiss-position-left {
@@ -121,6 +193,10 @@ h3 {
     text-align:center; font-weight:normal;
 }
 
+#dialog {
+    width:100%;
+}
+
 #dh > img {
     -webkit-filter:drop-shadow(0 0 2px rgba(0,0,0,0.2));
     border-radius: 0 !important;
@@ -133,7 +209,7 @@ h3 {
 
 #lm {
     word-wrap: break-word;
-    padding:1em 1em .5em 1em;
+    padding:1em;
     text-align: center;
 }
 
@@ -142,12 +218,13 @@ h3 {
 }
 
 #lm .ui-slider-track {
-    margin: 0 15px;
     pointer-events: none;
+    margin:0 15px !important;
 }
 
-#lm .ui-slider-bg {
-    transition:width 1s;
+#lm .ui-slider-bg, #ui-slider-track * {
+    transition:all 1s !important;
+    margin:0 !important; padding:0 !important;
 }
 
 #ptr {
@@ -216,3 +293,13 @@ h3 {
 .wow {
    visibility:hidden;
 }
+
+#page2 .ui-title, #page3 .ui-title {white-space:normal; line-height:1em; padding:.5em 0;}
+#page2 .nameplate, #page3 .nameplate {white-space:nowrap; line-height:10px;}
+#page2 .id, #page3 .id {white-space:nowrap; font-size:10px;}
+#page2 .ui-li-static{font-size:14px; width:100%; padding-left:2em !important; padding-right:2em !important;}
+#page2 .ui-li-divider {width:100%; padding-left:1.5em !important; padding-right:1.5em !important}
+#page2 .write i, #page2 .writewithoutresponse i {opacity:1 !important;}
+#page2 .value{font-size:12px;color:#888;}
+.zmdi-replay  {transform:scale(-1,1);}
+.zmdi-refresh {pointer-events:none;}

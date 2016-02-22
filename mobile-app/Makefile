@@ -23,6 +23,7 @@ platform:
 
 plat_files: platform src/android/MainActivity.java
 	cp src/android/MainActivity.java platforms/android/src/edu/umich/eecs/lab11/summon/.
+	cp -r src/ios/Classes/* platforms/ios/Summon/Classes/.
 
 clean:
 	cordova platform remove $(TARGET_PLATFORMS) || true
