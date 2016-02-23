@@ -25,6 +25,15 @@ var app = {
     $("#panel a").click(function(e){e.preventDefault();window.open($(this).attr("href"),'_system');return false;});
     $(document).bind('swiperight', function () { $.mobile.back(); });
     $.mobile.changePage.defaults.transition = 'slide';
+    $("#pr").click(function(e){$("#filter").focus().val('').trigger("keyup")});
+    $("#filter").focusin(function(){
+      $("#pr i").removeClass("zmdi-search").addClass("zmdi-close");
+      $("#filter").attr("placeholder","Search");
+    });
+    $("#filter").focusout(function(){
+      if ($("#filter").val()=='') $("#pr i").removeClass("zmdi-close").addClass("zmdi-search");
+      $("#filter").attr("placeholder","Summon");
+    });
   },
   onAppReady: function() {
     // rssiData.start.push($.now());
@@ -62,8 +71,10 @@ var app = {
     localStorage.setItem($(this).attr("id"),$(this).prop("checked"));
     if ($(this).attr("id")=="dv") $(this).prop("checked") ? $(".other").show() : $(".other").hide();
     else if ($(this).attr("id")=="ch") try {
-      cachelist={};
-      localStorage.setItem("peripherals",{});
+      if(!app.getStoredObject("ch")) {
+        app.cachelist={};
+        localStorage.setItem("peripherals","{}");
+      }
       gateway.cache($("#ch").prop("checked"));
     } catch(e) {}
     if ($("#other").is( "li:last-child" )) $("#other").hide();
@@ -102,7 +113,7 @@ var app = {
               if (peripheral.meta.cordova) for (n in peripheral.meta.cordova) if(!PRMISN[n]||PRMISN[n]!=" ") peripheral.permissions.push(PRMISN[n]||n);
               $('li[dev-id="'+peripheral.service.name+'"]').html($("<a>",{href:'#',onclick:"app.go('"+peripheral.service.name+"')"}).append($("<img>",{src:peripheral.meta.icon})).append($("<h2>").html(peripheral.meta.title)).append($("<p>").html(peripheral.meta.url+"<br/>"+"<i class='zmdi zmdi-network-wifi-alt zmd-fw'></i> "+(peripheral.service.server||peripheral.service.hostName)+" ("+(peripheral.service.application||peripheral.service.type)+")"))).append($("<a>",{href:'#dialog',"data-rel":'popup',"data-transition":"pop",class:'zmdi zmdi-more-vert',onclick:"app.infoPopup('"+peripheral.service.name+"','nsd')"}));
               app.cachelist[peripheral.service.name] = peripheral;
-              localStorage.setItem("peripherals",cachelist);
+              localStorage.setItem("peripherals",JSON.stringify(app.cachelist));
             } else $('li[dev-id="'+peripheral.service.name+'"]').html($("<a>",{href:'#',onclick:"app.go('"+peripheral.service.name+"')"}).append($("<img>",{src:peripheral.uri+"/favicon.ico"}).error(function(){$(this).attr("src","img/dnssd.svg")})).append($("<h2>").html(peripheral.service.name)).append($("<p>").html(peripheral.uri+"/<br/><i class='zmdi zmdi-network-wifi-alt zmd-fw'></i> "+(peripheral.service.server||peripheral.service.hostName)+" ("+(peripheral.service.application||peripheral.service.type)+")"))).append($("<a>",{href:"#dialog","data-rel":"popup","data-transition":"pop",class:"zmdi zmdi-more-vert",onclick:"app.infoPopup('"+peripheral.service.name+"','nsd')"}));
             $("#devs").listview("refresh");
             app.peripherals[peripheral.service.name] = peripheral;
@@ -180,19 +191,18 @@ var app = {
               if (peripheral.meta.cordova) for (n in peripheral.meta.cordova) if(!PRMISN[n]||PRMISN[n]!=" ") peripheral.permissions.push(PRMISN[n]||n);
               $('li[dev-id="'+peripheral.id+'"]').addClass("ble").html($("<a>",{href:'#',onclick:"app.go('"+peripheral.id+"')"}).append($("<img>",{src:peripheral.meta.icon}).error(function(){$(this).attr("src","img/ble.svg")})).append($("<h2>").html(peripheral.meta.title)).append($("<p>").html(peripheral.meta.url+"<br/>"+"<i class='zmdi zmdi-bluetooth zmd-fw'></i> "+peripheral.name+" ("+peripheral.id +")"))).append($("<a>",{href:'#dialog',"data-rel":'popup',"data-transition":"pop",class:'zmdi zmdi-more-vert',onclick:"app.infoPopup('"+peripheral.id+"','ble')"}));
               if ($("#ch").prop("checked")) app.cachelist[peripheral.id] = peripheral;
-              localStorage.setItem("peripherals",app.cachelist);
+              localStorage.setItem("peripherals",JSON.stringify(app.cachelist));
             } else $('li[dev-id="'+peripheral.id+'"]').addClass("ble").html($("<a>",{href:'#',onclick:"app.go('"+peripheral.id+"');"}).append($("<p>").html(peripheral.uri+"<br/>"+"<i class='zmdi zmdi-bluetooth zmd-fw'></i> "+peripheral.name+" ("+peripheral.id +")")));
             $("#devs").listview("refresh");
             app.peripherals[peripheral.id] = peripheral;
           }).fail(function(e){
-            p = app.getStoredObject('peripherals');
-            if (typeof p[peripheral.id] != "undefined" && typeof (p[peripheral.id]).meta != undefined) {
-              peripheral.meta = (p[peripheral.id]).meta;
+            if (typeof app.cachelist[peripheral.id] != "undefined" && typeof (app.cachelist[peripheral.id]).meta != undefined) {
+              peripheral.meta = (app.cachelist[peripheral.id]).meta;
               $('li[dev-id="'+peripheral.id+'"]').html($("<a>",{href:'#'}).click(function(){app.go(peripheral.id)}).append($("<img>",{src:peripheral.meta.icon}).error(function(){$(this).attr("src","img/ble.svg")})).append($("<h2>").html(peripheral.meta.title)).append($("<p>").html(peripheral.meta.url+"<br/>"+"<i class='zmdi zmdi-bluetooth zmd-fw'></i> "+peripheral.name+" ("+peripheral.id+")"))).append($("<a>",{href:"#dialog","data-rel":"popup","data-transition":"pop",class:"zmdi zmdi-more-vert"}).click(function(){app.infoPopup(peripheral.id,"ble")}));
               app.peripherals[peripheral.id] = peripheral;
             } else if(peripheral.ad==2) {
               $('li[dev-id="'+peripheral.id+'"]').addClass("ble").html($("<a>",{href:'#',onclick:"app.uiLoad('"+peripheral.id+"');"}).append($("<img>",{src:"img/ble.svg"})).append($("<h2>").html(peripheral.name+" ("+peripheral.id+")")).append($("<p>").html(peripheral.uri+"<br/>"+"<i class='zmdi zmdi-bluetooth zmd-fw'></i> "+peripheral.name+" ("+peripheral.id +")"))).append($("<a>",{href:'#dialog',"data-rel":'popup',"data-transition":"pop",class:'zmdi zmdi-more-vert',onclick:"app.infoPopup('"+peripheral.id+"','ble')"})); 
-            } else $('li[dev-id="'+peripheral.id+'"]').html($("<a>",{href:'#'}).click(function(){app.go(peripheral.id);}).append($("<p>").html(peripheral.uri+"<br/>"+"<i class='zmdi zmdi-bluetooth zmd-fw'></i> "+peripheral.name+" ("+peripheral.id+")")));
+            } else $('li[dev-id="'+peripheral.id+'"] a').attr("style","").click(function(){app.go(peripheral.id);});
             $("#devs").listview("refresh");
           });
         }

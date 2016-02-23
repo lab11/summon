@@ -178,6 +178,28 @@ h3 {
     margin-bottom:-5px;
 }
 
+.ph .ui-input-search, .ph input {
+    margin:0;
+    padding:0;
+    background:transparent;
+    color:#fff;
+    font-size:inherit;
+    text-shadow:none;
+    line-height: inherit;
+    border:none;
+    outline:none;
+}
+
+.ph input::-webkit-input-placeholder {
+  color: #fff;
+  font-family:pacifico;
+}
+
+.ph input:focus::-webkit-input-placeholder {
+  color: rgba(255,255,255,.6);
+  font-family:inherit;
+}
+
 .ui-panel-dismiss-open.ui-panel-dismiss-position-left {
     background-color:rgba(0,0,0,0);
     left:17em;
