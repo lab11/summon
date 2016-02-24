@@ -188,6 +188,9 @@ h3 {
     line-height: inherit;
     border:none;
     outline:none;
+    -webkit-user-select: text; 
+    user-select: text;
+    width:100%;
 }
 
 .ph input::-webkit-input-placeholder {

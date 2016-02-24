@@ -27,10 +27,14 @@ var app = {
     $.mobile.changePage.defaults.transition = 'slide';
     $("#pr").click(function(e){$("#filter").focus().val('').trigger("keyup")});
     $("#filter").focusin(function(){
+      if (device.platform=="iOS") $(".ph").css("position","absolute");
+      $(window).scrollTop(0);
       $("#pr i").removeClass("zmdi-search").addClass("zmdi-close");
       $("#filter").attr("placeholder","Search");
     });
     $("#filter").focusout(function(){
+      if (device.platform=="iOS") $(window).scrollTop(0);
+      $(".ph").css("position","fixed");
       if ($("#filter").val()=='') $("#pr i").removeClass("zmdi-close").addClass("zmdi-search");
       $("#filter").attr("placeholder","Summon");
     });
