@@ -22,6 +22,10 @@ html, body {
     background:#eee;
 }
 
+.ui-overlay-a {
+    background:#eee !important;
+}
+
 .ui-page{
     background:#eee !important;
     min-height:100%;
