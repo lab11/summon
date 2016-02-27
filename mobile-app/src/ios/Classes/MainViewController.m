@@ -32,6 +32,9 @@
 NSString *deviceId = @"";
 NSString *deviceName = @"";
 UINavigationBar *navbar;
+int cacheSizeMemory = 8 * 1024 * 1024; // 8MB
+int cacheSizeDisk = 32 * 1024 * 1024; // 32MB
+bool caching = true;
 
 - (id)initWithNibName:(NSString*)nibNameOrNil bundle:(NSBundle*)nibBundleOrNil
 {
@@ -116,7 +119,7 @@ UINavigationBar *navbar;
     theWebView.backgroundColor = [UIColor blackColor];
     theWebView.scrollView.showsHorizontalScrollIndicator = NO;
     theWebView.scrollView.showsVerticalScrollIndicator = NO;
-    [theWebView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"window.gateway={getDeviceId:function(){return '%@'},getDeviceName:function(){return '%@'},setDeviceAdvertisement:function(e){var t=document.createElement('iframe');t.setAttribute('src','gateway:'+JSON.stringify(e)),document.documentElement.appendChild(t),t.parentNode.removeChild(t),t=null}}",deviceId,deviceName]];
+    [theWebView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"window.gateway={getDeviceId:function(){return '%@'},getDeviceName:function(){return '%@'},cache:function(e){t.setAttribute('src','gateway:'+JSON.stringify({'cache':e}))},setDeviceAdvertisement:function(e){t.setAttribute('src','gateway:'+JSON.stringify(e))}}; t=document.createElement('iframe'); t.setAttribute('style','display:none'); document.documentElement.appendChild(t);",deviceId,deviceName]];
     if ([theWebView.request.URL.absoluteString hasPrefix:@"file:"]&&[theWebView.request.URL.absoluteString hasSuffix:@".app/www/index.html"]) self.view.window.windowLevel = UIWindowLevelStatusBar-1;
     [self setNavTitle:[NSString stringWithFormat:@"%@ (%@)",[theWebView stringByEvaluatingJavaScriptFromString:@"document.title"],deviceName]];
     return [super webViewDidFinishLoad:theWebView];
@@ -130,12 +133,13 @@ UINavigationBar *navbar;
 {
     return [super webViewDidStartLoad:theWebView];
 }
-
+*/
 - (void) webView:(UIWebView*)theWebView didFailLoadWithError:(NSError*)error
 {
+    if ([theWebView.request.URL.absoluteString hasPrefix:@"file:"]&&[theWebView.request.URL.absoluteString hasSuffix:@".app/www/index.html"]) self.view.window.windowLevel = UIWindowLevelStatusBar-1;
     return [super webView:theWebView didFailLoadWithError:error];
 }
-*/
+
 
 - (BOOL) webView:(UIWebView*)theWebView shouldStartLoadWithRequest:(NSURLRequest*)request navigationType:(UIWebViewNavigationType)navigationType
 {
@@ -146,17 +150,23 @@ UINavigationBar *navbar;
         NSError *error;
         id parameters = [NSJSONSerialization JSONObjectWithData:jsonData options:NSJSONReadingMutableContainers error:&error];
         if (!error) {
-            deviceId = [parameters valueForKey:@"id"];
-            deviceName = [parameters valueForKey:@"name"];
+            if (parameters[@"cache"]!=nil) {
+                caching =[parameters[@"cache"] boolValue];
+                if (caching) [NSURLCache setSharedURLCache:[[NSURLCache alloc] initWithMemoryCapacity:cacheSizeMemory diskCapacity:cacheSizeDisk diskPath:@"nsurlcache"]];
+                else [NSURLCache setSharedURLCache:[[NSURLCache alloc] initWithMemoryCapacity:0 diskCapacity:0 diskPath:nil]];
+            } else {
+                deviceId = [parameters valueForKey:@"id"];
+                deviceName = [parameters valueForKey:@"name"];
+            }
         }
         return NO;
     } else if ([urlString hasPrefix:@"http:"]||[urlString hasPrefix:@"https:"]||([urlString hasPrefix:@"file:"]&&[urlString hasSuffix:@"temp/www/index.html"])) {
         [self setNavTitle:urlString];
         self.view.window.windowLevel = UIWindowLevelStatusBar+1;
-//        theWebView.transform = CGAffineTransformMakeTranslation(0, 20);
     }
     theWebView.tag=100;
     theWebView.scalesPageToFit = YES;
+    if (!caching) request = [NSURLRequest requestWithURL:request.URL cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:60000];
     [self.view bringSubviewToFront:theWebView];
     return [super webView:theWebView shouldStartLoadWithRequest:request navigationType:navigationType];
 }

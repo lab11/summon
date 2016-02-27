@@ -53,7 +53,7 @@ var app = {
     $(".pref").each(function(){$(this).prop("checked",localStorage.getItem($(this).attr("id"))!="false").flipswitch("refresh")});
     $('#devs').html($("<li>",{"data-role":"list-divider",id:"other",class:"other"}).html("Other Devices"));
     $("#other").hide();
-    try {gateway.cache($("#ch").prop("checked"));} catch(e) {}
+    gateway.cache($("#ch").prop("checked"));
     app.peripherals = {};
     app.cachelist = app.getStoredObject("peripherals")||{};
     app.readQueue=[];
@@ -80,13 +80,13 @@ var app = {
   onPrefChange: function() {
     localStorage.setItem($(this).attr("id"),$(this).prop("checked"));
     if ($(this).attr("id")=="dv") $(this).prop("checked") ? $(".other").show() : $(".other").hide();
-    else if ($(this).attr("id")=="ch") try {
+    else if ($(this).attr("id")=="ch") {
       if(!app.getStoredObject("ch")) {
         app.cachelist={};
         localStorage.setItem("peripherals","{}");
       }
       gateway.cache($("#ch").prop("checked"));
-    } catch(e) {}
+    }
     if ($("#other").is( "li:last-child" )) $("#other").hide();
   },
   scan: function() {
