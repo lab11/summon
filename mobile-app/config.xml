@@ -40,27 +40,27 @@
         <preference name="DisallowOverscroll" value="true" />
         <preference name="BackupWebStorage" value="local" />
     </platform>
-    <plugin name="cordova-plugin-zeroconf" spec="^1.0.1" />
     <plugin name="cordova-plugin-chrome-apps-sockets-udp" spec="^1.2.2" />
-    <plugin name="cordova-plugin-console" spec="^1.0.0" />
-    <plugin name="cordova-plugin-device" spec="^1.0.0" />
-    <plugin name="cordova-plugin-network-information" spec="^1.0.0" />
-    <plugin name="cordova-plugin-whitelist" spec="1" />
     <plugin name="cordova-plugin-battery-status" spec="^1.0.0" />
-    <plugin name="cordova-plugin-device-motion" spec="^1.1.0" />
     <plugin name="cordova-plugin-device-orientation" spec="^1.0.0" />
     <plugin name="cordova-plugin-legacy-whitelist" spec="^1.0.0" />
-    <plugin name="cordova-plugin-geolocation" spec="^1.0.0" />
-    <plugin name="cordova-plugin-media" spec="^1.0.0" />
     <plugin name="cordova-plugin-inappbrowser" spec="^1.0.0" />
     <plugin name="cordova-plugin-file-transfer" spec="^1.1.0" />
-    <plugin name="cordova-plugin-camera" spec="^1.1.0" />
-    <plugin name="cordova-plugin-contacts" spec="^1.0.0" />
     <plugin name="cordova-plugin-dialogs" spec="^1.1.0" />
     <plugin name="cordova-plugin-media-capture" spec="^1.0.0" />
     <plugin name="cordova-plugin-globalization" spec="^1.0.0" />
-    <plugin name="cordova-plugin-vibration" spec="^1.1.0" />
     <plugin name="com.randdusing.bluetoothle" spec="https://github.com/randdusing/BluetoothLE" />
     <plugin name="cordova-plugin-zip" spec="^3.0.0" />
     <plugin name="cordova-plugin-ble-central" spec="^1.0.1" />
+    <plugin name="org.apache.cordova.device-motion" spec="~0.2.2" />
+    <plugin name="cordova-plugin-geolocation" spec="~2.1.0" />
+    <plugin name="cordova-plugin-media" spec="~2.2.0" />
+    <plugin name="cordova-plugin-camera" spec="~2.1.0" />
+    <plugin name="cordova-plugin-contacts" spec="~2.0.1" />
+    <plugin name="cordova-plugin-vibration" spec="~2.1.0" />
+    <plugin name="cordova-plugin-zeroconf" spec="~1.1.0" />
+    <plugin name="cordova-plugin-console" spec="~1.0.2" />
+    <plugin name="cordova-plugin-device" spec="~1.1.1" />
+    <plugin name="cordova-plugin-network-information" spec="~1.2.0" />
+    <plugin name="cordova-plugin-whitelist" spec="~1.2.1" />
 </widget>
