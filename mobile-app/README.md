@@ -1,24 +1,26 @@
-This is a cordova application for Summon.
+Summon App
+==========
 
-Build system explanation:
+Summon browser app for iOS and Android.
 
-while 'cordova build' usually builds applications, this requires us
-to included built output in the repo - which breaks the first rule 
-of version control.
+Content
+-------
+- [`config.xml`](config.xml): Configuration document
+- [`res`](res): App icons
+- [`src`](src): Platform-specific source content
+- [`www`](www): HTML, Javascript, & CSS source content
+- `platforms`: contains Android and iOS projects (generated during build)
 
-It would also required the user to call 'cordova platform add [insert platform]'
-and insert our custom platform files into the right location.
 
-To get around this we decided to use a makefile that automates this for the
-user.
+Requirements
+------------
+- [Node.js](https://nodejs.org/en/download/package-manager)
+- [Cordova](https://cordova.apache.org)
+- [Android SDK](http://developer.android.com/sdk/installing/index.html), for Android build
+- [Xcode](https://itunes.apple.com/us/app/xcode/id497799835), for iOS build
 
-The makefile:
 
-1. makes sure all possible platforms are created
-2. copies our source files into the right location in the platform
-3. calls cordova build
+Build
+-----
+`make` will do.
 
-Instructions:
-
-1. add your platforms to 'TARGET_PLATFORMS'
-2. make
