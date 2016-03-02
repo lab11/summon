@@ -25,14 +25,23 @@ import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Base64;
+import android.util.Log;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebResourceResponse;
+import android.webkit.WebViewClient;
 
 import org.apache.cordova.CordovaActivity;
+import org.apache.cordova.engine.SystemWebViewClient;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.List;
 
@@ -40,6 +49,7 @@ public class MainActivity extends CordovaActivity
 {
     private String deviceAdvertisement = "";
     private WebView wv;
+    private String js;
 //    private float lat;
 //    private float lon;
 
@@ -62,6 +72,28 @@ public class MainActivity extends CordovaActivity
 //        lat=0;lon=0;
         // Set by <content src="index.html" /> in config.xml
         loadUrl(launchUrl);
+        try{
+            InputStream is = getAssets().open("www/cordova.js");
+            byte[] buffer = new byte[is.available()];
+            is.read(buffer);
+            is.close();
+            js = "javascript:(function() {" +
+                "var parent = document.getElementsByTagName('head').item(0);" +
+                "var script = document.createElement('script');" +
+                "script.type = 'text/javascript';" +
+                "script.innerHTML = window.atob('" + Base64.encodeToString(buffer, Base64.NO_WRAP)+ "');" +
+                "parent.appendChild(script)" +
+                "})()";
+        }
+        catch(Exception e){e.printStackTrace();}
+    }
+
+    @Override
+    public Object onMessage(String id, Object data) {
+        if ("onPageFinished".equals(id) && !((WebView) appView.getEngine().getView()).getOriginalUrl().startsWith("file://")) {
+            loadUrl(js);
+        }
+        return super.onMessage(id, data);
     }
 
     public class JavaScriptInterface {
