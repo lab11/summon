@@ -73,7 +73,7 @@ public class MainActivity extends CordovaActivity
         // Set by <content src="index.html" /> in config.xml
         loadUrl(launchUrl);
         try{
-            InputStream is = getAssets().open("www/cordova.js");
+            InputStream is = getAssets().open("www/summon.android.js");
             byte[] buffer = new byte[is.available()];
             is.read(buffer);
             is.close();

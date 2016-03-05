@@ -121,7 +121,7 @@ bool caching = true;
     theWebView.scrollView.showsVerticalScrollIndicator = NO;
     [theWebView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"window.gateway={getDeviceId:function(){return '%@'},getDeviceName:function(){return '%@'},cache:function(e){t.setAttribute('src','gateway:'+JSON.stringify({'cache':e}))},setDeviceAdvertisement:function(e){t.setAttribute('src','gateway:'+JSON.stringify(e))}}; t=document.createElement('iframe'); t.setAttribute('style','display:none'); document.documentElement.appendChild(t);",deviceId,deviceName]];
     if ([theWebView.request.URL.absoluteString hasPrefix:@"file:"]&&[theWebView.request.URL.absoluteString hasSuffix:@".app/www/index.html"]) self.view.window.windowLevel = UIWindowLevelStatusBar-1;
-    else [theWebView stringByEvaluatingJavaScriptFromString:[NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"www/cordova" ofType:@"js"] encoding:NSUTF8StringEncoding error:nil]];
+    else [theWebView stringByEvaluatingJavaScriptFromString:[NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"www/summon.ios" ofType:@"js"] encoding:NSUTF8StringEncoding error:nil]];
     [self setNavTitle:[NSString stringWithFormat:@"%@ (%@)",[theWebView stringByEvaluatingJavaScriptFromString:@"document.title"],deviceName]];
     return [super webViewDidFinishLoad:theWebView];
 }
