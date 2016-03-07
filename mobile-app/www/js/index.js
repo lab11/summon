@@ -13,6 +13,7 @@ var size = 0;
 var fileUrl = null;
 var dirUrl = null;
 var prfocus = false;
+
 // var rssiData = {start:[]};
 // var coords = {latitude:0,longitude:0};
 var app = {
@@ -123,7 +124,7 @@ var app = {
               peripheral.permissions = [];
               if (peripheral.meta.cordova) for (n in peripheral.meta.cordova) if(!PRMISN[n]||PRMISN[n]!=" ") peripheral.permissions.push(PRMISN[n]||n);
               $('li[dev-id="'+peripheral.service.qualifiedname+'"]').html($("<a>",{href:'#',onclick:"app.go('"+peripheral.service.qualifiedname+"')"}).append($("<img>",{src:peripheral.meta.icon})).append($("<h2>").html(peripheral.meta.title)).append($("<p>").html(peripheral.meta.url+"<br/>"+"<i class='zmdi zmdi-network-wifi-alt zmd-fw'></i> "+(peripheral.service.server||peripheral.service.hostName)+" ("+(peripheral.service.application||peripheral.service.type)+")"))).append($("<a>",{href:'#dialog',"data-rel":'popup',"data-transition":"pop",class:'zmdi zmdi-more-vert',onclick:"app.infoPopup('"+peripheral.service.qualifiedname+"','nsd')"}));
-              app.cachelist[peripheral.service.qualifiedname] = peripheral;
+              if ($("#ch").prop("checked")) app.cachelist[peripheral.service.qualifiedname] = peripheral;
               localStorage.setItem("peripherals",JSON.stringify(app.cachelist));
             } else $('li[dev-id="'+peripheral.service.qualifiedname+'"]').html($("<a>",{href:'#',onclick:"app.go('"+peripheral.service.qualifiedname+"')"}).append($("<img>",{src:peripheral.uri+"/favicon.ico"}).error(function(){$(this).attr("src","img/dnssd.svg")})).append($("<h2>").html(peripheral.service.name)).append($("<p>").html(peripheral.uri+"/<br/><i class='zmdi zmdi-network-wifi-alt zmd-fw'></i> "+(peripheral.service.server||peripheral.service.hostName)+" ("+(peripheral.service.application||peripheral.service.type)+")"))).append($("<a>",{href:"#dialog","data-rel":"popup","data-transition":"pop",class:"zmdi zmdi-more-vert",onclick:"app.infoPopup('"+peripheral.service.qualifiedname+"','nsd')"}));
             $("#devs").listview("refresh");
