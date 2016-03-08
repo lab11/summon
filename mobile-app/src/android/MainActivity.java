@@ -19,39 +19,31 @@
 
 package edu.umich.eecs.lab11.summon;
 
+import android.app.ActivityManager.TaskDescription;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
+import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Base64;
-import android.util.Log;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.webkit.WebResourceResponse;
-import android.webkit.WebViewClient;
 
 import org.apache.cordova.CordovaActivity;
-import org.apache.cordova.engine.SystemWebViewClient;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.List;
 
-public class MainActivity extends CordovaActivity
-{
+public class MainActivity extends CordovaActivity {
     private String deviceAdvertisement = "";
+    private String js = "";
     private WebView wv;
-    private String js;
-//    private float lat;
-//    private float lon;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -67,32 +59,21 @@ public class MainActivity extends CordovaActivity
         wv.getSettings().setAllowFileAccess(true);
         wv.getSettings().setAppCacheEnabled(true);
         wv.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
-        String cachePath = wv.getContext().getCacheDir().getAbsolutePath();
-        wv.getSettings().setAppCachePath(cachePath);
-//        lat=0;lon=0;
-        // Set by <content src="index.html" /> in config.xml
+        wv.getSettings().setAppCachePath(wv.getContext().getCacheDir().getAbsolutePath());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) setTaskDescription(new TaskDescription(null, null, Color.parseColor("#FFC107")));
         loadUrl(launchUrl);
-        try{
+        try {
             InputStream is = getAssets().open("www/summon.android.js");
             byte[] buffer = new byte[is.available()];
             is.read(buffer);
             is.close();
-            js = "javascript:(function() {" +
-                "var parent = document.getElementsByTagName('head').item(0);" +
-                "var script = document.createElement('script');" +
-                "script.type = 'text/javascript';" +
-                "script.innerHTML = window.atob('" + Base64.encodeToString(buffer, Base64.NO_WRAP)+ "');" +
-                "parent.appendChild(script)" +
-                "})()";
-        }
-        catch(Exception e){e.printStackTrace();}
+            js = "javascript:(function(){ s=document.createElement('script'); s.innerHTML = atob('" + Base64.encodeToString(buffer,Base64.NO_WRAP) + "'); document.querySelector('head').appendChild(s); })()";
+        } catch(Exception e){e.printStackTrace();}
     }
 
     @Override
     public Object onMessage(String id, Object data) {
-        if ("onPageFinished".equals(id) && !((WebView) appView.getEngine().getView()).getOriginalUrl().startsWith("file://")) {
-            loadUrl(js);
-        }
+        if ("onPageFinished".equals(id) && !((WebView) appView.getEngine().getView()).getOriginalUrl().startsWith("file://")) loadUrl(js);
         return super.onMessage(id, data);
     }
 
@@ -103,9 +84,7 @@ public class MainActivity extends CordovaActivity
         JavaScriptInterface(Context c) { mContext = c; }
 
         @JavascriptInterface
-        public String getDeviceId(){
-//            wv.post(new Runnable() { @Override public void run() { loadUrl("javascript:a=document.createElement('div');t=document.createTextNode('Bob & Betty Beyster Building ("+lat+","+lon+")'); a.appendChild(t); a.setAttribute('style','padding:5px; margin:0; background:#eee;color:#666;font-size:20px !important;font-family:sans-serif-thin !important;position:fixed;bottom:0;text-align:center;vertical-align:middle;width:100%; white-space: nowrap; overflow: hidden; text-overflow:ellipsis;'); document.body.appendChild(a);"); } });
-            try {return (new JSONObject(deviceAdvertisement).getString("id"));} catch (Exception e) {return "";} }
+        public String getDeviceId(){  try {return (new JSONObject(deviceAdvertisement).getString("id"));} catch (Exception e) {return "";} }
 
         @JavascriptInterface
         public String getDeviceName() { try {return (new JSONObject(deviceAdvertisement).getString("name"));} catch (Exception e) {return "";} }
@@ -116,24 +95,17 @@ public class MainActivity extends CordovaActivity
         @JavascriptInterface
         public void setDeviceAdvertisement(String s) { deviceAdvertisement = s; }
 
-//        @JavascriptInterface
-//        public void setLocation(float t, float n) {lat=t; lon=n; }
+        @JavascriptInterface
+        public void cache(final String s) { wv.post(new Runnable() {@Override public void run() { wv.getSettings().setCacheMode(s.equals("true") ? WebSettings.LOAD_DEFAULT : WebSettings.LOAD_NO_CACHE); }}); }
 
         @JavascriptInterface
         public void go(String s) { loadUrl(s); }
 
         @JavascriptInterface
-        public void cache(final String s) { wv.post(new Runnable() {
-            @Override
-            public void run() {
-                wv.getSettings().setCacheMode(s.equals("true") ? WebSettings.LOAD_DEFAULT : WebSettings.LOAD_NO_CACHE);
-            }
-        }); }
-
-        @JavascriptInterface
         public void go(String s, String p, String n) {
             Intent intent = new Intent(Intent.ACTION_VIEW,Uri.parse(s));
             try { intent.setComponent(new ComponentName(p,n)); } catch (Exception e) {}
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         }
 
@@ -146,5 +118,4 @@ public class MainActivity extends CordovaActivity
             return "[" + (apps.length()>0 ? apps.substring(1) : "") + "]";
         }
     }
-
 }

@@ -291,8 +291,7 @@ var app = {
       location=url;
     } else {
       gateway.setDeviceAdvertisement( JSON.stringify( {id:id,name:p.service?p.service.name:p.name,rssi:p.rssi||"",advertising:p.advertising||"",ads:p.ads||[]} ) );
-      // gateway.setLocation(coords.latitude,coords.longitude); 
-      (p.apps && p.apps.length && typeof n != "null") ? gateway.go(url,p.apps[n||0].package,p.apps[n||0].activity) : n+" "+gateway.go(url);
+      (p.apps && p.apps.length && typeof n == "number") ? gateway.go(url,p.apps[n||0].package,p.apps[n||0].activity) : gateway.go(url);
     }
   },
   infoPopup: function(id,comm) {
@@ -303,7 +302,7 @@ var app = {
       $('#dh h3').html(p.meta.title);
       $('#dm #dev').html((comm=="ble"?p.name:p.service.name)+(comm=="ble"?(" ("+p.id+")"):(" - "+(p.service.server||p.service.hostName)+"("+(p.service.application||p.service.type)+")"))+"<br/>"+p.meta.url);
       $("#dm #ui").html("");
-      for (n in p.apps) $("#dm #ui").append($("<div>",{"style":"margin:.5em 0; padding:1em .5em .05em .5em; border-radius:3px; background:#eee"}).html("<b>Native App :</b> "+p.apps[n].name+"<br/>").append($("<a>",{href:"#",class:"ui-btn ui-btn-raised clr-primary"}).html("Open App").click(function(){app.go(p.id,n);})));
+      for (n in p.apps) $("#dm #ui").append($("<div>",{"style":"margin:.5em 0; padding:1em .5em .05em .5em; border-radius:3px; background:#eee"}).html("<b>Native App :</b> "+p.apps[n].name+"<br/>").append($("<a>",{href:"#",class:"ui-btn ui-btn-raised clr-primary","onclick":"app.go('"+id+"',"+n+")"}).html("Open App")));
       $("#dm #ui").append($("<div>",{"style":"margin:.5em 0; padding:1em .5em .05em .5em; border-radius:3px; background:#eee"}).html((p.meta.cordova?"<b>Interactive UI :</b> ":"<b>Website :</b> ")+p.meta.title+"<br/><i>"+p.meta.description+"</i><br/>"+(p.permissions&&p.permissions.length ? "<br/><b>Features Used :</b>"+JSON.stringify(p.permissions,null,"<br/>").replace(/[\[\],"]/g,'')+"<br>" : "")).append($("<a>",{href:"#","onclick":"app.go('"+id+"')","id":"go","class":"ui-btn ui-btn-raised clr-primary"}).html("Open "+(p.meta.cordova?"UI":"Site"))));
     } else {
       $('#dh img').attr("src",comm=="ble"?"img/ble.svg":"img/dnssd.svg");
