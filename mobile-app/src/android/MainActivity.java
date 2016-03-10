@@ -21,10 +21,12 @@ package edu.umich.eecs.lab11.summon;
 
 import android.app.ActivityManager.TaskDescription;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -34,8 +36,10 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 import org.apache.cordova.CordovaActivity;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
@@ -51,7 +55,7 @@ public class MainActivity extends CordovaActivity {
         super.onCreate(savedInstanceState);
         super.init();
         wv = ((WebView) appView.getEngine().getView());
-        wv.addJavascriptInterface(new JavaScriptInterface(this), "gateway");
+        wv.addJavascriptInterface(new JavaScriptInterface(getPackageManager()), "gateway");
         wv.getSettings().setJavaScriptEnabled(true);
         wv.getSettings().setSupportMultipleWindows(false);
         wv.getSettings().setNeedInitialFocus(false);
@@ -78,13 +82,13 @@ public class MainActivity extends CordovaActivity {
     }
 
     public class JavaScriptInterface {
-        private Context mContext;
+        private PackageManager pm;
         private List<String> browsers = Arrays.asList("com.android.browser","com.android.chrome","com.android.google.browser","org.mozilla.firefox","com.opera.mini.android");
 
-        JavaScriptInterface(Context c) { mContext = c; }
+        JavaScriptInterface(PackageManager p) { pm = p; }
 
         @JavascriptInterface
-        public String getDeviceId(){  try {return (new JSONObject(deviceAdvertisement).getString("id"));} catch (Exception e) {return "";} }
+        public String getDeviceId(){ try {return (new JSONObject(deviceAdvertisement).getString("id"));} catch (Exception e) {return "";} }
 
         @JavascriptInterface
         public String getDeviceName() { try {return (new JSONObject(deviceAdvertisement).getString("name"));} catch (Exception e) {return "";} }
@@ -96,10 +100,7 @@ public class MainActivity extends CordovaActivity {
         public void setDeviceAdvertisement(String s) { deviceAdvertisement = s; }
 
         @JavascriptInterface
-        public void cache(final String s) { wv.post(new Runnable() {@Override public void run() { wv.getSettings().setCacheMode(s.equals("true") ? WebSettings.LOAD_DEFAULT : WebSettings.LOAD_NO_CACHE); }}); }
-
-        @JavascriptInterface
-        public void go(String s) { loadUrl(s); }
+        public void cache(final String s) { wv.post(new Runnable(){@Override public void run(){ wv.getSettings().setCacheMode(s.equals("true") ? WebSettings.LOAD_DEFAULT : WebSettings.LOAD_NO_CACHE); }}); }
 
         @JavascriptInterface
         public void go(String s, String p, String n) {
@@ -111,11 +112,17 @@ public class MainActivity extends CordovaActivity {
 
         @JavascriptInterface
         public String checkApps(String s) {
-            String apps = "";
-            for (ResolveInfo ri : mContext.getPackageManager().queryIntentActivities(new Intent(Intent.ACTION_VIEW,Uri.parse(s)),0))
+            JSONArray apps = new JSONArray();
+            for (ResolveInfo ri : pm.queryIntentActivities(new Intent(Intent.ACTION_VIEW, Uri.parse(s)), 0))
                 if (!browsers.contains(ri.activityInfo.packageName))
-                    apps += ",{\"package\":\"" + ri.activityInfo.packageName + "\",\"activity\":\"" + ri.activityInfo.name + "\",\"name\":\"" + ri.activityInfo.applicationInfo.loadLabel(mContext.getPackageManager()) + "\",\"icon\":\"" + ri.activityInfo.applicationInfo.loadIcon(mContext.getPackageManager()).toString() + "\"}";
-            return "[" + (apps.length()>0 ? apps.substring(1) : "") + "]";
+                    try {
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        ((BitmapDrawable) ri.activityInfo.loadIcon(pm)).getBitmap().compress(Bitmap.CompressFormat.PNG, 100, baos);
+                        JSONObject jo = new JSONObject("{'package':'"+ri.activityInfo.packageName+"','activity':'"+ri.activityInfo.name+"','name':'"+ri.loadLabel(pm)+"'}");
+                        jo.put("icon", "data:image/png;base64," + Base64.encodeToString(baos.toByteArray(),Base64.DEFAULT));
+                        apps.put(jo);
+                    } catch (Exception e) {}
+            return apps.toString();
         }
     }
 }
