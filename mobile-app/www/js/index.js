@@ -15,7 +15,6 @@ var dirUrl = null;
 var prfocus = false;
 
 // var rssiData = {start:[]};
-// var coords = {latitude:0,longitude:0};
 var app = {
   initialize: function() { this.bindEvents(); },
   bindEvents: function() {
@@ -49,6 +48,8 @@ var app = {
   onAppReady: function() {
     // rssiData.start.push($.now());
     // setTimeout(function(){$.post("https://f1lqsmvf82az.runscope.net/",JSON.stringify(rssiData),null)},60000);
+    location.hash='';
+    $("#dialog").popup("close");
     if ( device.platform === "iOS" ) {$.mobile.hashListeningEnabled=false; }
     $('body').addClass(device.platform.toLowerCase());
     $(".pref").each(function(){$(this).prop("checked",localStorage.getItem($(this).attr("id"))!="false").flipswitch("refresh")});
@@ -59,11 +60,9 @@ var app = {
     app.cachelist = app.getStoredObject("peripherals")||{};
     app.readQueue=[];
     $.mobile.loading("show");
-    // window.open = cordova.InAppBrowser.open;
     ble.disconnect(d.id||"",null);
     if ( device.platform === "iOS" ) ble.stopScan(function(){ ble.startScan([],app.onPeripheralFound); },app.onAppReady);
 	  else ble.isEnabled(app.scan,function(){ble.enable(app.onAppReady,null)});
-    // navigator.geolocation.getCurrentPosition(function(pos){coords=pos.coords});
     // nfc.addNdefListener(app.onNfcFound, function(){console.log("nfc success")}, function(){console.log("nfc fail")});
     if(navigator.network.connection.type != Connection.NONE) {
       cordova.plugins.zeroconf.watch("_http._tcp.local.",app.onDiscover); 
@@ -94,7 +93,6 @@ var app = {
     ble.stopScan(function(){
       ble.startScan([],app.onPeripheralFound,function(e){console.log(e)});
       setTimeout(function(){if ($("body").pagecontainer("getActivePage").attr("id")!="page1") app.scan()},2000);
-      // setTimeout(app.scan,2000);
     },app.onAppReady);
   },
   onDiscover: function(peripheral) {
@@ -232,9 +230,6 @@ var app = {
     $("#devs").listview("refresh");
     $.mobile.loading("hide");
     app.peripherals[peripheral.id] = $.extend(peripheral,app.peripherals[peripheral.id]);
-    // if (typeof app.peripherals[peripheral.id].ads == "undefined") app.peripherals[peripheral.id].ads = [peripheral.advertising];
-    // if (JSON.stringify(app.peripherals[peripheral.id].ads||[]).indexOf(JSON.stringify(peripheral.advertising))==-1) app.peripherals[peripheral.id].ads.push(peripheral.advertising);
-    // localStorage.setItem("peripherals",JSON.stringify($.extend(true,{},app.getStoredObject("peripherals"),app.peripherals)));
   },
   getServiceData: function(peripheral) {
     advertisingdata = peripheral.advertising;
@@ -286,13 +281,9 @@ var app = {
   go: function(id,n,url) {
     p = app.peripherals[id];
     if (typeof url == "undefined") url = (p.meta && p.meta.url) ? p.meta.url : p.uri;
-    if (device.platform=="iOS") {
-      gateway.setDeviceAdvertisement({id:id,name:p.service?p.service.name:(p.name.length?p.name:"Unnamed")});
-      location=url;
-    } else {
-      gateway.setDeviceAdvertisement( JSON.stringify( {id:id,name:p.service?p.service.name:p.name,rssi:p.rssi||"",advertising:p.advertising||"",ads:p.ads||[]} ) );
-      (p.apps && p.apps.length && typeof n == "number") ? gateway.go(url,p.apps[n||0].package,p.apps[n||0].activity) : gateway.go(url);
-    }
+    if (device.platform=="iOS") gateway.setDeviceAdvertisement({id:id,name:p.service?p.service.name:(p.name.length?p.name:"Unnamed")});
+    else gateway.setDeviceAdvertisement( JSON.stringify( {id:id,name:p.service?p.service.name:p.name} ) );
+    (p.apps && p.apps.length && typeof n != "string") ? gateway.go(url,p.apps[n||0].package,p.apps[n||0].activity) : location=url;
   },
   infoPopup: function(id,comm) {
     p = app.peripherals[id];
@@ -303,13 +294,13 @@ var app = {
       $('#dm #dev').html((comm=="ble"?p.name:p.service.name)+(comm=="ble"?(" ("+p.id+")"):(" - "+(p.service.server||p.service.hostName)+"("+(p.service.application||p.service.type)+")"))+"<br/>"+p.meta.url);
       $("#dm #ui").html("");
       for (n in p.apps) $("#dm #ui").append($("<div>",{"style":"margin:.5em 0; padding:1em .5em .05em .5em; border-radius:3px; background:#eee"}).html("<b>Native App :</b> "+p.apps[n].name+"<br/>").append($("<a>",{href:"#",class:"ui-btn ui-btn-raised clr-primary","onclick":"app.go('"+id+"',"+n+")"}).html("Open App")));
-      $("#dm #ui").append($("<div>",{"style":"margin:.5em 0; padding:1em .5em .05em .5em; border-radius:3px; background:#eee"}).html((p.meta.cordova?"<b>Interactive UI :</b> ":"<b>Website :</b> ")+p.meta.title+"<br/><i>"+p.meta.description+"</i><br/>"+(p.permissions&&p.permissions.length ? "<br/><b>Features Used :</b>"+JSON.stringify(p.permissions,null,"<br/>").replace(/[\[\],"]/g,'')+"<br>" : "")).append($("<a>",{href:"#","onclick":"app.go('"+id+"')","id":"go","class":"ui-btn ui-btn-raised clr-primary"}).html("Open "+(p.meta.cordova?"UI":"Site"))));
+      $("#dm #ui").append($("<div>",{"style":"margin:.5em 0; padding:1em .5em .05em .5em; border-radius:3px; background:#eee"}).html((p.meta.cordova?"<b>Interactive UI :</b> ":"<b>Website :</b> ")+p.meta.title+"<br/><i>"+p.meta.description+"</i><br/>"+(p.permissions&&p.permissions.length ? "<br/><b>Features Used :</b>"+JSON.stringify(p.permissions,null,"<br/>").replace(/[\[\],"]/g,'')+"<br>" : "")).append($("<a>",{href:"#","onclick":"app.go('"+id+"','')","id":"go","class":"ui-btn ui-btn-raised clr-primary"}).html("Open "+(p.meta.cordova?"UI":"Site"))));
     } else {
       $('#dh img').attr("src",comm=="ble"?"img/ble.svg":"img/dnssd.svg");
       $('#dh h3').html(p.service?p.service.name:p.name)
       $('#dm #dev').html(comm=='ble'?(p.name+" ("+p.id+")<br/>"+p.uri):(p.service.name+" - "+(p.service.server||p.service.hostName)+" ("+(p.service.application||p.service.type)+")<br/>"+p.uri));
       $("#dm #ui").html("");
-      for (n in p.apps) $("#dm #ui").append($("<div>",{"style":"margin:.5em 0; padding:1em .5em .05em .5em; border-radius:3px; background:#eee"}).html("<b>Native App :</b> "+p.apps[n].name+"<br/>").append($("<a>",{href:"#",class:"ui-btn ui-btn-raised clr-primary"}).html("Open App").click(function(){app.go(p.id,n);})));
+      for (n in p.apps) $("#dm #ui").append($("<div>",{"style":"margin:.5em 0; padding:1em .5em .05em .5em; border-radius:3px; background:#eee"}).html("<b>Native App :</b> "+p.apps[n].name+"<br/>").append($("<a>",{href:"#",class:"ui-btn ui-btn-raised clr-primary","onclick":"app.go('"+id+"',"+n+")"}).html("Open App")));
       $("#dm #ui").append($("<div>",{"style":"margin:.5em 0; padding:1em .5em .05em .5em; border-radius:3px; background:#eee"}).html("<b>Local Content :</b> "+(comm=='ble'?"":(p.service.name+"<br/><i>"+(p.service.server||p.service.hostName)+"</i><br/>"))).append($("<a>",{href:"#","onclick":(comm=="ble"?'app.uiLoad("'+p.id+'")':"app.go('"+id+"',null,'"+p.uri+"')"),"id":"go","class":"ui-btn ui-btn-raised clr-primary"}).html("Attempt to Open"))); //JSON.stringify(p.service.txtRecord,null,2)
     }
     $("#dm #gen").html("Inspect "+(comm=="ble"?"BLE":"Service")).off("click").click(function(){$("#dialog").popup("close");app.generate(id);});
@@ -506,5 +497,4 @@ var app = {
   },
   blacklist: []
 };
-location.hash='';
 app.initialize();

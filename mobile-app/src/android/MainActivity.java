@@ -73,7 +73,7 @@ public class MainActivity extends CordovaActivity {
 
     @Override
     public Object onMessage(String id, Object data) {
-        if ("onPageFinished".equals(id) && !((WebView) appView.getEngine().getView()).getOriginalUrl().startsWith("file://")) loadUrl(js);
+        if ("onPageFinished".equals(id) && !((WebView) appView.getEngine().getView()).getUrl().startsWith("file://")) loadUrl(js);
         return super.onMessage(id, data);
     }
 
