@@ -60,9 +60,9 @@ var app = {
     app.cachelist = app.getStoredObject("peripherals")||{};
     app.readQueue=[];
     $.mobile.loading("show");
-    ble.disconnect(d.id||"",null);
-    if ( device.platform === "iOS" ) ble.stopScan(function(){ ble.startScan([],app.onPeripheralFound); },app.onAppReady);
-	  else ble.isEnabled(app.scan,function(){ble.enable(app.onAppReady,null)});
+    bluetooth.disconnect(d.id||"",null);
+    if ( device.platform === "iOS" ) bluetooth.stopScan(function(){ bluetooth.startScan([],app.onPeripheralFound); },app.onAppReady);
+	  else bluetooth.isEnabled(app.scan,function(){bluetooth.enable(app.onAppReady,null)});
     // nfc.addNdefListener(app.onNfcFound, function(){console.log("nfc success")}, function(){console.log("nfc fail")});
     if(navigator.network.connection.type != Connection.NONE) {
       cordova.plugins.zeroconf.watch("_http._tcp.local.",app.onDiscover); 
@@ -72,8 +72,8 @@ var app = {
     $("body").pagecontainer({ beforeshow: function(e,ui) { if (ui.toPage.attr("id")=="page1") app.onAppReady(); } });
   },
   onPause: function() {
-    ble.disconnect(d.id||"");
-    ble.stopScan();
+    bluetooth.disconnect(d.id||"");
+    bluetooth.stopScan();
     cordova.plugins.zeroconf.close();
     // nfc.removeNdefListener(app.onNfcFound);
   },
@@ -90,8 +90,8 @@ var app = {
     if ($("#other").is( "li:last-child" )) $("#other").hide();
   },
   scan: function() {
-    ble.stopScan(function(){
-      ble.startScan([],app.onPeripheralFound,function(e){console.log(e)});
+    bluetooth.stopScan(function(){
+      bluetooth.startScan([],app.onPeripheralFound,function(e){console.log(e)});
       setTimeout(function(){if ($("body").pagecontainer("getActivePage").attr("id")!="page1") app.scan()},2000);
     },app.onAppReady);
   },
@@ -310,7 +310,7 @@ var app = {
     d.count = 0;
     if (!((d.id&&d.id==id)||(d.service&&d.service.qualifiedname==id))) {setTimeout(function(){app.generate(id)},50); return;}
     if (!d.service) {
-      $("#list").html(device.platform=="iOS"?$("<li>",{"data-role":"list-divider","id":"advertising"}).html("Advertisement Data"):"");
+      $("#list").html($("<li>",{"data-role":"list-divider","id":"advertising"}).html("Advertisement Data"));
       app.readQueue=[]; 
       app.writeQueue=[];
     } else $("#list").html(""); 
@@ -319,7 +319,7 @@ var app = {
   },
   connect: function() {
     $("#page2 .status").off("click").html($("<i>",{class:"zmdi zmd-lg zmdi-refresh zmd-spin"}));
-    if (typeof d.service=="undefined"&&d.advertising&&(device.platform=="Android"||d.advertising["kCBAdvDataIsConnectable"])) ble.connect(d.id,app.onConnect,function(e){if(app.readQueue.length) app.blacklist.push(app.readQueue[0].service); app.readQueue=[]; if (d.count++<3) setTimeout(app.connect,800); else $("#page2 .status").click(app.connect).html($("<i>",{class:"zmdi zmd-lg zmdi-replay"}));});
+    if (typeof d.service=="undefined"&&d.advertising&&(device.platform=="Android"||d.advertising["kCBAdvDataIsConnectable"])) bluetooth.connect(d.id,app.onConnect,function(e){if(app.readQueue.length) app.blacklist.push(app.readQueue[0].service); app.readQueue=[]; if (d.count++<3) setTimeout(app.connect,800); else $("#page2 .status").click(app.connect).html($("<i>",{class:"zmdi zmd-lg zmdi-replay"}));});
     else setTimeout(function(){$("#page2 .status").click(app.connect).html($("<i>",{class:"zmdi zmd-lg zmdi-replay"}))},200);
   },
   updateHead: function(peripheral,refresh) {
@@ -337,7 +337,7 @@ var app = {
       $("#page2 .id").html(peripheral.id);
       $("#page2 .name").html(peripheral.name||"Unnamed");
       $("#page2 .rssi").html("("+peripheral.rssi+")");
-      if (device.platform=="iOS") for (n in peripheral.advertising) if (!$("#"+n).length) $("#advertising").after($("<li>",{"id":n}).append($("<span>").html(n.substr(10).replace(/([a-z]+)/g,"$1 "))).append($("<div>",{"class":"value"}).html(JSON.stringify(peripheral.advertising[n]))));
+      for (n in peripheral.advertisement) if (!$("#"+n).length) $("#advertising").after($("<li>",{"id":n}).append($("<span>").html(n.replace(/([a-z]+)/g,"$1 "))).append($("<div>",{"class":"value"}).html(JSON.stringify(peripheral.advertisement[n]))));
     }
     if (refresh) setTimeout(function(){$("#list").listview("refresh")},100);
   },
@@ -355,11 +355,11 @@ var app = {
         $("#list").listview("refresh");
       }
       if (app.writeQueue.length) {
-        if (app.writeQueue[0].characteristic==c.characteristic) ble.write(d.id,c.service,c.characteristic,app.writeQueue[0].value,app.onWrite,ble.writeWithoutResponse(d.id,c.service,c.characteristic,app.writeQueue[0].value,app.onWrite,app.onWrite));
+        if (app.writeQueue[0].characteristic==c.characteristic) bluetooth.write(d.id,c.service,c.characteristic,app.writeQueue[0].value,app.onWrite,bluetooth.writeWithoutResponse(d.id,c.service,c.characteristic,app.writeQueue[0].value,app.onWrite,app.onWrite));
       } else if (c.properties.indexOf("Read")>=0 && app.blacklist.indexOf(c.service)==-1)  app.read(c);
     }
     if (!app.readQueue.length&&!app.writeQueue.length) {
-      ble.disconnect(d.id||"");
+      bluetooth.disconnect(d.id||"");
       d.count=0;
       $("#page2 .status").click(app.connect).html($("<i>",{class:"zmdi zmd-lg zmdi-replay"}));
     }
@@ -372,35 +372,35 @@ var app = {
     if ($("#c"+c+">.value").html()==" []") app.blacklist.push(ch.service);
     if (app.readQueue.length) {
       if (app.blacklist.indexOf(app.readQueue[0].service)>=0) app.onRWError();
-      else ble.read(d.id,app.readQueue[0].service,app.readQueue[0].characteristic,app.onRead,app.onRWError);
-    } else if (!app.writeQueue.length) ble.isConnected(d.id,function(){ble.disconnect(d.id||""); app.readQueue=[]; d.count=0; $("#page2 .status").click(app.connect).html($("<i>",{class:"zmdi zmd-lg zmdi-replay"}));},function(){app.readQueue=[]});
+      else bluetooth.read(d.id,app.readQueue[0].service,app.readQueue[0].characteristic,app.onRead,app.onRWError);
+    } else if (!app.writeQueue.length) bluetooth.isConnected(d.id,function(){bluetooth.disconnect(d.id||""); app.readQueue=[]; d.count=0; $("#page2 .status").click(app.connect).html($("<i>",{class:"zmdi zmd-lg zmdi-replay"}));},function(){app.readQueue=[]});
   },
   onWrite: function() {
     if (app.writeQueue.length) {
       c == app.writeQueue.shift();
       for (n in d.characteristics)
         if (c.characteristic==d.characteristics[n].characteristic && c.service)
-          ble.write(d.id,d.characteristics[n].service,d.characteristics[n].characteristic,c.value,app.onWrite,ble.writeWithoutResponse(d.id,d.characteristics[n].service,d.characteristics[n].characteristic,c.value,app.onWrite,app.onWrite));
-    } else if (!app.readQueue.length) {ble.disconnect(d.id||""); $("#page2 .status").click(app.connect).html($("<i>",{class:"zmdi zmd-lg zmdi-replay"}));}
+          bluetooth.write(d.id,d.characteristics[n].service,d.characteristics[n].characteristic,c.value,app.onWrite,bluetooth.writeWithoutResponse(d.id,d.characteristics[n].service,d.characteristics[n].characteristic,c.value,app.onWrite,app.onWrite));
+    } else if (!app.readQueue.length) {bluetooth.disconnect(d.id||""); $("#page2 .status").click(app.connect).html($("<i>",{class:"zmdi zmd-lg zmdi-replay"}));}
   },
   onRWError: function(e) {                                                             // on error,try restarting BLE
     console.log("error " + app.readQueue.shift().characteristic + " : " + e);
     if (app.readQueue.length) {
       if (app.blacklist.indexOf(app.readQueue[0].service)>=0) app.onRWError();
-      else ble.read(d.id,app.readQueue[0].service,app.readQueue[0].characteristic,app.onRead,app.onRWError);
-    } else if (!app.writeQueue.length) ble.isConnected(d.id,function(){ble.disconnect(d.id||""); app.readQueue=[]; d.count=0; $("#page2 .status").click(app.connect).html($("<i>",{class:"zmdi zmd-lg zmdi-replay"}));},function(){app.readQueue=[]});
+      else bluetooth.read(d.id,app.readQueue[0].service,app.readQueue[0].characteristic,app.onRead,app.onRWError);
+    } else if (!app.writeQueue.length) bluetooth.isConnected(d.id,function(){bluetooth.disconnect(d.id||""); app.readQueue=[]; d.count=0; $("#page2 .status").click(app.connect).html($("<i>",{class:"zmdi zmd-lg zmdi-replay"}));},function(){app.readQueue=[]});
   },
   read: function(characteristic) {
     app.readQueue.push(characteristic);
-    if (app.readQueue.length==1) ble.read(d.id,characteristic.service,characteristic.characteristic,app.onRead,app.onRWError);
+    if (app.readQueue.length==1) bluetooth.read(d.id,characteristic.service,characteristic.characteristic,app.onRead,app.onRWError);
   },
   write: function(characteristic,value) {
     app.writeQueue.push({characteristic:characteristic,value:value});
-    ble.isConnected(d.id,function(){
+    bluetooth.isConnected(d.id,function(){
       if (app.writeQueue.length==1)
         for (n in d.characteristics)
           if (characteristic==d.characteristics[n].characteristic)
-            ble.write(d.id,d.characteristics[n].service,d.characteristics[n].characteristic,value,app.onWrite,ble.writeWithoutResponse(d.id,d.characteristics[n].service,d.characteristics[n].characteristic,value,app.onWrite,app.onWrite));
+            bluetooth.write(d.id,d.characteristics[n].service,d.characteristics[n].characteristic,value,app.onWrite,bluetooth.writeWithoutResponse(d.id,d.characteristics[n].service,d.characteristics[n].characteristic,value,app.onWrite,app.onWrite));
     },app.connect());
   },
   hex2ab: function(str) { 
@@ -421,7 +421,7 @@ var app = {
     $('#lm h4').html('Connecting.').attr("dev-id",id);
     try{$('#lm input').val(0).slider("refresh");} catch(e) {}
     jQuery.mobile.changePage("#page3",{"transition":"slide"});
-    $('#lh a').click(function(){ble.disconnect(id);app.onAppReady();});
+    $('#lh a').click(function(){bluetooth.disconnect(id);app.onAppReady();});
     read_count = 0; read_to = 0; size = 0; fileUrl = null; dirUrl = null;
     app.updateHead(p,false);
     requestFileSystem(TEMPORARY, 0, function(fs) {
@@ -429,7 +429,7 @@ var app = {
         dirEntry.removeRecursively(function() { console.log('Directory removed.'); }, function(e) {console.log("ERROR",e)});
       });
     });
-    ble.connect(id, app.onLoadConnect, app.onDisconnect);
+    bluetooth.connect(id, app.onLoadConnect, app.onDisconnect);
   },
   onLoadConnect: function(peripheral) {
     $('#lm h4').html('Connected. Reading.');
@@ -437,14 +437,14 @@ var app = {
     g = peripheral;
     g.start =  g.characteristics.map(function(e) { return e.characteristic; }).indexOf(PRVIDE[0]);
     //find out how long the UI is by reading len
-    ble.read(peripheral.id, PRVIDE[1], peripheral.characteristics[g.start].characteristic, app.onData, app.onError);
-    ble.stopScan(function(){},function(reason){});
+    bluetooth.read(peripheral.id, PRVIDE[1], peripheral.characteristics[g.start].characteristic, app.onData, app.onError);
+    bluetooth.stopScan(function(){},function(reason){});
   },
   onData: function(buffer) {
     if(read_count == 0) {
       var data = new Uint8Array(buffer);
       read_count += 1;
-      ble.read(g.id, PRVIDE[1], g.characteristics[g.start+1].characteristic, app.onData, app.onError);
+      bluetooth.read(g.id, PRVIDE[1], g.characteristics[g.start+1].characteristic, app.onData, app.onError);
       $('#lm input').val(15).slider("refresh");
     } else if(read_count == 1) {
       var data = new Uint32Array(buffer);
@@ -452,16 +452,16 @@ var app = {
       UI_Array = new Uint8Array(size);
       read_to = Math.ceil(data[0]/512) + 1;
       $('#lm input').val(20).slider("refresh");
-      ble.read(g.id, PRVIDE[1], g.characteristics[g.start+2].characteristic, app.onData, app.onError);
+      bluetooth.read(g.id, PRVIDE[1], g.characteristics[g.start+2].characteristic, app.onData, app.onError);
       read_count += 1;
     } else if(read_count > 1 && read_count < read_to) {
       UI_Array.set(new Uint8Array(buffer), (read_count-2)*512);
       $('#lm input').val(20- -Math.round(read_count/read_to*80)).slider("refresh");
       read_count += 1;
-      ble.read(g.id, PRVIDE[1], g.characteristics[read_count+g.start].characteristic, app.onData, app.onError);
+      bluetooth.read(g.id, PRVIDE[1], g.characteristics[read_count+g.start].characteristic, app.onData, app.onError);
     } else {
       UI_Array.set(new Uint8Array(buffer), (read_count-2)*512);
-      ble.disconnect(g.id);
+      bluetooth.disconnect(g.id);
       onError = function(e) {console.log("ERROR: " + e)};
       requestFileSystem(TEMPORARY, 0, function(fs) {
         fs.root.getDirectory('temp', {create: true}, function(dirEntry) {
@@ -492,7 +492,7 @@ var app = {
   },
   onDisconnect: function(e){console.log(e);},
   onError: function(e) {
-    ble.disconnect(g.id);
+    bluetooth.disconnect(g.id);
     $('#lm h4').html('Error. ' + e + '<br /><a href="#" onclick="app.uiLoad('+g.id+')">Retry</a>');
   },
   blacklist: []
