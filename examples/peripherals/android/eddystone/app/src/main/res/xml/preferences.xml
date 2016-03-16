@@ -20,7 +20,7 @@
         android:selectable="false"/>
     <PreferenceCategory android:title="Parameters" android:key="url">
         <edu.umich.eecs.lab11.eddystone.EditTextPreference
-            android:defaultValue="goo.gl/XMRl3M"
+            android:defaultValue="umich.edu"
             android:key="ip_text"
             android:summary="%s"
             android:title="Destination URL" />

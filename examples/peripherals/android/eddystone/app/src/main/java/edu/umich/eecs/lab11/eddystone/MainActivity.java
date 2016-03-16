@@ -132,7 +132,7 @@ public class MainActivity extends PreferenceActivity implements SharedPreference
     }
 
     public void doGen() {
-        String url = cur_settings.getString("ip_text", "goo.gl/XMRl3M");
+        String url = cur_settings.getString("ip_text", "umich.edu");
         String IPTEXT = toUrlHex(url.getBytes());
         cur_settings.edit().putString("advertisement_value","10BA02" + IPTEXT).commit();
     }
