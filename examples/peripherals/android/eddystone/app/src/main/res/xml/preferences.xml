@@ -19,10 +19,18 @@
         android:title="Advertisement Value"
         android:selectable="false"/>
     <PreferenceCategory android:title="Parameters" android:key="url">
+        <edu.umich.eecs.lab11.eddystone.ListPreference
+            android:defaultValue="http://"
+            android:key="protocol"
+            android:summary="%s"
+            android:entries="@array/prefixes"
+            android:entryValues="@array/prefixes"
+            android:title="Protocol" />
         <edu.umich.eecs.lab11.eddystone.EditTextPreference
             android:defaultValue="umich.edu"
             android:key="ip_text"
             android:summary="%s"
+            android:maxLength="21"
             android:title="Destination URL" />
     </PreferenceCategory>
     <PreferenceCategory android:title="Parameters" android:key="uid">

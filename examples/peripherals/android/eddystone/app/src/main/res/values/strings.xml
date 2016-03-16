@@ -5,4 +5,8 @@
         <item>Eddystone-UID</item>
         <item>Eddystone-TLM</item>
     </string-array>
+    <string-array name="prefixes">
+        <item>http://</item>
+        <item>https://</item>
+    </string-array>
 </resources>

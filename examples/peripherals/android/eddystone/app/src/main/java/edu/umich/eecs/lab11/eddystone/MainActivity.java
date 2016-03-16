@@ -77,8 +77,7 @@ public class MainActivity extends PreferenceActivity implements SharedPreference
     }
 
     private void advertise() {
-        String ad_value = cur_settings.getString("advertisement_value","0000");
-        setTitle("Advertising Service Data: " + ad_value);
+        setTitle("Advertise: " + cur_settings.getString("protocol","http://") + cur_settings.getString("ip_text","umich.edu"));
         bleAdvertiser.stopAdvertising(advertiseCallback);
         settingsBuilder = new AdvertiseSettings.Builder()
                 .setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_BALANCED)
@@ -86,7 +85,7 @@ public class MainActivity extends PreferenceActivity implements SharedPreference
                 .setConnectable(true).setTimeout(0);
         dataBuilder = new AdvertiseData.Builder()
 //                .setIncludeDeviceName(true)
-                .addServiceData(shortUUID("FEAA"),toByteArray(ad_value));
+                .addServiceData(shortUUID("FEAA"),toByteArray(cur_settings.getString("advertisement_value","0000")));
         if (cur_settings.getBoolean("advertise_switch",false))
             bleAdvertiser.startAdvertising(settingsBuilder.build(), dataBuilder.build(), advertiseCallback);
     }
@@ -132,9 +131,10 @@ public class MainActivity extends PreferenceActivity implements SharedPreference
     }
 
     public void doGen() {
-        String url = cur_settings.getString("ip_text", "umich.edu");
+        String pre = cur_settings.getString("protocol","http://").equals("http://") ? "02" : "03";
+        String url = cur_settings.getString("ip_text","umich.edu");
         String IPTEXT = toUrlHex(url.getBytes());
-        cur_settings.edit().putString("advertisement_value","10BA02" + IPTEXT).commit();
+        cur_settings.edit().putString("advertisement_value","10BA" + pre + IPTEXT).commit();
     }
 
     /*
