@@ -11,17 +11,21 @@ Summon
 [<img src="http://images.apple.com/itunes/link/images/link-badge-appstore.png" alt="iOS App Store" height=40 />](https://itunes.apple.com/us/app/summon-lab11/id1051205682)
 
 
-Bluetooth Devices
------------------
+Peripherals
+-----------
+
 To quickly create a Bluetooth beacon device to test with, install the [Eddystone-URL app](https://play.google.com/store/apps/details?id=edu.umich.eecs.lab11.eddystone) on a separate Android device.
 
-For Bluetooth peripherals to show up in the app's scan, it must advertise the URI for its corresponding website or web app according to the [Bluetooth URI AD type specification](https://www.bluetooth.org/DocMan/handlers/DownloadDoc.ashx?doc_id=302735) (page 27), or the [Eddystone-URL specification](https://github.com/google/eddystone/blob/master/protocol-specification.md).
+For Bluetooth peripherals to be listed the Summon's scan, it must advertise the URI for its corresponding web interface according to the [Bluetooth URI AD type specification](https://www.bluetooth.org/DocMan/handlers/DownloadDoc.ashx?doc_id=302735) (page 27), or the [Eddystone-URL specification](https://github.com/google/eddystone/blob/master/protocol-specification.md).
 
-Example implementations can be found in `examples/peripherals/`.
+Local Wi-Fi peripherals can advertise the URL as an HTTP service over mDNS/ZeroConf/Bonjour.
+
+Example implementations of peripherals can be found in [`peripherals/examples/`](peripherals/examples).
 
 
-Creating Web Apps
------------------
-In addition to opening of links to regular websites, Summon supports opening of links to hosted apps generated using the [Apache Cordova](https://cordova.apache.org/) framework. Content in the app's generated platform `www` directory can be hosted online. A peripheral can then advertise a link to the web app. Such web apps can interact with the device directly over Bluetooth and perform native application functions. All standard Cordova plugins are supported, as well as [cordova-plugin-ble-central](https://github.com/don/cordova-plugin-ble-central) and [cordova-plugin-chrome-apps-sockets-udp](https://github.com/MobileChromeApps/cordova-plugin-chrome-apps-sockets-udp).
+Creating Interactive User Interfaces
+------------------------------------
 
-Example implementations of apps can be found in `examples/cordova-apps/`.
+In addition to opening regular websites, Summon can open app-like web UIs that use [Apache Cordova](https://cordova.apache.org/) framework plugins. These UIs are still developed using standard web tools, but they are able to interact directly over Bluetooth and perform native application functions through provided Javascript APIs. Once the UI is hosted online, a peripheral can advertise a link to it, as with an ordinary website.  All standard Cordova plugins are supported, as well as [cordova-plugin-ble-central](https://github.com/don/cordova-plugin-ble-central).
+
+Example implementations of apps can be found in [`user-interfaces/examples/`](user-interfaces/examples).
