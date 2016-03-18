@@ -186,7 +186,7 @@ var app = {
         $('li[dev-id="'+peripheral.id+'"]').attr("dev-rssi",peripheral.rssi);
         // $(".item:not(.other)").each(function(i){ if (peripheral.rssi < $(this).attr("dev-rssi")) $(this).before($('li[dev-id="'+peripheral.id+'"]')); });
       }
-      if (peripheral.uri != "Local") {
+      if (peripheral.uri != "local") {
         if (!app.peripherals[peripheral.id] || !app.peripherals[peripheral.id].meta || !app.peripherals[peripheral.id].uri==peripheral.uri) {
           if (typeof app.cachelist[peripheral.id] != "undefined" && typeof (app.cachelist[peripheral.id]).meta != undefined) {
             peripheral.meta = (app.cachelist[peripheral.id]).meta;
@@ -232,29 +232,11 @@ var app = {
     app.peripherals[peripheral.id] = $.extend(peripheral,app.peripherals[peripheral.id]);
   },
   getServiceData: function(peripheral) {
-    advertisingdata = peripheral.advertising;
-    if (device.platform=="Android") {
-      scanRecord = new Uint8Array(advertisingdata);
-      peripheral.advertising = Array.apply(null,scanRecord);
-      index = 0;
-      provided = false;
-      while (index < scanRecord.length) {
-        length = scanRecord[index++];
-        if (length == 0) return null; //Done once we run out of records
-        type = scanRecord[index];
-        if (type == 0) return null; //Done if our record isn't a valid type
-        data = scanRecord.subarray(index + 1, index + length); 
-        if ((type==8 || type==9) && String.fromCharCode.apply(null,data)=="UI_GEN") return {uri:new Uint8Array("Local".split('').map(function(c){return c.charCodeAt(0);})),ad:2};
-        if (type==22 && length>4 && data[1]==0xfe && (data[0]==0xd8 || data[0]==0xaa)) return {uri:data.subarray(2),ad:0};
-        if (type==22 && length>4 && data[1]==0xfd && (data[0]==0xd8 || data[0]==0xaa)) return {uri:new Uint8Array("Local".split('').map(function(c){return c.charCodeAt(0);})),ad:2};
-        if (type==36) return {uri:data,ad:1};
-        if (type==37) return {uri:data,ad:2};
-        index += length; //Advance
-      }
-    } 
-    else if ((advertisingdata.kCBAdvDataLocalName && advertisingdata.kCBAdvDataLocalName=="UI_GEN") || (advertisingdata.kCBAdvDataServiceData && (advertisingdata.kCBAdvDataServiceData.FED9 || advertisingdata.kCBAdvDataServiceData.FEAB))) return {uri:new Uint8Array("Local".split('').map(function(c){return c.charCodeAt(0);})),ad:2};
-    else if (advertisingdata.kCBAdvDataServiceData && advertisingdata.kCBAdvDataServiceData.FED8) return {uri:new Uint8Array(advertisingdata.kCBAdvDataServiceData.FED8),ad:0};
-    else if (advertisingdata.kCBAdvDataServiceData && advertisingdata.kCBAdvDataServiceData.FEAA) return {uri:new Uint8Array(advertisingdata.kCBAdvDataServiceData.FEAA),ad:0};
+    for (n in peripheral.advertisement.serviceData) {
+      a = peripheral.advertisement.serviceData[n];
+      if (a.uuid=="URI") return {uri:a.data,ad:1};
+      else if (a.uuid=="FED8" || a.uuid=="FEAA") return {uri:a.data,ad:0}; 
+    }
     return null;
   },
   parseAdData: function(peripheral,adData) {
@@ -263,6 +245,7 @@ var app = {
       peripheral.txPower = adData.uri[1]; // TX Power is 2nd byte
       uriScheme = adData.uri[2];
       uriData = adData.uri.subarray(3); // remainder in the URI
+      if (peripheral.flags==0xFF) adData.ad=2;
     } else {
       uriScheme = adData.uri[0];
       uriData = adData.uri.subarray(1); // remainder in the URI
@@ -337,7 +320,7 @@ var app = {
       $("#page2 .id").html(peripheral.id);
       $("#page2 .name").html(peripheral.name||"Unnamed");
       $("#page2 .rssi").html("("+peripheral.rssi+")");
-      for (n in peripheral.advertisement) if (!$("#"+n).length) $("#advertising").after($("<li>",{"id":n}).append($("<span>").html(n.replace(/([a-z]+)/g,"$1 "))).append($("<div>",{"class":"value"}).html(JSON.stringify(peripheral.advertisement[n]))));
+      for (n in peripheral.advertisement) if (!$("#"+n).length) $("#advertising").after($("<li>",{"id":n}).append($("<span>").html(n[0].toUpperCase()+n.slice(1).replace(/([a-z]+)/g,"$1 "))).append($("<div>",{"class":"value"}).html(JSON.stringify(peripheral.advertisement[n]))));
     }
     if (refresh) setTimeout(function(){$("#list").listview("refresh")},100);
   },
@@ -370,6 +353,12 @@ var app = {
     $("#c"+c).attr("value",Array.prototype.map.call(new Uint8Array(data),function(m){return ("0"+m.toString(16)).substr(-2);}).join(''));
     $("#c"+c+">.value").html(String.fromCharCode.apply(null, new Uint8Array(data))+" ["+Array.prototype.map.call(new Uint8Array(data),function(m){return ("0"+m.toString(16)).substr(-2);}).join('')+"]");
     if ($("#c"+c+">.value").html()==" []") app.blacklist.push(ch.service);
+    if (c=="2a00" && !d.name) {
+      d.name = String.fromCharCode.apply(null, new Uint8Array(data));
+      app.updateHead(d,false);
+      // if ($("#ch").prop("checked")) app.cachelist[d.id].name = d.name;
+      // localStorage.setItem("peripherals",JSON.stringify(app.cachelist));
+    }
     if (app.readQueue.length) {
       if (app.blacklist.indexOf(app.readQueue[0].service)>=0) app.onRWError();
       else bluetooth.read(d.id,app.readQueue[0].service,app.readQueue[0].characteristic,app.onRead,app.onRWError);
