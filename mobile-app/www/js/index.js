@@ -181,13 +181,13 @@ var app = {
     if (typeof adData != "undefined" && adData) {
       app.parseAdData(peripheral,adData);
       $('li.other[dev-id="'+peripheral.id+'"]').remove(); 
-      if ($('li[dev-id="'+peripheral.id+'"]:not(.other)').length==0) { 
+      if ($('li[dev-id="'+peripheral.id+'"]').length==0) {
         $("#other").before($("<li>",{class:"ble item","dev-id":peripheral.id}).append($("<a>",{href:'#',style:"opacity:.5; pointer-events:none"}).append($("<img>",{src:"img/ble.svg"})).append($("<h2>").html(peripheral.name+" ("+peripheral.id+")")).append($("<p>").html(peripheral.uri+"<br/>"+"<i class='zmdi zmdi-bluetooth zmd-fw'></i> "+peripheral.name+" ("+peripheral.id+")"))));
         $('li[dev-id="'+peripheral.id+'"]').attr("dev-rssi",peripheral.rssi);
         // $(".item:not(.other)").each(function(i){ if (peripheral.rssi < $(this).attr("dev-rssi")) $(this).before($('li[dev-id="'+peripheral.id+'"]')); });
       }
       if (peripheral.uri != "local") {
-        if (!app.peripherals[peripheral.id] || !app.peripherals[peripheral.id].meta || !app.peripherals[peripheral.id].uri==peripheral.uri) {
+        if (!app.peripherals[peripheral.id] || !app.peripherals[peripheral.id].meta /*|| app.peripherals[peripheral.id].uri!=peripheral.uri*/) {
           if (typeof app.cachelist[peripheral.id] != "undefined" && typeof (app.cachelist[peripheral.id]).meta != undefined) {
             peripheral.meta = (app.cachelist[peripheral.id]).meta;
             $('li[dev-id="'+peripheral.id+'"]').html($("<a>",{href:'#'}).click(function(){app.go(peripheral.id)}).append($("<img>",{src:peripheral.meta.icon}).error(function(){$(this).attr("src","img/ble.svg")})).append($("<h2>").html(peripheral.meta.title)).append($("<p>").html(peripheral.meta.url+"<br/>"+"<i class='zmdi zmdi-bluetooth zmd-fw'></i> "+peripheral.name+" ("+peripheral.id+")"))).append($("<a>",{href:"#dialog","data-rel":"popup","data-transition":"pop",class:"zmdi zmdi-more-vert"}).click(function(){app.infoPopup(peripheral.id,"ble")}));
@@ -217,7 +217,7 @@ var app = {
           });
         }
       } else $('li[dev-id="'+peripheral.id+'"]').addClass("ble").html($("<a>",{href:'#',onclick:"app.uiLoad('"+peripheral.id+"');"}).append($("<img>",{src:"img/ble.svg"})).append($("<h2>").html(peripheral.name+" ("+peripheral.id+")")).append($("<p>").html(peripheral.uri+"<br/>"+"<i class='zmdi zmdi-bluetooth zmd-fw'></i> "+peripheral.name+" ("+peripheral.id +")"))).append($("<a>",{href:'#dialog',"data-rel":'popup',"data-transition":"pop",class:'zmdi zmdi-more-vert',onclick:"app.infoPopup('"+peripheral.id+"','ble')"})); 
-    } else if (app.cachelist[peripheral.id] && app.cachelist[peripheral.id].meta) {
+    } else if (app.cachelist[peripheral.id] && app.cachelist[peripheral.id].meta && $('li[dev-id="'+peripheral.id+'"]:not(.other)').length==0) {
       peripheral.meta = (app.cachelist[peripheral.id]).meta;
       $('li.other[dev-id="'+peripheral.id+'"]').remove(); 
       $("#other").before($("<li>",{class:"ble item","dev-id":peripheral.id}).html($("<a>",{href:'#'}).click(function(){app.go(peripheral.id)}).append($("<img>",{src:peripheral.meta.icon}).error(function(){$(this).attr("src","img/ble.svg")})).append($("<h2>").html(peripheral.meta.title)).append($("<p>").html(peripheral.meta.url+"<br/>"+"<i class='zmdi zmdi-bluetooth zmd-fw'></i> "+peripheral.name+" ("+peripheral.id+")"))).append($("<a>",{href:"#dialog","data-rel":"popup","data-transition":"pop",class:"zmdi zmdi-more-vert"}).click(function(){app.infoPopup(peripheral.id,"ble")})));
@@ -272,7 +272,7 @@ var app = {
     p = app.peripherals[id];
     if (!(p.id==id||(p.service&&p.service.qualifiedname==id))) {setTimeout(function(){app.infoPopup(id,comm)},50); return;}
     if (p.meta) {
-      $('#dh img').attr("src",p.apps.length?p.apps[0].icon:(p.meta.icon||(comm=="ble"?"img/ble.svg":"img/dnssd.svg"))).error(function(){$(this).attr("src",(comm=="ble"?"img/ble.svg":"img/dnssd.svg"))});
+      $('#dh img').attr("src",(p.apps&&p.apps.length)?p.apps[0].icon:(p.meta.icon||(comm=="ble"?"img/ble.svg":"img/dnssd.svg"))).error(function(){$(this).attr("src",(comm=="ble"?"img/ble.svg":"img/dnssd.svg"))});
       $('#dh h3').html(p.meta.title);
       $('#dm #dev').html((comm=="ble"?p.name:p.service.name)+(comm=="ble"?(" ("+p.id+")"):(" - "+(p.service.server||p.service.hostName)+"("+(p.service.application||p.service.type)+")"))+"<br/>"+p.meta.url);
       $("#dm #ui").html("");

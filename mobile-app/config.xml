@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="edu.umich.eecs.lab11.summon" version="0.1.8" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="edu.umich.eecs.lab11.summon" version="0.2.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Summon</name>
     <description>
         The Browser for the Local Web of Things.
@@ -44,28 +44,29 @@
         <preference name="deployment-target" value="7.0" />
         <preference name="AppendUserAgent" value="Summon" />
     </platform>
-    <plugin name="cordova-plugin-chrome-apps-sockets-udp" spec="^1.2.2" />
+    <plugin name="cordova-plugin-console" spec="^1.0.0" />
+    <plugin name="cordova-plugin-device" spec="^1.0.0" />
+    <plugin name="cordova-plugin-network-information" spec="^1.0.0" />
+    <plugin name="cordova-plugin-whitelist" spec="1" />
+    <plugin name="cordova-plugin-statusbar" spec="^1.0.0" />
     <plugin name="cordova-plugin-battery-status" spec="^1.0.0" />
-    <plugin name="cordova-plugin-device-orientation" spec="^1.0.0" />
+    <plugin name="cordova-plugin-device-motion" spec="^1.1.0" />
     <plugin name="cordova-plugin-legacy-whitelist" spec="^1.0.0" />
+    <plugin name="cordova-plugin-media" spec="^1.0.0" />
     <plugin name="cordova-plugin-inappbrowser" spec="^1.0.0" />
     <plugin name="cordova-plugin-file-transfer" spec="^1.1.0" />
+    <plugin name="cordova-plugin-contacts" spec="^1.0.0" />
+    <plugin name="cordova-plugin-splashscreen" spec="^2.0.0" />
     <plugin name="cordova-plugin-dialogs" spec="^1.1.0" />
     <plugin name="cordova-plugin-media-capture" spec="^1.0.0" />
     <plugin name="cordova-plugin-globalization" spec="^1.0.0" />
-    <plugin name="com.randdusing.bluetoothle" spec="https://github.com/randdusing/BluetoothLE" />
-    <plugin name="cordova-plugin-zip" spec="^3.0.0" />
-    <plugin name="cordova-plugin-ble-central" spec="^1.0.1" />
-    <plugin name="org.apache.cordova.device-motion" spec="~0.2.2" />
-    <plugin name="cordova-plugin-geolocation" spec="~2.1.0" />
-    <plugin name="cordova-plugin-media" spec="~2.2.0" />
-    <plugin name="cordova-plugin-camera" spec="~2.1.0" />
-    <plugin name="cordova-plugin-contacts" spec="~2.0.1" />
-    <plugin name="cordova-plugin-vibration" spec="~2.1.0" />
+    <plugin name="cordova-plugin-test-framework" spec="^1.0.0" />
+    <plugin name="cordova-plugin-vibration" spec="^1.1.0" />
+    <plugin name="cordova-plugin-zip" spec="~3.0.0" />
+    <plugin name="cordova-plugin-ble-central" spec="~1.0.1" />
+    <plugin name="cordova-plugin-device-orientation" spec="^1.0.0" />
+    <plugin name="cordova-plugin-geolocation" spec="^1.0.0" />
+    <plugin name="cordova-plugin-camera" spec="^1.1.0" />
     <plugin name="cordova-plugin-zeroconf" spec="~1.1.0" />
-    <plugin name="cordova-plugin-console" spec="~1.0.2" />
-    <plugin name="cordova-plugin-device" spec="~1.1.1" />
-    <plugin name="cordova-plugin-network-information" spec="~1.2.0" />
-    <plugin name="cordova-plugin-whitelist" spec="~1.2.1" />
-    <plugin name="cordova-plugin-statusbar" spec="~2.1.1" />
+    <plugin name="cordova-plugin-bluetoothle" spec="~3.1.0" />
 </widget>
