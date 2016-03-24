@@ -1,3 +1,7 @@
+var PRTCOL = ["","","aaa:","aaas:","about:","acap:","acct:","cap:","cid:","coap:","coaps:","crid:","data:","dav:","dict:","dns:","file:","ftp:","geo:","go:","gopher:","h323:","http:","https:","iax:","icap:","im:","imap:","info:","ipp:","ipps:","iris:","iris.beep:","iris.xpc:","iris.xpcs:","iris.lwz:","jabber:","ldap:","mailto:","mid:","msrp:","msrps:","mtqp:","mupdate:","news:","nfs:","ni:","nih:","nntp:","opaquelocktoken:","pop:","pres:","reload:","rtsp:","rtsps:","rtspu:","service:","session:","shttp:","sieve:","sip:","sips:","sms:","snmp:","soap.beep:","soap.beeps:","stun:","stuns:","tag:","tel:","telnet:","tftp:","thismessage:","tn3270:","tip:","turn:","turns:","tv:","urn:","vemmi:","ws:","wss:","xcon:","xcon-userid:","xmlrpc.beep:","xmlrpc.beeps:","xmpp:","z39.50r:","z39.50s:","acr:","adiumxtra:","afp:","afs:","aim:","apt:","attachment:","aw:","barion:","beshare:","bitcoin:","bolo:","callto:","chrome:","chrome-extension:","com-eventbrite-attendee:","content:","cvs:","dlna-playsingle:","dlna-playcontainer:","dtn:","dvb:","ed2k:","facetime:","feed:","feedready:","finger:","fish:","gg:","git:","gizmoproject:","gtalk:","ham:","hcp:","icon:","ipn:","irc:","irc6:","ircs:","itms:","jar:","jms:","keyparc:","lastfm:","ldaps:","magnet:","maps:","market:","message:","mms:","ms-help:","ms-settings-power:","msnim:","mumble:","mvn:","notes:","oid:","palm:","paparazzi:","pkcs11:","platform:","proxy:","psyc:","query:","res:","resource:","rmi:","rsync:","rtmfp:","rtmp:","secondlife:","sftp:","sgn:","skype:","smb:","smtp:","soldat:","spotify:","ssh:","steam:","submit:","svn:","teamspeak:","teliaeid:","things:","udp:","unreal:","ut2004:","ventrilo:","view-source:","webcal:","wtai:","wyciwyg:","xfire:","xri:","ymsgr:","example:","ms-settings-cloudstorage:"]
+var SUFFIX = [".com/",".org/",".edu/",".net/",".info/",".biz/",".gov/",".com",".org",".edu",".net",".info",".biz",".gov"];
+var PREFIX = ["http://www.","https://www.","http://","https://","urn:uuid:"];
+
 var bluetooth = {};
 
 document.addEventListener("deviceready", function () {
@@ -22,19 +26,14 @@ document.addEventListener("deviceready", function () {
     }, failure);
   };
 
-  // create a common advertisement interface between iOS and android
+  // Create a common advertisement interface between iOS and android
   //  This format follows the nodejs BLE library, noble
   //  https://github.com/sandeepmistry/noble#peripheral-discovered
   parse = function (peripheral, success) {
-    // common advertisement interface is created as a new field
-    //  This format follows the nodejs BLE library, noble
-    //  https://github.com/sandeepmistry/noble#peripheral-discovered
     var advertisement = {};
 
-    // this is a hack and only has to be in place until this code gets pulled
-    //  into the summon app. Since we use the same hack to decide which
-    //  cordova.js to load, it seems pretty saft to use it here too
     if (navigator.platform.startsWith("iP")) {
+      // Platform is iOS
       for (var n in peripheral.advertising) {
         advertisement[n[10].toLowerCase()+n.substr(11)] = peripheral.advertising[n];
       }
@@ -55,23 +54,21 @@ document.addEventListener("deviceready", function () {
         }
       }
     } else {
-      // we are on android
-      //XXX: can we determine `connectable` on android?
+      // Platform is Android
       var scanRecord = new Uint8Array(peripheral.advertising);
       var index = 0;
       while (index < scanRecord.length) {
-        // first is length of the field, length of zero indicates advertisement
-        //  is complete
+        // First is length of the field, length of zero indicates advertisement is complete
         var length = scanRecord[index++];
         if (length == 0) {
           break;
         }
 
-        // next is type of field and then field data (if any)
+        // Next is type of field and then field data (if any)
         var type = scanRecord[index];
         var data = scanRecord.subarray(index+1, index+length);
 
-        // determine data based on field type
+        // Determine data based on field type
         switch (type) {
           case 0x01: // Flags
             advertisement.flags = data[0] & 0xFF;
@@ -108,27 +105,38 @@ document.addEventListener("deviceready", function () {
             });
             break;
           case 0x24: // Bluetooth URI
-            advertisement.serviceData = (advertisement.serviceData||[]).concat({
-              uuid: "URI",
-              data: new Uint8Array(data),
-            });
+            advertisement.uri = PRTCOL[data[0]] + String.fromCharCode.apply(null, data.subarray(1));
+            peripheral.uri = advertisement.uri; // Attach URI if Bluetooth URI exists
+            break;
           case 0xFF: // Manufacturer Specific Data
             advertisement.manufacturerData = new Uint8Array(data);
             break;
         }
 
-        // move to next advertisement field
+        // Shift to next advertisement field
         index += length;
+      }
+    }
+
+    // Attach URI if Eddystone-URL exists
+    for (i in advertisement.serviceData) {
+      n = advertisement.serviceData[i];
+      if (n.uuid == "FEAA" || n.uuid == "FED8") {
+        peripheral.uriFrame = n.data[0]; // Frame type is the 1st byte
+        peripheral.uriTxPower = n.data[1]; // TX Power is 2nd byte
+        peripheral.uri = (PREFIX[n.data[2]] || String.fromCharCode(n.data[2])) + (function(){
+          for (var s = j = c = ''; (c=this[j++]) || c==0; s += SUFFIX[c] || String.fromCharCode(c)) {} 
+          return s;
+        }).call(n.data.subarray(3));
       }
     }
 
     peripheral.advertisement = advertisement;
 
-    // finished parsing, call originally intended callback
+    // Finished parsing, call originally intended callback
     success(peripheral);
   };
 
-  //XXX: This needs to be tested!!
   // convert an array of bytes representing a UUID into a hex string
   //    Note that all arrays need to be reversed before presenting to the user
   uuid = function (id) {
