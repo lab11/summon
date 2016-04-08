@@ -1,20 +1,12 @@
-# [bluetooth.js](https://github.com/lab11/summon/blob/master/examples/cordova-apps/bluetooth.js)
-## Bluetooth Plugin Shim For Summon UIs
+# Bluetooth Plugin for Summon UIs
 
-This file provides a less platform-dependent experience for UI developers using the [BLE Central plugin](https://github.com/don/cordova-plugin-ble-central).
+Summon provides the object `bluetooth` to UIs, a less platform-dependent version of [BLE Central plugin](https://github.com/don/cordova-plugin-ble-central)'s plugin object `ble`.
 
-To use, call `bluetooth.js` in `index.html`:
-````
-<script type="text/javascript" src="bluetooth.js"></script>
-````
+An example of a Summon UI script using this object can be found in [`light/`](light)
 
-This will provide object `bluetooth`, similar in functionality to the regular BLE plugin object `ble`.
-An example Summon app using this script can be found in `os-agnostic/`
+When a peripheral is discovered during `bluetooth.scan`, `bluetooth.startScan`, or `bluetooth.connect`, the success callback will return a modified peripheral object.
 
-
-However, when a peripheral is discovered during `bluetooth.scan` or `bluetooth.startScan`, the success callback will return a peripheral object that looks like this on both iOS and Android:
-
-The advertisement object has the original fields as defined by [cordova-plugin-ble-central](https://github.com/don/cordova-plugin-ble-central#advertising-data) as well as an additional field, `advertisment`, which is OS-agnostic. The format follows that of [noble](https://github.com/sandeepmistry/noble), the node.js BLE library. The original `advertising` field is maintained for backwards compatibility.
+The peripheral object has the original fields as defined by [cordova-plugin-ble-central](https://github.com/don/cordova-plugin-ble-central#advertising-data) as well as an additional field, `advertisment`, which is OS-agnostic. The format follows that of [noble](https://github.com/sandeepmistry/noble), the node.js BLE library. The original `advertising` field is maintained for backwards compatibility.
 
 ```javascript
 advertisement: {
@@ -31,7 +23,8 @@ advertisement: {
     ],
     channel: <int>,             // iOS only
     isConnectable: <boolean>,   // iOS only
-    flags: <int>,               // android only
+    flags: <int>,               // Android only
 }
 ```
 
+Beyond this variation, `bluetooth` has the same methods and data structures as [BLE Central plugin](https://github.com/don/cordova-plugin-ble-central#api)'s `ble`.
