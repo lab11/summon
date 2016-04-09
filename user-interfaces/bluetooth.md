@@ -1,6 +1,6 @@
 # Bluetooth Plugin for Summon UIs
 
-Summon provides the object `bluetooth` to UIs, a less platform-dependent version of [BLE Central plugin](https://github.com/don/cordova-plugin-ble-central)'s plugin object `ble`.
+Summon provides the object `bluetooth` to UIs, a less platform-dependent version of [BLE Central plugin](https://github.com/don/cordova-plugin-ble-central)'s object `ble`.
 
 An example of a Summon UI script using this object can be found in [`light/`](light)
 
@@ -27,4 +27,4 @@ advertisement: {
 }
 ```
 
-Beyond this variation, `bluetooth` has the same methods and data structures as [BLE Central plugin](https://github.com/don/cordova-plugin-ble-central#api)'s `ble`.
+Beyond this variation, `bluetooth` has the same methods and data structures as [BLE Central](https://github.com/don/cordova-plugin-ble-central#api)'s `ble`.
