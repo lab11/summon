@@ -82,10 +82,11 @@ public class MainActivity extends PreferenceActivity implements SharedPreference
         settingsBuilder = new AdvertiseSettings.Builder()
                 .setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_BALANCED)
                 .setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_HIGH)
-                .setConnectable(true).setTimeout(0);
+                .setConnectable(false).setTimeout(0);
         dataBuilder = new AdvertiseData.Builder()
-//                .setIncludeDeviceName(true)
-                .addServiceData(shortUUID("FEAA"),toByteArray(cur_settings.getString("advertisement_value","0000")));
+                .addServiceUuid(shortUUID("FEAA"))
+                .addServiceData(shortUUID("FEAA"), toByteArray(cur_settings.getString("advertisement_value","0000")));
+
         if (cur_settings.getBoolean("advertise_switch",false))
             bleAdvertiser.startAdvertising(settingsBuilder.build(), dataBuilder.build(), advertiseCallback);
     }

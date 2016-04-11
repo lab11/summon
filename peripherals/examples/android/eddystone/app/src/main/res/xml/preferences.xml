@@ -30,7 +30,7 @@
             android:defaultValue="umich.edu"
             android:key="ip_text"
             android:summary="%s"
-            android:maxLength="21"
+            android:maxLength="17"
             android:title="Destination URL" />
     </PreferenceCategory>
     <PreferenceCategory android:title="Parameters" android:key="uid">
