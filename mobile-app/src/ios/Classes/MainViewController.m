@@ -109,7 +109,7 @@ bool caching = true;
 
 - (UIWebView*) newCordovaViewWithFrame:(CGRect)bounds
 {
-    return[super newCordovaViewWithFrame:CGRectMake(0,20,bounds.size.width,bounds.size.height-20)];
+    return[super newCordovaViewWithFrame:CGRectMake(0,20,bounds.size.width,bounds.size.height)];
 }
 
 #pragma mark UIWebDelegate implementation
