@@ -7,8 +7,8 @@ android {
         applicationId "edu.umich.eecs.lab11.eddystone"
         minSdkVersion 21
         targetSdkVersion 22
-        versionCode 1
-        versionName "1.0"
+        versionCode 11
+        versionName "1.1"
     }
     buildTypes {
         release {

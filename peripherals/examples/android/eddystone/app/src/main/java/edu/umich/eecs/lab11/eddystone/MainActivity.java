@@ -48,9 +48,7 @@ public class MainActivity extends PreferenceActivity implements SharedPreference
         if (bleAdapter == null) {
             Toast.makeText(this, "Bluetooth not supported", Toast.LENGTH_SHORT).show();
             finish();
-            return;
         }
-
     }
 
     protected void onResume() {
@@ -58,14 +56,8 @@ public class MainActivity extends PreferenceActivity implements SharedPreference
         cur_settings = PreferenceManager.getDefaultSharedPreferences(this);
         cur_settings.registerOnSharedPreferenceChangeListener(this);
 
-        // Ensures Bluetooth is enabled on the device.  If Bluetooth is not currently enabled,
-        // fire an intent to display a dialog asking the user to grant permission to enable it.
-        if (!bleAdapter.isEnabled()) {
-            if (!bleAdapter.isEnabled()) {
-                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                startActivityForResult(enableBtIntent, 1);
-            }
-        }
+        // Ensures Bluetooth is enabled on the device.
+        if (!bleAdapter.isEnabled()) bleAdapter.enable();
 
         bleAdvertiser = bleAdapter.getBluetoothLeAdvertiser();
         advertise();
@@ -82,7 +74,7 @@ public class MainActivity extends PreferenceActivity implements SharedPreference
         settingsBuilder = new AdvertiseSettings.Builder()
                 .setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_BALANCED)
                 .setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_HIGH)
-                .setConnectable(false).setTimeout(0);
+                .setConnectable(true).setTimeout(0);
         dataBuilder = new AdvertiseData.Builder()
                 .addServiceUuid(shortUUID("FEAA"))
                 .addServiceData(shortUUID("FEAA"), toByteArray(cur_settings.getString("advertisement_value","0000")));
