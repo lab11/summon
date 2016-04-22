@@ -7,8 +7,9 @@ android {
         applicationId "edu.umich.eecs.lab11.eddystone"
         minSdkVersion 21
         targetSdkVersion 22
-        versionCode 11
-        versionName "1.1"
+        versionCode 12
+        versionName "1.2"
+        buildConfigField("String", "API_KEY", API_KEY) // Define API_KEY in project gradle.properties;
     }
     buildTypes {
         release {

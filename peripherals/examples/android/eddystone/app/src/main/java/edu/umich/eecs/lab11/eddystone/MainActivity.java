@@ -7,7 +7,6 @@ import android.bluetooth.le.AdvertiseData;
 import android.bluetooth.le.AdvertiseSettings;
 import android.bluetooth.le.BluetoothLeAdvertiser;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -17,6 +16,12 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 public class MainActivity extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private SharedPreferences cur_settings;
@@ -24,6 +29,7 @@ public class MainActivity extends PreferenceActivity implements SharedPreference
     private BluetoothLeAdvertiser bleAdvertiser;
     private AdvertiseSettings.Builder settingsBuilder;
     private AdvertiseData.Builder dataBuilder;
+    private String fullUrl="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +75,7 @@ public class MainActivity extends PreferenceActivity implements SharedPreference
     }
 
     private void advertise() {
-        setTitle("Advertise: " + cur_settings.getString("protocol","http://") + cur_settings.getString("ip_text","umich.edu"));
+        runOnUiThread( new Runnable() { public void run() { setTitle("Advertise: " + cur_settings.getString("final_url","http://umich.edu")); }});
         bleAdvertiser.stopAdvertising(advertiseCallback);
         settingsBuilder = new AdvertiseSettings.Builder()
                 .setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_BALANCED)
@@ -77,7 +83,7 @@ public class MainActivity extends PreferenceActivity implements SharedPreference
                 .setConnectable(true).setTimeout(0);
         dataBuilder = new AdvertiseData.Builder()
                 .addServiceUuid(shortUUID("FEAA"))
-                .addServiceData(shortUUID("FEAA"), toByteArray(cur_settings.getString("advertisement_value","0000")));
+                .addServiceData(shortUUID("FEAA"), toByteArray(cur_settings.getString("ad_value","0000")));
 
         if (cur_settings.getBoolean("advertise_switch",false))
             bleAdvertiser.startAdvertising(settingsBuilder.build(), dataBuilder.build(), advertiseCallback);
@@ -106,7 +112,8 @@ public class MainActivity extends PreferenceActivity implements SharedPreference
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.preferences);
-            getPreferenceScreen().removePreference(getPreferenceManager().findPreference("advertisement_value"));
+            getPreferenceScreen().removePreference(getPreferenceManager().findPreference("ad_value"));
+            getPreferenceScreen().removePreference(getPreferenceManager().findPreference("final_url"));
             getPreferenceScreen().removePreference(getPreferenceManager().findPreference("uid"));
             getPreferenceScreen().removePreference(getPreferenceManager().findPreference("tlm"));
         }
@@ -114,20 +121,37 @@ public class MainActivity extends PreferenceActivity implements SharedPreference
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        doGen();
-        if(cur_settings.getBoolean("advertise_switch",false)) {
-            advertise();
-        } else {
-            if (bleAdvertiser != null) bleAdvertiser.stopAdvertising(advertiseCallback);
-            setTitle("Advertise: Off");
-        }
-    }
+        new Thread( new Runnable(){ public void run() {
 
-    public void doGen() {
-        String pre = cur_settings.getString("protocol","http://").equals("http://") ? "02" : "03";
-        String url = cur_settings.getString("ip_text","umich.edu");
-        String IPTEXT = toUrlHex(url.getBytes());
-        cur_settings.edit().putString("advertisement_value","10BA" + pre + IPTEXT).commit();
+            String pre = cur_settings.getString("protocol","http://");
+            String url = cur_settings.getString("ip_text","umich.edu");
+            if (!fullUrl.equals(pre + url))
+                try {
+                    if (url.length() > 17) {
+                        HttpURLConnection huc = (HttpURLConnection) (new URL("https://www.googleapis.com/urlshortener/v1/url?key=" + BuildConfig.API_KEY)).openConnection();
+                        huc.setRequestMethod("POST");
+                        huc.setDoOutput(true);
+                        huc.setRequestProperty("Content-Type", "application/json");
+                        OutputStreamWriter wr = new OutputStreamWriter(huc.getOutputStream());
+                        wr.write("{\"longUrl\": \"" + pre + url + "\"}");
+                        wr.flush();
+                        BufferedReader rd = new BufferedReader(new InputStreamReader(huc.getInputStream()));
+                        String line, json = "";
+                        while ((line = rd.readLine()) != null) json += line;
+                        url = json.substring(json.indexOf(pre)+pre.length(), json.indexOf("\"",json.indexOf(pre)));
+                    }
+                    fullUrl = pre + cur_settings.getString("ip_text","umich.edu");
+                    cur_settings.edit().putString("final_url", pre + url).commit();
+                    cur_settings.edit().putString("ad_value", "10BA" + (pre.equals("http://")?"02":"03") + toHex(url.getBytes())).commit();
+                } catch (Exception e) { e.printStackTrace(); }
+
+            if (cur_settings.getBoolean("advertise_switch", false)) {
+                advertise();
+            } else {
+                if (bleAdvertiser != null) bleAdvertiser.stopAdvertising(advertiseCallback);
+                runOnUiThread( new Runnable() { public void run() { setTitle("Advertise: Off"); }});
+            }
+        }}).start();
     }
 
     /*
@@ -147,9 +171,9 @@ public class MainActivity extends PreferenceActivity implements SharedPreference
         return ParcelUuid.fromString("0000" + s + "-0000-1000-8000-00805F9B34FB");
     }
 
-    public String toUrlHex(byte[] ba) {
+    public String toHex(byte[] ba) {
         StringBuilder str = new StringBuilder();
-        for (int i = 0; i < ba.length; i++) str.append(String.format("%02X", ba[i]));
+        for (int i = 0; i<ba.length; i++) str.append(String.format("%02X", ba[i]));
         return str.toString();
     }
 

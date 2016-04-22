@@ -14,10 +14,14 @@
         android:selectable="false"/>
     <edu.umich.eecs.lab11.eddystone.EditTextPreference
         android:defaultValue=""
-        android:key="advertisement_value"
+        android:key="ad_value"
         android:summary="%s"
-        android:title="Advertisement Value"
-        android:selectable="false"/>
+        android:title="Advertisement Value"/>
+    <edu.umich.eecs.lab11.eddystone.EditTextPreference
+        android:defaultValue="http://umich.edu"
+        android:key="final_url"
+        android:summary="%s"
+        android:title="Final URL"/>
     <PreferenceCategory android:title="Parameters" android:key="url">
         <edu.umich.eecs.lab11.eddystone.ListPreference
             android:defaultValue="http://"
@@ -30,7 +34,6 @@
             android:defaultValue="umich.edu"
             android:key="ip_text"
             android:summary="%s"
-            android:maxLength="17"
             android:title="Destination URL" />
     </PreferenceCategory>
     <PreferenceCategory android:title="Parameters" android:key="uid">
