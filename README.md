@@ -4,6 +4,9 @@ Summon
 <img src="mobile-app/res/icon-android.png" alt="Summon" height="80" align="left"><i>The browser for the Web of Things. </i>
 <br />A platform for mobile devices that provides a convenient and scalable mechanism for IoT device interactivity, enabled by web-based interfaces and driven by the devices themselves.
 
+![Screenshot 1](https://lh3.googleusercontent.com/uDW2QXPCBx3a6gmGh_NUEPz7wNyMpDpMNhpvsXNyBa4VpbfWYqMauiGlVkAsOBWkzFY=h617-rw)
+![Screenshot 2](https://lh3.googleusercontent.com/g9LttUc4AtQ0sbw3-9V9tnXXhUD8XrHybek4gvMi57jmeimFq9tlof4NVndA0dIOl-E=h617-rw) 
+
 ![Screenshot 1](https://lh3.googleusercontent.com/HTsNrOxas0_-gczMrosP2jo6WV3vtxb3Wba3xDLP7UQLuDQSvrFTd5BkXdS1nFPlGfBj=w350-r) 
 ![Screenshot 2](https://lh3.googleusercontent.com/OzlZsmVuk78PptIiuJ61dZXRitTFIqhGqJJwYPYmhhpDGv0DmgQBGkfDp8aFOfSgDQ=w350-r)
 
