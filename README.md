@@ -7,9 +7,6 @@ Summon
 ![Screenshot 1](https://lh3.googleusercontent.com/uDW2QXPCBx3a6gmGh_NUEPz7wNyMpDpMNhpvsXNyBa4VpbfWYqMauiGlVkAsOBWkzFY=h617-rw)
 ![Screenshot 2](https://lh3.googleusercontent.com/g9LttUc4AtQ0sbw3-9V9tnXXhUD8XrHybek4gvMi57jmeimFq9tlof4NVndA0dIOl-E=h617-rw) 
 
-![Screenshot 1](https://lh3.googleusercontent.com/HTsNrOxas0_-gczMrosP2jo6WV3vtxb3Wba3xDLP7UQLuDQSvrFTd5BkXdS1nFPlGfBj=w350-r) 
-![Screenshot 2](https://lh3.googleusercontent.com/OzlZsmVuk78PptIiuJ61dZXRitTFIqhGqJJwYPYmhhpDGv0DmgQBGkfDp8aFOfSgDQ=w350-r)
-
 [<img src='https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png' alt="Google Play Store" height=38 />](https://play.google.com/store/apps/details?id=edu.umich.eecs.lab11.summon)
 [<img src="http://images.apple.com/itunes/link/images/link-badge-appstore.png" alt="iOS App Store" height=40 />](https://itunes.apple.com/us/app/summon-lab11/id1051205682)
 
