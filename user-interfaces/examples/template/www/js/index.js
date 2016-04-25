@@ -15,37 +15,29 @@ var app = {
     },
     // App Ready Event Handler
     onAppReady: function() {
-        if (window.gateway) {                                                       // if UI opened through Summon,
-            deviceId = window.gateway.getDeviceId();                                // get device ID from Summon
-            deviceName = window.gateway.getDeviceName();                            // get device name from Summon
+        if (gateway) {                                                       // if UI opened through Summon (gateway var exists),
+            deviceId = gateway.getDeviceId();                                // get device ID from Summon
+            deviceName = gateway.getDeviceName();                            // get device name from Summon
         }
-        ble.isEnabled(app.onEnable);                                                // if BLE enabled, goto: onEnable
+        bluetooth.isEnabled(app.onEnable);                                                // if BLE enabled, goto: onEnable
     },
     // App Paused Event Handler
-    onPause: function() {                                                           // if user leaves app, stop BLE
-        ble.disconnect(deviceId);
-        ble.stopScan();
+    onPause: function() {                                                                                         // if user leaves app, stop BLE
+        bluetooth.disconnectDevice();
+        bluetooth.stopScan();
     },
     // Bluetooth Enabled Callback
     onEnable: function() {
-        app.onPause();                                                              // halt any previously running BLE processes
-        ble.startScan([], app.onDiscover, app.onAppReady);                          // start BLE scan; if device discovered, goto: onDiscover
+        bluetooth.connectDevice(app.onConnect, app.onDeviceReady);                                                // start BLE scan; if device connected, goto: onConnect
         app.log("Searching for " + deviceName + " (" + deviceId + ").");
-    },
-    // BLE Device Discovered Callback
-    onDiscover: function(device) {
-        if (device.id == deviceId) {
-            app.log("Found " + deviceName + " (" + deviceId + ")! Connecting.");
-            ble.connect(deviceId, app.onConnect, app.onAppReady);                   // if device matches, connect; if connected, goto: onConnect
-        }
     },
     // BLE Device Connected Callback
     onConnect: function(device) {
         app.log("Connected to " + deviceName + " (" + deviceId + ")!");
         // uncomment to read characteristic on connect; if read is good, goto: onRead
-        ble.read(deviceId, serviceUuid, characteristicUuid, app.onRead, app.onError);  
+        bluetooth.read(deviceId, serviceUuid, characteristicUuid, app.onRead, app.onError);  
         // uncomment to write writeValue to characteristic on connect; if write is good, goto: onWrite
-        // ble.write(deviceId, serviceUuid, characteristicUuid, app.stringToBytes(writeValue), app.onWrite, app.onError); 
+        // bluetooth.write(deviceId, serviceUuid, characteristicUuid, app.stringToBytes(writeValue), app.onWrite, app.onError); 
     },
     // BLE Characteristic Read Callback
     onRead: function(data) {
@@ -58,8 +50,8 @@ var app = {
     // BLE Characteristic Read/Write Error Callback
     onError: function() {                                                           // on error, try restarting BLE
         app.log("Read/Write Error.")
-        ble.isEnabled(deviceId,function(){},app.onAppReady);
-        ble.isConnected(deviceId,function(){},app.onAppReady);
+        bluetooth.isEnabled(deviceId,function(){},app.onAppReady);
+        bluetooth.isConnected(deviceId,function(){},app.onAppReady);
     },
     // Function to Convert String to Bytes (to Write Characteristics)
     stringToBytes: function(string) {
