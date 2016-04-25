@@ -10,6 +10,8 @@ Summon
 [<img src='https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png' alt="Google Play Store" height=38 />](https://play.google.com/store/apps/details?id=edu.umich.eecs.lab11.summon)
 [<img src="http://images.apple.com/itunes/link/images/link-badge-appstore.png" alt="iOS App Store" height=40 />](https://itunes.apple.com/us/app/summon-lab11/id1051205682)
 
+####Video
+[![Video](http://img.youtube.com/vi/oQLkUcQoUe4/0.jpg)](https://youtu.be/oQLkUcQoUe4)
 
 Peripherals
 -----------
@@ -26,6 +28,7 @@ Example implementations of peripherals can be found in [`peripherals/examples/`]
 Creating Interactive User Interfaces
 ------------------------------------
 
-In addition to opening regular websites, Summon can open app-like web UIs that use [Apache Cordova](https://cordova.apache.org/) framework plugins. These UIs are still developed using standard web tools, but they are able to interact directly over Bluetooth and perform native application functions through provided Javascript APIs. Once the UI is hosted online, a peripheral can advertise a link to it, as with an ordinary website.  All standard Cordova plugins are supported, as well as [cordova-plugin-ble-central](https://github.com/don/cordova-plugin-ble-central).
+In addition to opening regular websites, Summon can open app-like web UIs that can make use of native smartphone features. These UIs are still developed using standard web tools, but they are able to do things like interact directly over Bluetooth and perform native application functions with provided Javascript APIs. Once the UI is hosted online or served locally from the device, the peripheral can advertise a link to it, as with an ordinary website.
 
-Example implementations of apps can be found in [`user-interfaces/examples/`](user-interfaces/examples).
+Further details are in the [User Interfaces README](user-interfaces/README.md).
+Example implementations of UIs can be found in [`user-interfaces/examples/`](user-interfaces/examples).
