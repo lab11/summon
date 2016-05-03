@@ -24,7 +24,7 @@ import java.net.URL;
 
 public class MainActivity extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private SharedPreferences cur_settings;
+    private SharedPreferences prefs;
     private BluetoothAdapter bleAdapter;
     private BluetoothLeAdvertiser bleAdvertiser;
     private AdvertiseSettings.Builder settingsBuilder;
@@ -34,8 +34,8 @@ public class MainActivity extends PreferenceActivity implements SharedPreference
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        cur_settings = PreferenceManager.getDefaultSharedPreferences(this);
-        cur_settings.registerOnSharedPreferenceChangeListener(this);
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        prefs.registerOnSharedPreferenceChangeListener(this);
         getFragmentManager().beginTransaction().replace(android.R.id.content, new MainFragment()).commit();
 
         // Use this check to determine whether BLE is supported on the device.  Then you can
@@ -59,8 +59,8 @@ public class MainActivity extends PreferenceActivity implements SharedPreference
 
     protected void onResume() {
         super.onResume();
-        cur_settings = PreferenceManager.getDefaultSharedPreferences(this);
-        cur_settings.registerOnSharedPreferenceChangeListener(this);
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        prefs.registerOnSharedPreferenceChangeListener(this);
 
         // Ensures Bluetooth is enabled on the device.
         if (!bleAdapter.isEnabled()) bleAdapter.enable();
@@ -71,11 +71,11 @@ public class MainActivity extends PreferenceActivity implements SharedPreference
 
     protected void onPause() {
         super.onPause();
-        cur_settings.unregisterOnSharedPreferenceChangeListener(this);
+        prefs.unregisterOnSharedPreferenceChangeListener(this);
     }
 
     private void advertise() {
-        runOnUiThread( new Runnable() { public void run() { setTitle("Advertise: " + cur_settings.getString("final_url","http://umich.edu")); }});
+        runOnUiThread( new Runnable() { public void run() { setTitle("Advertise: " + prefs.getString("final_url","http://umich.edu")); }});
         bleAdvertiser.stopAdvertising(advertiseCallback);
         settingsBuilder = new AdvertiseSettings.Builder()
                 .setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_BALANCED)
@@ -83,9 +83,9 @@ public class MainActivity extends PreferenceActivity implements SharedPreference
                 .setConnectable(true).setTimeout(0);
         dataBuilder = new AdvertiseData.Builder()
                 .addServiceUuid(shortUUID("FEAA"))
-                .addServiceData(shortUUID("FEAA"), toByteArray(cur_settings.getString("ad_value","0000")));
+                .addServiceData(shortUUID("FEAA"), toByteArray(prefs.getString("ad_value","0000")));
 
-        if (cur_settings.getBoolean("advertise_switch",false))
+        if (prefs.getBoolean("advertise_switch",false))
             bleAdvertiser.startAdvertising(settingsBuilder.build(), dataBuilder.build(), advertiseCallback);
     }
 
@@ -98,7 +98,7 @@ public class MainActivity extends PreferenceActivity implements SharedPreference
         public void onStartFailure(int errorCode) {
             super.onStartFailure(errorCode);
             toastNotify("Failed to Advertise");
-            cur_settings.edit().putBoolean("advertise_switch",false).commit();
+            prefs.edit().putBoolean("advertise_switch",false).commit();
             getFragmentManager().beginTransaction().replace(android.R.id.content, new MainFragment()).commit();
         }
 
@@ -120,12 +120,15 @@ public class MainActivity extends PreferenceActivity implements SharedPreference
     }
 
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, final String key) {
         new Thread( new Runnable(){ public void run() {
-
-            String pre = cur_settings.getString("protocol","http://");
-            String url = cur_settings.getString("ip_text","umich.edu");
-            if (!fullUrl.equals(pre + url))
+            String pre = prefs.getString("protocol","http://");
+            String url = prefs.getString("ip_text","umich.edu");
+            if (!prefs.getBoolean("advertise_switch", false) || !key.equals("advertise_switch")) {
+                if (bleAdvertiser != null) bleAdvertiser.stopAdvertising(advertiseCallback);
+                runOnUiThread( new Runnable() { public void run() { setTitle("Advertise: Off"); }});
+            }
+            if (!fullUrl.equals(pre + url)) {
                 try {
                     if (url.length() > 17) {
                         HttpURLConnection huc = (HttpURLConnection) (new URL("https://www.googleapis.com/urlshortener/v1/url?key=" + BuildConfig.API_KEY)).openConnection();
@@ -138,19 +141,16 @@ public class MainActivity extends PreferenceActivity implements SharedPreference
                         BufferedReader rd = new BufferedReader(new InputStreamReader(huc.getInputStream()));
                         String line, json = "";
                         while ((line = rd.readLine()) != null) json += line;
-                        url = json.substring(json.indexOf(pre)+pre.length(), json.indexOf("\"",json.indexOf(pre)));
+                        url = json.substring(json.indexOf(pre) + pre.length(), json.indexOf("\"", json.indexOf(pre)));
                     }
-                    fullUrl = pre + cur_settings.getString("ip_text","umich.edu");
-                    cur_settings.edit().putString("final_url", pre + url).commit();
-                    cur_settings.edit().putString("ad_value", "10BA" + (pre.equals("http://")?"02":"03") + toHex(url.getBytes())).commit();
-                } catch (Exception e) { e.printStackTrace(); }
-
-            if (cur_settings.getBoolean("advertise_switch", false)) {
-                advertise();
-            } else {
-                if (bleAdvertiser != null) bleAdvertiser.stopAdvertising(advertiseCallback);
-                runOnUiThread( new Runnable() { public void run() { setTitle("Advertise: Off"); }});
+                    fullUrl = pre + prefs.getString("ip_text", "umich.edu");
+                    prefs.edit().putString("final_url", pre + url).commit();
+                    prefs.edit().putString("ad_value", "10BA" + (pre.equals("http://") ? "02" : "03") + toHex(url.getBytes())).commit();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
+            if (prefs.getBoolean("advertise_switch", false))  advertise();
         }}).start();
     }
 
