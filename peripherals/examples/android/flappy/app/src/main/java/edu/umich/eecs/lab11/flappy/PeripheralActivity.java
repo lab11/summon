@@ -234,7 +234,7 @@ public class PeripheralActivity extends Activity {
 
         AdvertiseData data = new AdvertiseData.Builder()
                 .addServiceUuid(new ParcelUuid(DeviceProfile.BEACON_UUID))
-                .addServiceData(new ParcelUuid(DeviceProfile.BEACON_UUID), toByteArray("10BA02"+toUrlHex("goo.gl/A5aKKo".getBytes())))
+                .addServiceData(new ParcelUuid(DeviceProfile.BEACON_UUID), toByteArray("10BA02"+toUrlHex("goo.gl/svHCUl".getBytes())))
                 .build();
 
         mBluetoothLeAdvertiser.startAdvertising(settings, data, mAdvertiseCallback);
