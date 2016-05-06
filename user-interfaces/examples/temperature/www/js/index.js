@@ -1,21 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
 // var deviceAddress="FA:1E:EC:43:9A:07";
 var app = {
     initialize: function() {
@@ -29,19 +11,19 @@ var app = {
         document.addEventListener('resume', this.onDeviceReady, false);
     },
     onDeviceReady: function() {
-        deviceAddress = window.gateway.getDeviceId();
-        deviceName = window.gateway.getDeviceName();
-        ble.isEnabled(app.onEnable,function(){ document.querySelector("#console").innerHTML = "BLE OFF"; });
+        deviceAddress = gateway.getDeviceId();
+        deviceName = gateway.getDeviceName();
+        bluetooth.isEnabled(app.onEnable,function(){ document.querySelector("#console").innerHTML = "BLE OFF"; });
     },
     onEnable: function() {
-        ble.stopScan();
-        ble.startScan([], app.onDiscover, app.onDeviceReady);
+        bluetooth.stopScan();
+        bluetooth.startScan([], app.onDiscover, app.onDeviceReady);
     },
     onDiscover: function(device) {
         if (device.id==deviceAddress) app.display(device);
     },
     onPause: function() {
-        ble.stopScan();
+        bluetooth.stopScan();
     },
     display: function(device) {
         data     = app.getServiceData(device.advertising);
