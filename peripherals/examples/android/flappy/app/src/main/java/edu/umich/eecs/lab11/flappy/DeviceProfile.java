@@ -15,14 +15,14 @@ public class DeviceProfile {
 
     /* Unique ids generated for this device by 'uuidgen'. Doesn't conform to any SIG profile. */
 
-    //
     public static UUID BEACON_UUID = shortUUID("FEAA");
     //Service UUID to expose our time characteristics
     public static UUID SERVICE_UUID = shortUUID("B1D5");
-    //Read-only characteristic providing number of elapsed seconds since offset
-    public static UUID CHARACTERISTIC_ELAPSED_UUID = UUID.fromString("275348FB-C14D-4FD5-B434-7C3F351DEA5F");
     //Read-write characteristic for current offset timestamp
     public static UUID CHARACTERISTIC_UUID = shortUUID("B1DC");
+
+    // URI of the UI
+    public static byte[] URI_AD = uriAd("goo.gl/svHCUl");
 
     public static String getStateDescription(int state) {
         switch (state) {
@@ -48,12 +48,6 @@ public class DeviceProfile {
         }
     }
 
-    public static byte[] getShiftedTimeValue(int timeOffset) {
-        int value = Math.max(0,
-                (int)(System.currentTimeMillis()/1000) - timeOffset);
-        return bytesFromInt(value);
-    }
-
     public static byte[] bytesFromInt(int value) {
         //Convert result into raw bytes. GATT APIs expect LE order
         return ByteBuffer.allocate(4)
@@ -64,5 +58,16 @@ public class DeviceProfile {
 
     public static UUID shortUUID(String s) {
         return UUID.fromString("0000" + s + "-0000-1000-8000-00805F9B34FB");
+    }
+
+    public static byte[] uriAd(String s) {
+        StringBuilder str = new StringBuilder("10BA02");
+        for (byte b : s.getBytes()) str.append(String.format("%02X", b));
+        s = str.toString();
+        int len = s.length();
+        byte[] data = new byte[len / 2 + len % 2];
+        for (int i = 0; i < len; i += 2)
+            data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4) + ((i+1)>=len ? 0 : Character.digit(s.charAt(i+1), 16)));
+        return data;
     }
 }
