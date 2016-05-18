@@ -1,6 +1,5 @@
 {
   "dependencies": {
-    "bleno": "~0.1.8",
-    "uri-beacon": "~0.2.3"
+    "eddystone-beacon": "~1.0.6"
   }
 }

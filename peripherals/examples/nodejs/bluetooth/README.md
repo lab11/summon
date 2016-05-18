@@ -1,13 +1,11 @@
 NodeJS Peripheral Example
 =========================
 
-Only works on Linux.
+Creates a BLE beacon using the Eddystone-URL format. 
 
-Uses [bleno](https://github.com/sandeepmistry/bleno) and [uri-beacon](https://github.com/don/node-uri-beacon).
+Uses [bleno](https://github.com/sandeepmistry/bleno) and [eddystone-beacon](https://github.com/don/node-eddystone-beacon).
 
-Install Bluetooth utilities if you have not done so already:
-
-	sudo apt-get install bluetooth bluez-utils libbluetooth-dev
+Works on Mac, Linux, & Windows ([see prerequisites](https://github.com/sandeepmistry/bleno#prerequisites)).
 
 Install the dependencies:
 

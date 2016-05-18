@@ -1,2 +1,2 @@
-var uriBeacon = require('uri-beacon');
-uriBeacon.advertise(process.argv[2]);
+var uriBeacon = require('eddystone-beacon');
+uriBeacon.advertiseUrl(process.argv[2]);
