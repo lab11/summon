@@ -1,5 +1,5 @@
 /*
- * Acts as a remote for Camera app on another phone
+ * Acts as a remote for Flappy app on another phone
  */
 
 var deviceID = "";
@@ -25,7 +25,7 @@ var app = {
   },
   onConnect: function(device) {
     deviceID=device.id;
-    document.querySelector("div").setAttribute("class","");  
+    document.querySelector("div").setAttribute("class","Off");  
   },
   onToggle: function(event) {
     if (document.querySelector("div").getAttribute("class")!="Dis") {                                // if screen touched while connected,

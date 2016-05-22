@@ -10,9 +10,9 @@
     <title>Remote Camera Control</title>
     <style type="text/css">
       html, body {height:100%; background:#eee; margin:0; text-align:center; overflow:hidden; white-space:nowrap; -webkit-user-select: none;}
-      div  {position:fixed; left:50%; top:50%; transform:translateY(-50%) translateX(-50%); background:#F44336 url("camera.svg") no-repeat center; background-size:50%; height:8em; width:8em; border-radius:20em; box-shadow:2px 2px 0 rgba(0,0,0,.5)}
-      .On  {transform:translateY(-50%) translateX(-50%) rotate(-30deg); transition:transform .1s;}
-      .Off {transform:translateY(-50%) translateX(-50%) rotate( 90deg); transition:transform 1s;}
+      div  {position:fixed; left:50%; top:50%; transform:translateY(-50%) translateX(-50%); background:#F44336 url("camera.svg") no-repeat center; background-size:50%; height:8em; width:8em; border-radius:20em;}
+      .On  {box-shadow:-2px -2px 0 rgba(0,0,0,.5); transition:box-shadow .3s;}
+      .Off {box-shadow:2px 2px 0 rgba(0,0,0,.5); transition:box-shadow .3s;}
       .Dis {-webkit-filter: grayscale(100%) opacity(20%)}
     </style>
   </head>
