@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="msapplication-tap-highlight" content="no" />
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+        <title>BLE Chat</title>
+        <style>
+            body     {text-align:left; font-family:HelveticaNeue,sans-serif-light; background:#eee;}
+            input    {width:calc(100% - 42px); padding:10px; font-size:17px; position:fixed; bottom:10px; left:10px;}
+            #console {margin:50px 15px; position:fixed; bottom:10px; width:calc(100% - 30px)}
+            div>div  {height:0; clear:both; margin:0;}
+            .b {font-weight:100; margin:0; padding:5px; border-radius:5px;}
+            .t {font-weight:100; margin:0; text-align:center; background:none !important; color:#888 !important;}
+            .l {font-weight:100; margin:0; float: left; background:#fff; color:#444;}
+            .r {font-weight:100; margin:0; float:right; background:#0ae; color:#eee;}
+        </style>
+    </head>
+    <body style="text-align:left; font-family:sans-serif-light; color:#888">
+        <input name="input" id="input" placeholder="Send a message..."/>
+        <div id="console"></div>
+        <script type="text/javascript" src="js/index.js"></script>
+    </body>
+</html>
