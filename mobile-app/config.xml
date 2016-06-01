@@ -69,4 +69,5 @@
     <plugin name="cordova-plugin-camera" spec="^1.1.0" />
     <plugin name="cordova-plugin-zeroconf" spec="~1.1.0" />
     <plugin name="cordova-plugin-bluetoothle" spec="~3.1.0" />
+    <plugin name="cordova-plugin-bluetooth" spec="src/plugins/cordova-plugin-bluetooth"/>
 </widget>

@@ -1,6 +1,6 @@
-platforms
-plugins
-hooks
+/platforms
+/plugins
+/hooks
 
 *.csproj.user
 *.suo
