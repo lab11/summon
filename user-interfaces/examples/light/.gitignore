@@ -1,11 +1,8 @@
-platforms/android
-platforms/ios
-
-plugins/cordova-plugin-*
-plugins/com.*
-
+platforms
+plugins
 hooks
-
+config.xml
+/logo.png
 
 *.csproj.user
 *.suo
