@@ -1,8 +1,0 @@
-{
-    "com.megster.cordova.ble": {
-        "source": {
-            "type": "registry",
-            "id": "com.megster.cordova.ble"
-        }
-    }
-}
