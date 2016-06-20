@@ -11,30 +11,30 @@ APIs
 ----
  
 Information
-- [Battery Information](https://github.com/apache/cordova-plugin-battery-status/blob/master/README.md)
-- [Device Information](https://github.com/apache/cordova-plugin-device/blob/master/README.md)
-- [Locale Information](https://github.com/apache/cordova-plugin-globalization/README.md)
-- [Network Information](https://github.com/apache/cordova-plugin-network-information/blob/master/README.md)
+- [`summon.battery` (Battery Information)](https://github.com/apache/cordova-plugin-battery-status/blob/master/README.md)
+- [`summon.device` (Device Information)](https://github.com/apache/cordova-plugin-device/blob/master/README.md)
+- [`summon.globalization` (Locale Information)](https://github.com/apache/cordova-plugin-globalization/blob/master/README.md)
+- [`summon.connection` (Network Information)](https://github.com/apache/cordova-plugin-network-information/blob/master/README.md)
 
 Radio
-- [Bluetooth](bluetooth.js.md)
+- [`summon.bluetooth` (Bluetooth)](bluetooth.js.md)
 
 Sensors & Actuators
-- [Accelerometer](https://github.com/apache/cordova-plugin-device-motion/blob/master/README.md)
-- [Camera](https://github.com/apache/cordova-plugin-camera/blob/master/README.md)
-- [Compass](https://github.com/apache/cordova-plugin-device-orientation/blob/master/README.md)
-- [Geolocation](https://github.com/apache/cordova-plugin-geolocation/README.md)
-- [Media Capture](https://github.com/apache/cordova-plugin-media-capture/blob/master/README.md)
-- [Vibration](https://github.com/apache/cordova-plugin-vibration/blob/master/README.md)
+- [`summon.accelerometer` (Accelerometer)](https://github.com/apache/cordova-plugin-device-motion/blob/master/README.md)
+- [`summon.camera` (Camera)](https://github.com/apache/cordova-plugin-camera/blob/master/README.md)
+- [`summon.compass` (Compass)](https://github.com/apache/cordova-plugin-device-orientation/blob/master/README.md)
+- [`summon.geolocation` (Geolocation)](https://github.com/apache/cordova-plugin-geolocation/blob/master/README.md)
+- [`summon.device.capture` (Media Capture)](https://github.com/apache/cordova-plugin-media-capture/blob/master/README.md)
+- [`summon.vibrate` (Vibration)](https://github.com/apache/cordova-plugin-vibration/blob/master/README.md)
 
 Content
-- [Contacts](https://github.com/apache/cordova-plugin-contacts/blob/master/README.md)
-- [File Read/Write](https://github.com/apache/cordova-plugin-file/README.md)
-- [File Upload/Download](https://github.com/apache/cordova-plugin-file-transfer/blob/master/README.md)
-- [Media View](https://github.com/apache/cordova-plugin-media/blob/master/README.md)
+- [`summon.contacts` (Contacts)](https://github.com/apache/cordova-plugin-contacts/blob/master/README.md)
+- [`summon.file` (File Read/Write)](https://github.com/apache/cordova-plugin-file/blob/master/README.md)
+- [`window.FileTransfer` (File Upload/Download)](https://github.com/apache/cordova-plugin-file-transfer/blob/master/README.md)
+- [`window.Media` (Media View)](https://github.com/apache/cordova-plugin-media/blob/master/README.md)
 
 UI Elements
-- [Dialogs](https://github.com/apache/cordova-plugin-dialogs/blob/master/README.md)
+- [`summon.notification` (Dialogs)](https://github.com/apache/cordova-plugin-dialogs/blob/master/README.md)
 
 
 'Summoning' the UI
