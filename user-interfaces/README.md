@@ -72,7 +72,7 @@ Creating & Testing a UI as a Native App
 
         cd my-app
         cordova platform add android
-        cordova plugin add com.megster.cordova.ble
+        cordova plugin add cordova-plugin-ble-central
 
 5.  Copy directory `www` from `template` into your project directory.
 
@@ -88,7 +88,7 @@ Check out [Cordova Documentation](http://cordova.apache.org/docs/en/edge/) for m
 Debugging
 ---------
 
-One way to debug a Summon app is to use the Android logging utility. To get log
+One way to debug a Summon UI is to use the Android logging utility. To get log
 messages pertinent to Summon:
 
     adb logcat -s "chromium"
