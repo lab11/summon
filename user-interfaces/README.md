@@ -17,7 +17,7 @@ Information
 - [`summon.connection` (Network Information)](https://github.com/apache/cordova-plugin-network-information/blob/master/README.md)
 
 Radio
-- [`summon.bluetooth` (Bluetooth)](bluetooth.js.md)
+- [`summon.bluetooth` (Bluetooth)](bluetooth.md)
 
 Sensors & Actuators
 - [`summon.accelerometer` (Accelerometer)](https://github.com/apache/cordova-plugin-device-motion/blob/master/README.md)
@@ -42,15 +42,17 @@ UI Elements
 
 If the UI is hosted online, a BLE device can advertise the URL to display as the UI for the device in Summon.
 
-If you do not have anywhere to host web content, you might want to try [hosting from Google Drive](https://support.google.com/drive/answer/2881970?hl=en).
+To quickly host a UI, we like to use [RawGit](http://rawgit.com/), which is a free convenient service that serves your raw HTML, CSS, and Javascript from GitHub.
 
-To fit the URL of the app in a BLE advertisement, you will likely have to create a short URL link. Google provides a [service for this](http://goo.gl).
+To fit the URL of the UI in a BLE advertisement, you will likely have to create a short URL link. Google provides a [service for this](http://goo.gl).
 
-Setup the BLE device to advertise the short URL using the [Eddystone-URL specification](https://github.com/google/eddystone/tree/master/eddystone-url) or the BLE URI ad type. 
+Setup the BLE device to advertise the short URL using the [Eddystone-URL specification](https://github.com/google/eddystone/tree/master/eddystone-url). 
+
+For example, a BLE light bulb can advertise [`https://goo.gl/rwOVN2`](https://goo.gl/rwOVN2), which redirects to [`https://cdn.rawgit.com/lab11/summon/master/user-interfaces/examples/light/www/`](https://cdn.rawgit.com/lab11/summon/master/user-interfaces/examples/light/www/index.html), a UI hosted on RawGit with source content located at [`https://github.com/lab11/summon/tree/master/user-interfaces/examples/light/www`](https://github.com/lab11/summon/tree/master/user-interfaces/examples/light/www).
 
 Check out [peripheral examples](../peripherals/) to see implementation of software for various BLE devices.
 
-
+<!--
 Creating & Testing a UI as a Native App
 ---------------------------------------
 
@@ -83,7 +85,7 @@ Creating & Testing a UI as a Native App
         cordova run
 
 Check out [Cordova Documentation](http://cordova.apache.org/docs/en/edge/) for more information.
-
+-->
 
 Debugging
 ---------
