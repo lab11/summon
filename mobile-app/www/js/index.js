@@ -11,7 +11,6 @@ var fileUrl = null;
 var dirUrl = null;
 var prfocus = false;
 
-// var rssiData = {start:[]};
 var app = {
   initialize: function() { this.bindEvents(); },
   bindEvents: function() {
@@ -43,8 +42,6 @@ var app = {
     });
   },
   onAppReady: function() {
-    // rssiData.start.push($.now());
-    // setTimeout(function(){$.post("https://f1lqsmvf82az.runscope.net/",JSON.stringify(rssiData),null)},60000);
     location.hash='';
     $("#dialog").popup("close");
     if ( device.platform === "iOS" ) {$.mobile.hashListeningEnabled=false; }
@@ -59,7 +56,7 @@ var app = {
     $.mobile.loading("show");
     bluetooth.disconnect(d.id||"",null);
     if ( device.platform === "iOS" ) bluetooth.stopScan(function(){ bluetooth.startScan([],app.onPeripheralFound); },app.onAppReady);
-	  else bluetooth.isEnabled(app.scan,function(){bluetooth.enable(app.onAppReady,null)});
+    else bluetooth.isEnabled(app.scan,function(){bluetooth.enable(app.onAppReady,null)});
     // nfc.addNdefListener(app.onNfcFound, function(){console.log("nfc success")}, function(){console.log("nfc fail")});
     if(navigator.network.connection.type != Connection.NONE) {
       cordova.plugins.zeroconf.watch("_http._tcp.local.",app.onDiscover); 
@@ -169,9 +166,6 @@ var app = {
   //   }
   // },
   onPeripheralFound: function(peripheral) {
-    // if (typeof rssiData[peripheral.id] == "undefined") rssiData[peripheral.id] = {time:[],rssi:[]};
-    // rssiData[peripheral.id].time.push($.now());
-    // rssiData[peripheral.id].rssi.push(peripheral.rssi);
     if (!peripheral.name) peripheral.name = "";
     if (peripheral.id==(d.id||"")) app.updateHead(peripheral,true);
     if (peripheral.uri) {
