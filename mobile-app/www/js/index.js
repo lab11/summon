@@ -138,20 +138,6 @@ var app = {
       }
     }
   },
-  // onPostSuccess: function(data,peripheral){
-  //   if (data.metadata[0]) {
-  //     peripheral.meta = data.metadata[0];
-  //     peripheral.apps = [];
-  //     $('li[dev-id="'+(peripheral.id||peripheral.service.name)+'"]').html($("<a>",{href:'#',onclick:"window.open(\""+peripheral.meta.url+"\",'_system')"}).append($("<img>",{src:peripheral.meta.icon})).append($("<h2>").html(peripheral.meta.title)).append($("<p>").html(peripheral.meta.url+"<br/>"+"<i class='zmdi "+(peripheral.service?"zmdi-network-wifi-alt":"zmdi-bluetooth")+"zmd-fw'></i> "+(peripheral.name||(peripheral.service.name+" - "+peripheral.service.hostName))+" ("+peripheral.service.type+")"))).append($("<a>",{href:'#dialog',"data-rel":'popup',"data-transition":"pop",class:'zmdi zmdi-more-vert',onclick:"app.infoPopup(\""+(peripheral.id||peripheral.service.name)+"\",\""+(peripheral.id?"ble":"nsd")+"\")"}));
-  //   } else $('li[dev-id="'+(peripheral.id||peripheral.service.name)+'"]').html($("<a>",{href:"#",onclick:"window.open(\""+(peripheral.uri||("http://"+peripheral.service.addresses[0]+":"+peripheral.service.port))+"\",'_system');"}).append($("<img>",{src:"img/"+(peripheral.id?"ble":"dnssd")+".svg"})).append($("<h2>").html(peripheral.name||peripheral.service.name)).append($("<p>").html((peripheral.uri||("http://"+peripheral.service.addresses[0]+":"+peripheral.service.port))+"<br/><i class='zmdi "+(peripheral.id?"zmdi-bluetooth":"zmdi-network-wifi-alt")+" zmd-fw'></i> "+(peripheral.name||(peripheral.service.name+" - "+peripheral.service.hostName))+" ("+peripheral.service.type+")"))).append($("<a>",{href:"#dialog","data-rel":"popup","data-transition":"pop",class:"zmdi zmdi-more-vert",onclick:"app.infoPopup('"+peripheral.service.name+"','nsd')"}));
-  //   } else $('li[dev-id="'+peripheral.id+                           '"]').html($("<a>",{href:'#',onclick:"window.open(\""+peripheral.uri+                                                                           "\",'_system');"})                                                                                                                                      .append($("<p>").html(peripheral.uri+                                                                           "<br/><i class='zmdi zmdi-bluetooth                                               zmd-fw'></i> "+peripheral.name+" ("+peripheral.id +")")));
-  //   $.mobile.loading("hide");
-  //   app.peripherals[peripheral.id||peripheral.service.name] = peripheral;
-  //   window.localStorage.setItem("peripherals",JSON.stringify($.extend(true,{},app.getStoredObject("peripherals"),app.peripherals)));
-  //   $("#devs").listview("refresh");
-  // },
-  // onPostFail: function(e,peripheral) {
-  // },
   // onNfcFound: function(nfcEvent) {
   //   payload = util.bytesToString(nfcEvent.tag.ndefMessage[0].payload);
   //   if (typeof app.peripherals[payload] == "undefined") {
