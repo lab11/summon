@@ -46,7 +46,10 @@ var app = {
     $("#dialog").popup("close");
     if ( device.platform === "iOS" ) {$.mobile.hashListeningEnabled=false; }
     $('body').addClass(device.platform.toLowerCase());
-    $(".pref").each(function(){$(this).prop("checked",localStorage.getItem($(this).attr("id"))!="false").flipswitch("refresh")});
+    $(".pref").each(function(){
+      if ($(this).attr("id")=="br") $(this).val(localStorage.getItem("br")||".ba");
+      else $(this).prop("checked",localStorage.getItem($(this).attr("id"))!="false").flipswitch("refresh");
+    });
     $('#devs').html($("<li>",{"data-role":"list-divider",id:"other",class:"other"}).html("Other Devices"));
     $("#other").hide();
     gateway.cache($("#ch").prop("checked"));
@@ -72,14 +75,20 @@ var app = {
     // nfc.removeNdefListener(app.onNfcFound);
   },
   onPrefChange: function() {
-    localStorage.setItem($(this).attr("id"),$(this).prop("checked"));
-    if ($(this).attr("id")=="dv") $(this).prop("checked") ? $(".other").show() : $(".other").hide();
-    else if ($(this).attr("id")=="ch") {
-      if(!app.getStoredObject("ch")) {
-        app.cachelist={};
-        localStorage.setItem("peripherals","{}");
+    if ($(this).attr("id")=="br") {
+      localStorage.setItem("br",$(this).val());
+      $(".item").show();
+      $($(this).val()).hide();
+    } else {
+      localStorage.setItem($(this).attr("id"),$(this).prop("checked"));
+      if ($(this).attr("id")=="dv") $(this).prop("checked") ? $(".other").show() : $(".other").hide();
+      else if ($(this).attr("id")=="ch") {
+        if(!app.getStoredObject("ch")) {
+          app.cachelist={};
+          localStorage.setItem("peripherals","{}");
+        }
+        gateway.cache($("#ch").prop("checked"));
       }
-      gateway.cache($("#ch").prop("checked"));
     }
     if ($("#other").is( "li:last-child" )) $("#other").hide();
   },
