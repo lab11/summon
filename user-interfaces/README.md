@@ -17,7 +17,7 @@ Information
 - [`summon.connection` (Network Information)](https://github.com/apache/cordova-plugin-network-information/blob/master/README.md)
 
 Radio
-- [`summon.bluetooth` (Bluetooth)](bluetooth.md)
+- [`summon.bluetooth` (Bluetooth)](mobile-app/src/plugins/cordova-plugin-bluetooth/README.md)
 
 Sensors & Actuators
 - [`summon.accelerometer` (Accelerometer)](https://github.com/apache/cordova-plugin-device-motion/blob/master/README.md)
