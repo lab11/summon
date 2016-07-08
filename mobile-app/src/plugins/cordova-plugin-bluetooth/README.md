@@ -2,7 +2,7 @@
 
 Summon provides the object `summon.bluetooth` to UIs, a less platform-dependent version of [BLE Central plugin](https://github.com/don/cordova-plugin-ble-central)'s object `ble`.
 
-Examples of a Summon UI script using this object can be found in [`light/`](light) and [`template/`](template).
+Examples of a Summon UI script using this object can be found in the [`/user-interfaces/examples/light/`](light) and [`/user-interfaces/examples/template/`](template) sample UI projects.
 
 When a peripheral is discovered during `summon.bluetooth.scan`, `summon.bluetooth.startScan`, or `summon.bluetooth.connect`, the success callback will return a modified peripheral object.
 
