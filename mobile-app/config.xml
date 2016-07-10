@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="edu.umich.eecs.lab11.summon" version="0.2.3" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="edu.umich.eecs.lab11.summon" version="0.2.5" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Summon</name>
     <description>
         The Browser for the Local Web of Things.
@@ -18,6 +18,7 @@
     <allow-intent href="geo:*" />
     <hook type="after_prepare" src="src/scripts/beforeCompile.js" />
     <preference name="SplashScreenDelay" value="0" />
+    <preference name="FadeSplashScreenDuration" value="0"/>
     <preference name="StatusBarOverlaysWebView" value="false" />
     <preference name="StatusBarBackgroundColor" value="#F2A507" />
     <platform name="android">
@@ -28,47 +29,66 @@
         <allow-intent href="market:*" />
     </platform>
     <platform name="ios">
-        <icon height="29" src="res/icon29.png" width="29" />
-        <icon height="58" src="res/icon58.png" width="58" />
-        <icon height="87" src="res/icon87.png" width="87" />
-        <icon height="40" src="res/icon40.png" width="40" />
-        <icon height="80" src="res/icon80.png" width="80" />
-        <icon height="120" src="res/icon120.png" width="120" />
-        <icon height="180" src="res/icon180.png" width="180" />
-        <icon height="76" src="res/icon76.png" width="76" />
-        <icon height="152" src="res/icon152.png" width="152" />
-        <icon height="167" src="res/icon180.png" width="167" />
+        <splash src="res/splash-320x480.png"   width="320"  height="480"  />
+        <splash src="res/splash-640x960.png"   width="640"  height="960"  />
+        <splash src="res/splash-768x1024.png"  width="768"  height="1024" />
+        <splash src="res/splash-1536x2048.png" width="1536" height="2048" />
+        <splash src="res/splash-1024X768.png"  width="1024" height="768"  />
+        <splash src="res/splash-2048x1536.png" width="2048" height="1536" />
+        <splash src="res/splash-640x1136.png"  width="640"  height="1136" />
+        <splash src="res/splash-750x1334.png"  width="750"  height="1334" />
+        <splash src="res/splash-1242x2208.png" width="1242" height="2208" />
+        <splash src="res/splash-2208x1242.png" width="2208" height="1242" />
+        <splash src="res/splash-2048x2732.png" width="2048" height="2732" />
+        <splash src="res/splash-2048x2732.png" width="2732" height="2048" />
+        <icon src="res/icon-ios-29.png"  height="29"  width="29"  />
+        <icon src="res/icon-ios-58.png"  height="58"  width="58"  />
+        <icon src="res/icon-ios-87.png"  height="87"  width="87"  />
+        <icon src="res/icon-ios-40.png"  height="40"  width="40"  />
+        <icon src="res/icon-ios-80.png"  height="80"  width="80"  />
+        <icon src="res/icon-ios-120.png" height="120" width="120" />
+        <icon src="res/icon-ios-180.png" height="180" width="180" />
+        <icon src="res/icon-ios-50.png"  height="50"  width="50"  />
+        <icon src="res/icon-ios-100.png" height="100" width="100" />
+        <icon src="res/icon-ios-57.png"  height="57"  width="57"  />
+        <icon src="res/icon-ios-114.png" height="114" width="114" />
+        <icon src="res/icon-ios-72.png"  height="72"  width="72"  />
+        <icon src="res/icon-ios-144.png" height="144" width="144" />
+        <icon src="res/icon-ios-76.png"  height="76"  width="76"  />
+        <icon src="res/icon-ios-152.png" height="152" width="152" />
+        <icon src="res/icon-ios-167.png" height="167" width="167" />
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
         <preference name="DisallowOverscroll" value="true" />
         <preference name="BackupWebStorage" value="local" />
         <preference name="deployment-target" value="7.0" />
         <preference name="AppendUserAgent" value="Summon" />
+        <!-- <feature name="CDVWKWebViewEngine">
+            <param name="ios-package" value="CDVWKWebViewEngine" />
+        </feature>
+        <preference name="CordovaWebViewEngine" value="CDVWKWebViewEngine" /> -->
     </platform>
-    <plugin name="cordova-plugin-console" spec="^1.0.0" />
-    <plugin name="cordova-plugin-device" spec="^1.0.0" />
-    <plugin name="cordova-plugin-network-information" spec="^1.0.0" />
-    <plugin name="cordova-plugin-whitelist" spec="1" />
-    <plugin name="cordova-plugin-statusbar" spec="^1.0.0" />
-    <plugin name="cordova-plugin-battery-status" spec="^1.0.0" />
-    <plugin name="cordova-plugin-device-motion" spec="^1.1.0" />
-    <plugin name="cordova-plugin-legacy-whitelist" spec="^1.0.0" />
-    <plugin name="cordova-plugin-media" spec="^1.0.0" />
-    <plugin name="cordova-plugin-inappbrowser" spec="^1.0.0" />
-    <plugin name="cordova-plugin-file-transfer" spec="^1.1.0" />
-    <plugin name="cordova-plugin-contacts" spec="^1.0.0" />
-    <plugin name="cordova-plugin-splashscreen" spec="^2.0.0" />
-    <plugin name="cordova-plugin-dialogs" spec="^1.1.0" />
-    <plugin name="cordova-plugin-media-capture" spec="^1.0.0" />
-    <plugin name="cordova-plugin-globalization" spec="^1.0.0" />
-    <plugin name="cordova-plugin-test-framework" spec="^1.0.0" />
-    <plugin name="cordova-plugin-vibration" spec="^1.1.0" />
-    <plugin name="cordova-plugin-zip" spec="~3.0.0" />
-    <plugin name="cordova-plugin-ble-central" spec="~1.0.1" />
-    <plugin name="cordova-plugin-device-orientation" spec="^1.0.0" />
-    <plugin name="cordova-plugin-geolocation" spec="^1.0.0" />
-    <plugin name="cordova-plugin-camera" spec="^1.1.0" />
-    <plugin name="cordova-plugin-zeroconf" spec="~1.1.0" />
-    <plugin name="cordova-plugin-bluetoothle" spec="~3.1.0" />
+    <plugin name="cordova-plugin-console" spec="^1.0.3" />
+    <plugin name="cordova-plugin-device" spec="^1.1.2" />
+    <plugin name="cordova-plugin-network-information" spec="^1.2.1" />
+    <plugin name="cordova-plugin-whitelist" spec="^1.2.2" />
+    <plugin name="cordova-plugin-statusbar" spec="^2.1.3" />
+    <plugin name="cordova-plugin-battery-status" spec="^1.1.2" />
+    <plugin name="cordova-plugin-device-motion" spec="^1.2.1" />
+    <plugin name="cordova-plugin-legacy-whitelist" spec="^1.1.1" />
+    <plugin name="cordova-plugin-media" spec="^2.3.0" />
+    <plugin name="cordova-plugin-inappbrowser" spec="^1.4.0" />
+    <plugin name="cordova-plugin-file-transfer" spec="^1.5.1" />
+    <plugin name="cordova-plugin-contacts" spec="^2.1.0" />
+    <plugin name="cordova-plugin-splashscreen" spec="^3.2.2" />
+    <plugin name="cordova-plugin-dialogs" spec="^1.2.1" />
+    <plugin name="cordova-plugin-media-capture" spec="^1.3.0" />
+    <plugin name="cordova-plugin-globalization" spec="^1.0.3" />
+    <plugin name="cordova-plugin-vibration" spec="^2.1.1" />
+    <plugin name="cordova-plugin-zip" spec="^3.1.0" />
+    <plugin name="cordova-plugin-device-orientation" spec="^1.0.3" />
+    <plugin name="cordova-plugin-geolocation" spec="^2.2.0" />
+    <plugin name="cordova-plugin-camera" spec="^2.2.0" />
+    <plugin name="cordova-plugin-zeroconf" spec="src/plugins/cordova-plugin-zeroconf" />
     <plugin name="cordova-plugin-bluetooth" spec="src/plugins/cordova-plugin-bluetooth"/>
 </widget>
