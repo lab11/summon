@@ -2,9 +2,10 @@
         id="cordova-plugin-bluetooth" version="0.0.1">
     <name>Bluetooth</name>
     <description>Bluetooth Plugin</description>
+    <author>Thomas Zachariah</author>
     <license>Apache 2.0</license>
     <keywords>summon, bluetooth, BLE, bluetooth low energy, bluetooth smart</keywords>
-    <dependency id="cordova-plugin-ble-central" version="~1.0.1" />
+    <dependency id="cordova-plugin-ble-central" version="^1.1.1" />
     <js-module src="bluetooth.js" name="bluetooth">
         <clobbers target="bluetooth" />
     </js-module>

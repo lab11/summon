@@ -1,6 +1,7 @@
 var PRTCOL = ["","","aaa:","aaas:","about:","acap:","acct:","cap:","cid:","coap:","coaps:","crid:","data:","dav:","dict:","dns:","file:","ftp:","geo:","go:","gopher:","h323:","http:","https:","iax:","icap:","im:","imap:","info:","ipp:","ipps:","iris:","iris.beep:","iris.xpc:","iris.xpcs:","iris.lwz:","jabber:","ldap:","mailto:","mid:","msrp:","msrps:","mtqp:","mupdate:","news:","nfs:","ni:","nih:","nntp:","opaquelocktoken:","pop:","pres:","reload:","rtsp:","rtsps:","rtspu:","service:","session:","shttp:","sieve:","sip:","sips:","sms:","snmp:","soap.beep:","soap.beeps:","stun:","stuns:","tag:","tel:","telnet:","tftp:","thismessage:","tn3270:","tip:","turn:","turns:","tv:","urn:","vemmi:","ws:","wss:","xcon:","xcon-userid:","xmlrpc.beep:","xmlrpc.beeps:","xmpp:","z39.50r:","z39.50s:","acr:","adiumxtra:","afp:","afs:","aim:","apt:","attachment:","aw:","barion:","beshare:","bitcoin:","bolo:","callto:","chrome:","chrome-extension:","com-eventbrite-attendee:","content:","cvs:","dlna-playsingle:","dlna-playcontainer:","dtn:","dvb:","ed2k:","facetime:","feed:","feedready:","finger:","fish:","gg:","git:","gizmoproject:","gtalk:","ham:","hcp:","icon:","ipn:","irc:","irc6:","ircs:","itms:","jar:","jms:","keyparc:","lastfm:","ldaps:","magnet:","maps:","market:","message:","mms:","ms-help:","ms-settings-power:","msnim:","mumble:","mvn:","notes:","oid:","palm:","paparazzi:","pkcs11:","platform:","proxy:","psyc:","query:","res:","resource:","rmi:","rsync:","rtmfp:","rtmp:","secondlife:","sftp:","sgn:","skype:","smb:","smtp:","soldat:","spotify:","ssh:","steam:","submit:","svn:","teamspeak:","teliaeid:","things:","udp:","unreal:","ut2004:","ventrilo:","view-source:","webcal:","wtai:","wyciwyg:","xfire:","xri:","ymsgr:","example:","ms-settings-cloudstorage:"];
 var SUFFIX = [".com/",".org/",".edu/",".net/",".info/",".biz/",".gov/",".com",".org",".edu",".net",".info",".biz",".gov"];
 var PREFIX = ["http://www.","https://www.","http://","https://","urn:uuid:"];
+var J2XUS  = ["6EKY8W","WRzp2g","qtn9V9","WRKqIy","2W2FTt","BA1zPM","8685Uw","hWTo8W","nCQV8C","sbMMHT","9aD6Wi","2ImXWJ","dbhGnF","3YACnH","449K5X","jEKPu9","xWppj1","Edukt0"];
 
 // Create a common advertisement interface between iOS and android
 //  This format follows the nodejs BLE library, noble
@@ -106,6 +107,12 @@ var parse = function (peripheral, success) {
       }).call(n.data.subarray(3));
     }
   }
+
+  try {
+    var gref = peripheral.uri.indexOf("goo.gl/"); 
+    if (gref>=0 && J2XUS.indexOf(peripheral.uri.substr(gref+7,gref+13))>=0) 
+      peripheral.uri = peripheral.uri.replace("goo.gl","j2x.us");
+  } catch (e) {}
 
   peripheral.advertisement = advertisement;
 
