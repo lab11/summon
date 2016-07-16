@@ -7,7 +7,7 @@ TARGET_PLATFORMS += android
 
 ifeq ($(UNAME), Darwin)
 #can only be build on macs
-TARGET_PLATFORMS += ios@3.9.2
+TARGET_PLATFORMS += ios
 endif
 
 
@@ -20,8 +20,7 @@ platform:
 
 link:
 	ln -fs $(PWD)/src/android/* platforms/android/src/edu/umich/eecs/lab11/summon/.
-	ln -fs $(PWD)/src/ios/Classes/* platforms/ios/Summon/Classes/.
-	ln -fs $(PWD)/src/ios/Summon-Info.plist platforms/ios/Summon/.
+	ln -fs $(PWD)/src/ios/CordovaLib/Classes/Private/Plugins/CDVUIWebViewEngine/CDVUIWebViewNavigationDelegate.m platforms/ios/CordovaLib/Classes/Private/Plugins/CDVUIWebViewEngine/.
 
 build:
 	cordova build
