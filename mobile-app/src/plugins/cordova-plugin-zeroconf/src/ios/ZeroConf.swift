@@ -87,9 +87,8 @@ import Foundation
         
         let fullType = command.argumentAtIndex(0) as! String
         let fullTypeArr = fullType.characters.split{$0 == "."}.map(String.init)
-        let domain = fullTypeArr[2]
-        let type = fullTypeArr[0] + "." + fullTypeArr[1]
-        
+        let domain = fullTypeArr.last!;
+        let type = (fullTypeArr.dropLast()).joinWithSeparator(".")
         #if DEBUG
             print("ZeroConf: watch \(fullType)")
         #endif
@@ -250,6 +249,13 @@ import Foundation
                 #if DEBUG
                     print("netServiceDidFindService:\(netService)")
                 #endif
+                if netService.domain=="." {
+                    let service = jsonifyService(netService)
+                    let message: NSDictionary = NSDictionary(objects: ["type", service], forKeys: ["action", "service"])
+                    let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAsDictionary: message as [NSObject : AnyObject])
+                    pluginResult.setKeepCallbackAsBool(true)
+                    commandDelegate?.sendPluginResult(pluginResult, callbackId: callbackId)
+                }
                 netService.delegate = self
                 netService.resolveWithTimeout(0)
                 services[netService.name] = netService // keep strong reference to catch didResolveAddress
@@ -295,8 +301,8 @@ import Foundation
             }
             
             let service: NSDictionary = NSDictionary(
-                objects: [netService.domain, netService.type, netService.port, netService.name, addresses, txtRecord],
-                forKeys: ["domain", "type", "port", "name", "addresses", "txtRecord"])
+                objects: [netService.domain, netService.type, netService.port, netService.name, "\(netService.hostName ?? "")", addresses, txtRecord],
+                forKeys: ["domain", "type", "port", "name", "hostName", "addresses", "txtRecord"])
             
             return service
         }
@@ -344,9 +350,7 @@ import Foundation
                     }
                     if ipString != nil {
                         let ip = String.fromCString(ipString!)
-                        if ip != nil {
-                            ips.append(ip!)
-                        }
+                        ips.append(ip!)
                     }
                 }
             }
