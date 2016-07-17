@@ -146,6 +146,14 @@ td:last-child {
     padding:1.05em 5px !important; font-weight:normal; font-size:14px; border-radius:0 !important;
 }
 
+.browse-ble .nsd {
+    display:none !important;
+}
+
+.browse-nsd .ble {
+    display:none !important;
+}
+
 #count {
     border-radius:2em; 
     padding:0; 

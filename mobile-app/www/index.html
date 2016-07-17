@@ -9,14 +9,14 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <link rel="stylesheet" href="css/themes/default/jquery.mobile-1.4.5.min.css">
-    <link rel="stylesheet" href="theme/vendor/wow/animate.css">
+    <!-- <link rel="stylesheet" href="theme/vendor/wow/animate.css"> -->
     <link rel="stylesheet" href="theme/css/nativedroid2.css">
     <link rel="stylesheet" href="theme/css/nativedroid2.color.amber.css">
     <link rel="stylesheet" href="css/xpull.css">
     <link rel="stylesheet" href="css/index.css">
     <title>Summon</title>
   </head>
-  <body class="wow fadeIn">
+  <body>
     <div data-role="page" id="page1">
       <div data-role="header" data-position="fixed" data-tap-toggle="false" class="ph">
         <a href="#panel" class="ui-btn ui-btn-left"><i class="zmdi zmdi-menu zmd-lg"></i></a>
@@ -46,7 +46,7 @@
         <form>
           <ul data-role="listview" data-icon="false">
             <li>Settings</li>
-            <li><select id="br" name="br" data-native-menu="false"><option value="ba">Browse All</option><option value="bb">Browse Bluetooth</option><option value="bm">Browse mDNS (Wi-Fi)</option></select></li>
+            <li><select id="br" name="br" class="pref" data-native-menu="false"><option value="all">Browse All</option><option value="ble">Browse Bluetooth</option><option value="nsd">Browse mDNS (Wi-Fi)</option></select></li>
             <li><table><tr><td><label for="dv">See Other Devices:</label></td><td><input type="checkbox" class="pref" id="dv" name="dv" data-role="flipswitch"/></td></tr></table></li>
             <li><table><tr><td><label for="ch">Allow Caching:    </label></td><td><input type="checkbox" class="pref" id="ch" name="ch" data-role="flipswitch"/></td></tr></table></li>
             <li class="pa"><a href="https://github.com/lab11/summon"> Summon Project</a></li>
@@ -79,7 +79,6 @@
     <script src="js/jquery-ui.min.js"></script>
     <script src="js/jquery.mobile-1.4.5.min.js"></script>
     <script src="js/xpull.min.js"></script>
-    <script src="theme/vendor/wow/wow.min.js"></script>
     <script src="theme/js/nativedroid2.js"></script>
     <script src="theme/nd2settings.js"></script>
     <script src="cordova.js"></script>

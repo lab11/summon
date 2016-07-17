@@ -20,8 +20,9 @@ var app = {
     $('#content').xpull({'callback':app.onAppReady,'spinnerTimeout':10,'pullThreshold':100});
     $(".pref").change(app.onPrefChange);
     $("#panel a").click(function(e){e.preventDefault();window.open($(this).attr("href"),'_system');return false;});
-    $(document).bind('swiperight', function () { $.mobile.back(); });
+    $(document).bind('swiperight', function () { try {$.mobile.back();} catch(e) {} });
     $.mobile.changePage.defaults.transition = 'slide';
+    $.mobile.popup.prototype.options.history = false;
     $("#pr").click(function(e){
         if (prfocus && !$("#filter").val().length) $("#filter").blur();
         else $("#filter").focus().val('').trigger("keyup");
@@ -40,14 +41,15 @@ var app = {
       $("#filter").attr("placeholder","Summon");
       setTimeout(function(){prfocus=false;},100);
     });
+    setTimeout(function(){if (!app.peripherals || $.isEmptyObject(app.peripherals)) location.reload()},10000);
   },
   onAppReady: function() {
     location.hash='';
     $("#dialog").popup("close");
     if ( device.platform === "iOS" ) {$.mobile.hashListeningEnabled=false; }
     $('body').addClass(device.platform.toLowerCase());
-    $(".pref").each(function(){
-      if ($(this).attr("id")=="br") $(this).val(localStorage.getItem("br")||".ba");
+    $(".pref[tabindex=-1]").each(function(){
+      if ($(this).attr("id")=="br") $(this).val(localStorage.getItem("br") || "all").selectmenu("refresh");
       else $(this).prop("checked",localStorage.getItem($(this).attr("id"))!="false").flipswitch("refresh");
     });
     $('#devs').html($("<li>",{"data-role":"list-divider",id:"other",class:"other"}).html("Other Devices"));
@@ -58,10 +60,12 @@ var app = {
     app.readQueue=[];
     $.mobile.loading("show");
     bluetooth.disconnect(d.id||"",null);
-    if ( device.platform === "iOS" ) bluetooth.stopScan(function(){ bluetooth.startScan([],app.onPeripheralFound); },app.onAppReady);
-    else bluetooth.isEnabled(app.scan,function(){bluetooth.enable(app.onAppReady,null)});
+    if ($("#br").val()!="nsd") {
+      if ( device.platform === "iOS" ) bluetooth.stopScan(function(){ bluetooth.startScan([],app.onPeripheralFound); },app.onAppReady);
+      else bluetooth.isEnabled(app.scan,function(){bluetooth.enable(app.onAppReady,null)});
+    }
     // nfc.addNdefListener(app.onNfcFound, function(){console.log("nfc success")}, function(){console.log("nfc fail")});
-    if(navigator.network.connection.type != Connection.NONE) {
+    if($("#br").val()!="ble" && navigator.network.connection.type != Connection.NONE && cordova && cordova.plugins) {
       cordova.plugins.zeroconf.watch("_http._tcp.local.",app.onDiscover); 
       cordova.plugins.zeroconf.watch("_services._dns-sd._udp.local.",app.onDiscover);
     }
@@ -75,10 +79,11 @@ var app = {
     // nfc.removeNdefListener(app.onNfcFound);
   },
   onPrefChange: function() {
+    if (typeof gateway === "undefined") location.reload();
     if ($(this).attr("id")=="br") {
       localStorage.setItem("br",$(this).val());
-      $(".item").show();
-      $($(this).val()).hide();
+      $("#devs").removeClass("browse-ble browse-nsd browse-all").addClass("browse-"+$(this).val());
+      if(!$("."+$(this).val()).length) app.onAppReady();
     } else {
       localStorage.setItem($(this).attr("id"),$(this).prop("checked"));
       if ($(this).attr("id")=="dv") $(this).prop("checked") ? $(".other").show() : $(".other").hide();
@@ -95,7 +100,7 @@ var app = {
   scan: function() {
     bluetooth.stopScan(function(){
       bluetooth.startScan([],app.onPeripheralFound,function(e){console.log(e)});
-      setTimeout(function(){if ($("body").pagecontainer("getActivePage").attr("id")=="page1") app.scan()},1000);
+      setTimeout(function(){if ($("body").pagecontainer("getActivePage").attr("id")=="page1") app.scan()},1500);
     },app.onAppReady);
   },
   onDiscover: function(peripheral) {
