@@ -244,6 +244,14 @@ h3 {
     padding:0 1em .5em 1em;
 }
 
+#dm #dev a {
+    margin:.25em 0; padding:.5em; border-radius:3px; background:#eee; font-size:12px
+}
+
+#dm #dev a:active {
+    background:#ddd;
+}
+
 #lm {
     word-wrap: break-word;
     padding:1em;
