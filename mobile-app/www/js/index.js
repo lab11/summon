@@ -194,7 +194,7 @@ var app = {
     if (app.meta[meta.url]) {
       if (!$('li[dev-id="'+peripheral.id+'"]').attr("dev-url")) $('li[dev-id="'+peripheral.id+'"]').remove();
       app.meta[meta.url].devices = $.unique(app.meta[meta.url].devices.concat(peripheral.id||peripheral.service.qualifiedname).sort());
-      $('li[dev-url="'+meta.url+'"] .n').html(app.meta[meta.url].devices.length + " Devices");
+      if (app.meta[meta.url].devices.length>1) $('li[dev-url="'+meta.url+'"] .n').html(app.meta[meta.url].devices.length + " Devices");
       meta = app.meta[meta.url].meta;
     } else {
       meta.apps = device.platform=="iOS" ? [] : JSON.parse(gateway.checkApps(meta.url));
@@ -229,7 +229,7 @@ var app = {
       $('#dm #dev').html("");
       app.meta[m.url].devices.forEach(function(i,v,a){
         x=app.peripherals[a[v]];
-        $('#dm #dev').append("<li><a href='#' onclick='app.go(\""+x.id+"\")'>"+(comm=="ble"?x.name:x.service.name)+(comm=="ble"?(" ("+x.id+")"):(" - "+(x.service.server||x.service.hostName)+"("+(x.service.application||x.service.type)+")"))+"</a></li>").listview("refresh");
+        $('#dm #dev').append("<li><a href='#' onclick='app.go(\""+x.id+"\")'>"+(x.rssi?"<div class='devrssi' style='float:right'>"+x.rssi+"</div>":"")+((comm=="ble"?x.name:x.service.name)||"Unnamed")+"<br/>"+(comm=="ble"?x.id:((x.service.server||x.service.hostName)+"("+(x.service.application||x.service.type)+")"))+"</a></li>").listview("refresh");
       });
       $("#dm #ui").html("");
       for (n in m.apps) $("#dm #ui").append($("<div>",{"style":"margin:.5em 0; padding:1em .5em .05em .5em; border-radius:3px; background:#eee"}).html("<b>Native App :</b> <img src='"+m.apps[n].icon+"' height=12> "+m.apps[n].name+"<br/>").append($("<a>",{href:"#",class:"ui-btn ui-btn-raised clr-primary","onclick":"app.go('"+id+"',"+n+")"}).html("Open App")));
