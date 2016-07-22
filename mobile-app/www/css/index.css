@@ -245,12 +245,21 @@ h3 {
 }
 
 #dm #dev a {
-    margin:.25em 0; padding:.5em; border-radius:3px; background:#eee; font-size:12px
+    margin:.25em 0; padding:.5em; background:#eee; font-size:12px; white-space: nowrap; overflow: hidden;
 }
 
-#dm #dev a:active {
+#dm #dev a:active, #dm #dev .dtype:active {
     background:#ddd;
 }
+
+#dm #dev li {
+    position:relative; border-radius:3px; overflow:hidden;
+}
+
+#dm #dev .dtype {
+    position:absolute; right:0; top:.25em; text-align:right; padding:.5em; background:#eee; font-size:12px; border-left:1px solid #ddd; border-radius:0 3px 3px 0;
+}
+
 
 #lm {
     word-wrap: break-word;

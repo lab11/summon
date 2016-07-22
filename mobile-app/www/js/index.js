@@ -229,7 +229,7 @@ var app = {
       $('#dm #dev').html("");
       app.meta[m.url].devices.forEach(function(i,v,a){
         x=app.peripherals[a[v]];
-        $('#dm #dev').append("<li><a href='#' onclick='app.go(\""+x.id+"\")'>"+(x.rssi?"<div class='devrssi' style='float:right'>"+x.rssi+"</div>":"")+((comm=="ble"?x.name:x.service.name)||"Unnamed")+"<br/>"+(comm=="ble"?x.id:((x.service.server||x.service.hostName)+"("+(x.service.application||x.service.type)+")"))+"</a></li>").listview("refresh");
+        $('#dm #dev').append("<li><a href='#' class='devitem' onclick='app.go(\""+x.id+"\")'>"+((comm=="ble"?x.name:x.service.name)||"Unnamed")+"<br/>"+(comm=="ble"?x.id:((x.service.server||x.service.hostName)+"("+(x.service.application||x.service.type)+")"))+"</a><div class='dtype' onclick='app.generate(\""+x.id+"\");$.mobile.changePage(\"#page2\");'>"+(comm=='ble'?("<i class='zmdi zmdi-bluetooth'></i> ("+x.rssi+")"):"<i class='zmdi zmdi-network-wifi-alt'></i> (mDNS)")+"<br/><i class='zmdi zmdi-more-horiz'></i>&nbsp; </div></li>").listview("refresh");
       });
       $("#dm #ui").html("");
       for (n in m.apps) $("#dm #ui").append($("<div>",{"style":"margin:.5em 0; padding:1em .5em .05em .5em; border-radius:3px; background:#eee"}).html("<b>Native App :</b> <img src='"+m.apps[n].icon+"' height=12> "+m.apps[n].name+"<br/>").append($("<a>",{href:"#",class:"ui-btn ui-btn-raised clr-primary","onclick":"app.go('"+id+"',"+n+")"}).html("Open App")));
@@ -242,7 +242,7 @@ var app = {
       $("#dm #ui").html("");
       $("#dm #ui").append($("<div>",{"style":"margin:.5em 0; padding:1em .5em .05em .5em; border-radius:3px; background:#eee"}).html("<b>Local Content :</b> "+(comm=='ble'?"":("<img src='"+p.uri+"/favicon.ico' height=12> "+p.service.name+"<br/><i>"+(p.service.server||p.service.hostName)+"</i><br/>"))).append($("<a>",{href:"#","onclick":(comm=="ble"?'app.uiLoad("'+p.id+'")':"app.go('"+id+"',null,'"+p.uri+"')"),"id":"go","class":"ui-btn ui-btn-raised clr-primary"}).html("Attempt to Open"))); //JSON.stringify(p.service.txtRecord,null,2)
     }
-    $("#dm #gen").html("Inspect "+(comm=="ble"?"BLE":"Service")).off("click").click(function(){$("#dialog").popup("close");app.generate(id);});
+    // $("#dm #gen").html("Inspect "+(comm=="ble"?"BLE":"Service")).off("click").click(function(){$("#dialog").popup("close");app.generate(id);});
   },
   generate: function(id) {
     d = app.peripherals[id];
