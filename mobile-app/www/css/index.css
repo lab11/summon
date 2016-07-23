@@ -249,7 +249,7 @@ h3 {
 }
 
 #dm #dev a:active, #dm #dev .dtype:active {
-    background:#ddd;
+    background:#ccc;
 }
 
 #dm #dev li {
@@ -257,7 +257,7 @@ h3 {
 }
 
 #dm #dev .dtype {
-    position:absolute; right:0; top:.25em; text-align:right; padding:.5em; background:#eee; font-size:12px; border-left:1px solid #ddd; border-radius:0 3px 3px 0;
+    position:absolute; right:0; top:.25em; text-align:right; padding:.5em; background:#ddd; font-size:12px; border-radius:0 3px 3px 0;
 }
 
 
