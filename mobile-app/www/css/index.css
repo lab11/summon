@@ -237,6 +237,11 @@ h3 {
 #dh > img {
     -webkit-filter:drop-shadow(0 0 2px rgba(0,0,0,0.2));
     border-radius: 0 !important;
+    top:.12em;
+}
+
+#dh > * {
+    line-height: 1.3em;
 }
 
 #dm {
@@ -244,8 +249,12 @@ h3 {
     padding:0 1em .5em 1em;
 }
 
+#dm #url, #dm #ui, #dm .dtype, #dm #dev a, #dm .ui-btn {
+    font-size:12px;
+}
+
 #dm #dev a {
-    margin:.25em 0; padding:.5em; background:#eee; font-size:12px; white-space: nowrap; overflow: hidden;
+    margin:.25em 0; padding:.5em; background:#eee; white-space: nowrap; overflow: hidden;
 }
 
 #dm #dev a:active, #dm #dev .dtype:active {
@@ -257,7 +266,7 @@ h3 {
 }
 
 #dm #dev .dtype {
-    position:absolute; right:0; top:.25em; text-align:right; padding:.5em; background:#ddd; font-size:12px; border-radius:0 3px 3px 0;
+    position:absolute; right:0; top:.25em; text-align:right; padding:.5em; background:#ddd; border-radius:0 3px 3px 0;
 }
 
 
