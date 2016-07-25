@@ -230,65 +230,6 @@ h3 {
     text-align:center; font-weight:normal;
 }
 
-#dialog {
-    width:100%;
-}
-
-#dh > img {
-    -webkit-filter:drop-shadow(0 0 2px rgba(0,0,0,0.2));
-    border-radius: 0 !important;
-    top:.12em;
-}
-
-#dh > * {
-    line-height: 1.3em;
-}
-
-#dm {
-    word-wrap: break-word;
-    padding:0 1em .5em 1em;
-}
-
-#dm #url, #dm #ui, #dm .dtype, #dm #dev a, #dm .ui-btn {
-    font-size:12px;
-}
-
-#dm #dev a {
-    margin:.25em 0; padding:.5em; background:#eee; white-space: nowrap; overflow: hidden;
-}
-
-#dm #dev a:active, #dm #dev .dtype:active {
-    background:#ccc;
-}
-
-#dm #dev li {
-    position:relative; border-radius:3px; overflow:hidden;
-}
-
-#dm #dev .dtype {
-    position:absolute; right:0; top:.25em; text-align:right; padding:.5em; background:#ddd; border-radius:0 3px 3px 0;
-}
-
-
-#lm {
-    word-wrap: break-word;
-    padding:1em;
-    text-align: center;
-}
-
-#lm .ui-slider-handle, #lm input {
-    display:none;
-}
-
-#lm .ui-slider-track {
-    pointer-events: none;
-    margin:0 15px !important;
-}
-
-#lm .ui-slider-bg, #ui-slider-track * {
-    transition:all 1s !important;
-    margin:0 !important; padding:0 !important;
-}
 
 #content {
     background:#eee;
@@ -297,10 +238,20 @@ h3 {
     padding:0 1em;
 }
 
-.wow {
-   visibility:hidden;
-}
+/* Detail View Dialog */
+#dialog {width:100%;}
+#dh > * {line-height: 1.3em; font-size:18px;}
+#dh > img {-webkit-filter:drop-shadow(0 0 2px rgba(0,0,0,0.2)); border-radius: 0 !important; top:.06em;}
+#dm {word-wrap: break-word; padding:0 1em .5em 1em; font-size:14px;}
+#dm #dev {margin:0; padding:0}
+#dm #dev a {margin:.25em 0; padding:.5em; background:#eee; white-space: nowrap; overflow: hidden; z-index:1;}
+#dm #dev a:active, #dm #dev .dtype:active, #go:active {box-shadow:inset 0 0 0 100px rgba(0,0,0,0.1);}
+#dm #dev a, #dm #url, #dm .dtype, #dm .ui-btn, #dm #ui {font-size:12px;}
+#dm #dev li {position:relative; border-radius:3px; overflow:hidden;}
+#dm #dev .dtype {position:absolute; right:0; top:.25em; text-align:right; padding:.5em; background:#ddd; border-radius:0 3px 3px 0; z-index:2;}
+#dm #dev .dtype::after {content:"INSPECT"; font-size:8px; font-weight:bold;}
 
+/* Secondary Pages (Device-Inspection & Device-Loading Views) */
 #page2 .ui-title, #page3 .ui-title {white-space:normal; line-height:1em; padding:.5em 0;}
 #page2 .nameplate, #page3 .nameplate {white-space:nowrap; line-height:10px;}
 #page2 .id, #page3 .id {white-space:nowrap; font-size:10px;}
@@ -308,5 +259,9 @@ h3 {
 #page2 .ui-li-divider {width:100%; padding-left:1.5em !important; padding-right:1.5em !important}
 #page2 .write i, #page2 .writewithoutresponse i {opacity:1 !important;}
 #page2 .value{font-size:12px;color:#888;}
+#lm {word-wrap: break-word; padding:1em; text-align: center;}
+#lm .ui-slider-handle, #lm input {display:none;}
+#lm .ui-slider-track {pointer-events: none; margin:0 15px !important;}
+#lm .ui-slider-bg, #ui-slider-track * {transition:all 1s !important; margin:0 !important; padding:0 !important;}
 .zmdi-replay  {transform:scale(-1,1);}
 .zmdi-refresh {pointer-events:none;}
