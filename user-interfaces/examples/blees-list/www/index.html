@@ -8,8 +8,6 @@
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
         <link rel="stylesheet" type="text/css" href="css/index.css">
         <link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css">
-        <link rel="stylesheet" href="css/font-awesome-4.4.0/css/font-awesome.min.css">
-
         <link rel="shortcut icon" type="image/x-icon" href="img/blees.ico" />
 
         <title>BLEES</title>
@@ -23,14 +21,14 @@
                     <span style="color:#009999">E</span>
                     <span style="color:#009966">E</span>
                     <span style="color:#009933">S</span>
-                </text></br>
+                </text>
         </div>
 
-        <table border="0" align=center style="width:100%; padding:10px; margin:5px 5px 0 5px; background:#eee; font-weight:100" id="template">
+        <table border="0" align=center style="width:96% !important; padding:10px; margin:5px 5px 0 5px; background:#eee; font-weight:100" id="template">
             <tr>
                 <td colspan=5 style="text-align:left; padding-bottom:10px">
-                    <h1 style="font-size: 90%; display: inline;" id="devtitle">DeviceId</h1>
-                    <span id="data_update">Waiting for data...</span>
+                    <h1 style="font-size: 90%; display: inline;" class="devtitle">DeviceId</h1>
+                    <span class="data_update">Waiting for data...</span>
                 </td>
             </tr>
             <tr>
@@ -41,15 +39,13 @@
                 <td align=left class="charImgCell"><img class="charImg" src="img/acceleration.png" alt="accel_img" name="accelimg"/></td>
             </tr>
             <tr>
-                <td align=center class="charValueCell" id="tempVal">0</td>
-                <td align=center class="charValueCell" id="humVal">0</td>
-                <td align=center class="charValueCell" id="luxVal">0</td>
-                <td align=center class="charValueCell" id="presVal">0</td>
-                <td align=center class="charValueCell" id="accVal">0</td>
+                <td align=center class="charValueCell tempVal">0</td>
+                <td align=center class="charValueCell humVal">0</td>
+                <td align=center class="charValueCell luxVal">0</td>
+                <td align=center class="charValueCell presVal">0</td>
+                <td align=center class="charValueCell accVal">0</td>
             </tr>
         </table>
-        </br>
-
 
        <div data-display="overlay" data-swipe-close="true" data-dismissible="false" data-position="right" data-role="panel" id="logPanel">
             <h2>Log</h2>
@@ -58,6 +54,6 @@
 
         <script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
         <script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
-        <script type="text/javascript" src="cordova.js"></script>
+        <script type="text/javascript" src="js/index.js"></script>
     </body>
 </html>

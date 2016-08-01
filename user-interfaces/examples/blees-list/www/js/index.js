@@ -22,34 +22,36 @@ var app = {
         app.log("onAppReady");
 
         // Setup update for last data time
-        setInterval(app.update_time_ago, 1000);
+        setInterval(app.update_time_ago, 5000);
         app.log("Checking if ble is enabled...");
-        bluetooth.isEnabled(app.onEnable);                                                // if BLE enabled, goto: onEnable
+        summon.bluetooth.isEnabled(app.onEnable);                                                // if BLE enabled, goto: onEnable
         // app.onEnable();
     },
     // App Paused Event Handler
     onPause: function() {
         app.log("on Pause");                                                           // if user leaves app, stop BLE
-        bluetooth.stopScan();
+        summon.bluetooth.stopScan();
     },
     // Bluetooth Enabled Callback
     onEnable: function() {
         app.log("onEnable");
         // app.onPause();                                                              // halt any previously running BLE processes
-        bluetooth.startScan([], app.onDiscover, app.onAppReady);                          // start BLE scan; if device discovered, goto: onDiscover
+        summon.bluetooth.startScan([], app.onDiscover, app.onAppReady);                          // start BLE scan; if device discovered, goto: onDiscover
         app.log("Searching ");
     },
     // BLE Device Discovered Callback
     onDiscover: function(device) {
-        if (device.name == "BLEES") {
+        if (device.name == "BLEES" || 1) {
             app.log("Found " + device.name + " (" + device.id + ")!");
+            if (!$("#"+device.id.replace(/:/g,'')).length) $("#template").clone().attr("id",device.id.replace(/:/g,'')).appendTo(".ui-page");
             app.onParseAdvData(device);
         }
     },
    onParseAdvData: function(device){
+       deviceId = device.id.replace(/:/g,'');
         //Parse Advertised Data
         var advertisement = device.advertisement;
-        document.querySelector()getElementById("title").innerHTML = String(device.id);
+        $("#"+deviceId+" .devtitle")[0].innerHTML = String(device.id);
         // Check this is something we can parse
         if (advertisement.localName == 'BLEES' && advertisement.serviceUuids.indexOf('181A') !== -1) {
 
@@ -63,13 +65,13 @@ var app = {
             var pressure_pascals = (( (mandata[6] * 16777216) + (mandata[5] * 65536 ) + (mandata[4] * 256) + mandata[3] )/10);
             var pressure_mmHg = (pressure_pascals*0.007500616827042).toFixed(2);
             var pressure_atm = (pressure_pascals*0.00000986923266716).toFixed(4);
-            var pressureOut = pressure_mmHg + ' mmHg<br />' + pressure_atm + ' atm';
+            var pressureOut = pressure_mmHg + ' mmHg<br />';// + pressure_atm + ' atm';
             app.log( "Pressure: " + pressureOut);
-            document.getElementById("presVal").innerHTML = String(pressureOut);
+            $("#"+deviceId+" .presVal")[0].innerHTML = String(pressureOut);
 
             var humidityOut = (( (mandata[8] * 256) + mandata[7] )/100) + String.fromCharCode(37);
             app.log( "Humidity: " + humidityOut);
-            document.getElementById("humVal").innerHTML = String(humidityOut);
+            $("#"+deviceId+" .humVal")[0].innerHTML = String(humidityOut);
 
             var temp_celsius = (mandata[10] * 256) + mandata[9];
 			app.log(temp_celsius);
@@ -83,30 +85,19 @@ var app = {
             var temperatureOut = temp_celsius + " " + String.fromCharCode(176) + "C";
             temperatureOut    += '<br />' + temp_fahrenheit + " " + String.fromCharCode(176) + "F";
             app.log( "Temperature: " + temperatureOut);
-            document.getElementById("tempVal").innerHTML = String(temperatureOut);
+            $("#"+deviceId+" .tempVal")[0].innerHTML = String(temperatureOut);
 
             var luxOut = ( (mandata[12] * 256) + mandata[11]) + " lux" ;
             app.log( "Lux: " + luxOut);
-            document.getElementById("luxVal").innerHTML = String(luxOut);
+            $("#"+deviceId+" .luxVal")[0].innerHTML = String(luxOut);
 
             var accdata = mandata[13];
             var immAcc = ((accdata & 17) >> 4);
             var intAcc = (accdata & 1);
             app.log("Immediate Acceleration: " + ((accdata & 17) >> 4) );
             app.log("Interval Acceleration: " + (accdata & 1) );
-
-            if (intAcc) {
-                document.getElementById('accLastIntCell').style.color = "#ED97B9";
-                document.getElementById('accLastIntCell2').style.color = "#ED97B9";
-                document.getElementById('accSpinnerInt').style.visibility = "visible";
-                document.getElementById('accNotSpinnerInt').style.visibility = "hidden";
-            } else {
-                document.getElementById('accLastIntCell').style.color = "black";
-                document.getElementById('accLastIntCell2').style.color = "black";
-                document.getElementById('accSpinnerInt').style.visibility = "hidden";
-                document.getElementById('accNotSpinnerInt').style.visibility = "visible";
-            }
-
+            $("#"+deviceId+" .accVal")[0].innerHTML = intAcc;
+            $("#"+deviceId+" .data_update")[0].innerHTML = "";
             app.update_time_ago();
 
         } else {
@@ -116,32 +107,32 @@ var app = {
 
     },
     update_time_ago: function () {
-        bluetooth.stopScan();
-        bluetooth.startScan([], app.onDiscover, app.onAppReady);
+        summon.bluetooth.stopScan();
+        summon.bluetooth.startScan([], app.onDiscover, app.onAppReady);
 
 
-        if (last_update > 0) {
-            // Only do something after we've gotten a packet
-            // Default output
-            var out = 'Haven\'t gotten a packet in a while...';
+        // if (last_update > 0) {
+        //     // Only do something after we've gotten a packet
+        //     // Default output
+        //     var out = 'Haven\'t gotten a packet in a while...';
 
-            var now = Date.now();
-            var diff = now - last_update;
-            if (diff < 60000) {
-                // less than a minute
-                var seconds = Math.round(diff/1000);
-                out = 'Last updated ' + seconds + ' second';
-                if (seconds != 1) {
-                    out += 's';
-                }
-                out += ' ago';
+        //     var now = Date.now();
+        //     var diff = now - last_update;
+        //     if (diff < 60000) {
+        //         // less than a minute
+        //         var seconds = Math.round(diff/1000);
+        //         out = 'Last updated ' + seconds + ' second';
+        //         if (seconds != 1) {
+        //             out += 's';
+        //         }
+        //         out += ' ago';
 
-            } else if (diff < 120000) {
-                out = 'Last updated about a minute ago';
-            }
+        //     } else if (diff < 120000) {
+        //         out = 'Last updated about a minute ago';
+        //     }
 
-            document.querySelector("#data_update").innerHTML = out;
-        }
+        //     document.querySelector("#data_update").innerHTML = out;
+        // }
     },
     // Function to Log Text to Screen
     log: function(string) {
