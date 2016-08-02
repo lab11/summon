@@ -214,8 +214,8 @@ var app = {
   go: function(id,n,url) {
     p = app.peripherals[id];
     if (typeof url == "undefined") url = (p.meta && p.meta.url) ? p.meta.url : p.uri;
-    if (device.platform=="iOS") gateway.setDeviceAdvertisement({id:id,name:p.service?p.service.name:(p.name.length?p.name:"Unnamed")});
-    else gateway.setDeviceAdvertisement( JSON.stringify( {id:id,name:p.service?p.service.name:p.name} ) );
+    if (device.platform=="iOS") gateway.setDeviceAdvertisement({id:id,name:p.service?p.service.name:(p.name.length?p.name:"Unnamed"),uri:p.uri});
+    else gateway.setDeviceAdvertisement( JSON.stringify( {id:id,name:p.service?p.service.name:p.name,uri:p.uri} ) );
     (p.meta && p.meta.apps && p.meta.apps.length && typeof n != "string") ? gateway.go(url,p.meta.apps[n||0].package,p.meta.apps[n||0].activity) : location=url;
   },
   infoPopup: function(id,comm) {
@@ -359,7 +359,7 @@ var app = {
   },
   uiLoad: function(id) {
     p = app.peripherals[id];
-    gateway.setDeviceAdvertisement( JSON.stringify( {id:p.id,name:p.name,rssi:p.rssi,advertising:p.advertising,ads:p.ads} ) ); 
+    gateway.setDeviceAdvertisement( JSON.stringify( {id:p.id,name:p.name,uri:p.uri} ) ); 
     $("#lh .id").html(p.id);
     $("#lh .name").html(p.name||"Unnamed");
     $("#lh .rssi").html("("+p.rssi+")");
