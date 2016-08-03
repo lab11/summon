@@ -6,9 +6,9 @@
  to you under the Apache License, Version 2.0 (the
  "License"); you may not use this file except in compliance
  with the License.  You may obtain a copy of the License at
-
+ 
  http://www.apache.org/licenses/LICENSE-2.0
-
+ 
  Unless required by applicable law or agreed to in writing,
  software distributed under the License is distributed on an
  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -26,6 +26,7 @@
 @implementation CDVUIWebViewNavigationDelegate
 
 NSString *deviceId = @"";
+NSString *deviceUri = @"";
 NSString *deviceName = @"";
 UINavigationBar *navbar;
 UIWebView *wv;
@@ -39,13 +40,13 @@ bool caching = true;
     if (self) {
         self.enginePlugin = theEnginePlugin;
     }
-
+    
     navbar = [[UINavigationBar alloc]initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 20)];
     navbar.translucent = NO;
     navbar.barTintColor = [UIColor colorWithRed:0.94901960784 green:0.64705882352 blue:0.02745098039 alpha:1];
     navbar.titleTextAttributes = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont systemFontOfSize:12 weight:UIFontWeightSemibold],NSFontAttributeName, [UIColor whiteColor], NSForegroundColorAttributeName, nil];
     [navbar setTitleVerticalPositionAdjustment:10.5 forBarMetrics:UIBarMetricsDefault];
-
+    
     return self;
 }
 
@@ -57,7 +58,7 @@ bool caching = true;
 {
     NSLog(@"Resetting plugins due to page load.");
     CDVViewController* vc = (CDVViewController*)self.enginePlugin.viewController;
-
+    
     [vc.commandQueue resetRequestId];
     [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:CDVPluginResetNotification object:self.enginePlugin.webView]];
 }
@@ -69,21 +70,32 @@ bool caching = true;
 {
     NSLog(@"Finished load of: %@", theWebView.request.URL);
     CDVViewController* vc = (CDVViewController*)self.enginePlugin.viewController;
-
+    
     // It's safe to release the lock even if this is just a sub-frame that's finished loading.
     [CDVUserAgentUtil releaseLock:vc.userAgentLockToken];
-
+    
     /*
      * Hide the Top Activity THROBBER in the Battery Bar
      */
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-
+    
     [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:CDVPageDidLoadNotification object:self.enginePlugin.webView]];
-
+    
     theWebView.backgroundColor = [UIColor blackColor];
     theWebView.scrollView.showsHorizontalScrollIndicator = NO;
     theWebView.scrollView.showsVerticalScrollIndicator = NO;
-    [theWebView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"window.gateway={getDeviceId:function(){return '%@'},getDeviceName:function(){return '%@'},cache:function(e){t.setAttribute('src','gateway:'+JSON.stringify({'cache':e}))},setDeviceAdvertisement:function(e){t.setAttribute('src','gateway:'+JSON.stringify(e))}}; t=document.createElement('iframe'); t.setAttribute('style','display:none'); document.documentElement.appendChild(t);",deviceId,deviceName]];
+    [theWebView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"\
+        window.gateway={\
+            getDeviceId: function() {return '%@'},\
+            getDeviceUri: function() {return '%@'},\
+            getDeviceName: function() {return '%@'},\
+            cache: function(e) {t.setAttribute('src','gateway:'+JSON.stringify({'cache':e}))},\
+            setDeviceAdvertisement: function(e) {t.setAttribute('src','gateway:'+JSON.stringify(e))}\
+        };\
+        t=document.createElement('iframe');\
+        t.setAttribute('style','display:none');\
+        document.documentElement.appendChild(t);"
+        ,deviceId,deviceUri,deviceName]];
     if ([theWebView.request.URL.absoluteString hasPrefix:@"file:"]&&[theWebView.request.URL.absoluteString hasSuffix:@".app/www/index.html"]) {
         navbar.window.windowLevel = UIWindowLevelStatusBar-1;
         [navbar removeFromSuperview];
@@ -94,12 +106,12 @@ bool caching = true;
 - (void)webView:(UIWebView*)theWebView didFailLoadWithError:(NSError*)error
 {
     CDVViewController* vc = (CDVViewController*)self.enginePlugin.viewController;
-
+    
     [CDVUserAgentUtil releaseLock:vc.userAgentLockToken];
-
+    
     NSString* message = [NSString stringWithFormat:@"Failed to load webpage with error: %@", [error localizedDescription]];
     NSLog(@"%@", message);
-
+    
     NSURL* errorUrl = vc.errorURL;
     if (errorUrl) {
         errorUrl = [NSURL URLWithString:[NSString stringWithFormat:@"?error=%@", [message stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] relativeToURL:errorUrl];
@@ -141,6 +153,7 @@ bool caching = true;
                 else [NSURLCache setSharedURLCache:[[NSURLCache alloc] initWithMemoryCapacity:0 diskCapacity:0 diskPath:nil]];
             } else {
                 deviceId = [parameters valueForKey:@"id"];
+                deviceUri = [parameters valueForKey:@"uri"];
                 deviceName = [parameters valueForKey:@"name"];
             }
         }
@@ -156,7 +169,7 @@ bool caching = true;
     
     NSURL* url = [request URL];
     CDVViewController* vc = (CDVViewController*)self.enginePlugin.viewController;
-
+    
     /*
      * Execute any commands queued with cordova.exec() on the JS side.
      * The part of the URL after gap:// is irrelevant.
@@ -168,7 +181,7 @@ bool caching = true;
         [vc.commandQueue executePending];
         return NO;
     }
-
+    
     /*
      * Give plugins the chance to handle the url
      */
@@ -190,7 +203,7 @@ bool caching = true;
     if (anyPluginsResponded) {
         return shouldAllowRequest;
     }
-
+    
     /*
      * Handle all other types of urls (tel:, sms:), and requests to load a url in the main webview.
      */
