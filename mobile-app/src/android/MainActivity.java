@@ -91,6 +91,9 @@ public class MainActivity extends CordovaActivity {
         public String getDeviceId(){ try {return (new JSONObject(deviceAdvertisement).getString("id"));} catch (Exception e) {return "";} }
 
         @JavascriptInterface
+        public String getDeviceUri(){ try {return (new JSONObject(deviceAdvertisement).getString("uri"));} catch (Exception e) {return "";} }
+
+        @JavascriptInterface
         public String getDeviceName() { try {return (new JSONObject(deviceAdvertisement).getString("name"));} catch (Exception e) {return "";} }
 
         @JavascriptInterface
