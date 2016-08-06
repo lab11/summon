@@ -71,7 +71,12 @@ public class MainActivity extends CordovaActivity {
             byte[] buffer = new byte[is.available()];
             is.read(buffer);
             is.close();
-            js = "javascript:(function(){ s=document.createElement('script'); s.innerHTML = atob('" + Base64.encodeToString(buffer,Base64.NO_WRAP) + "'); document.querySelector('head').appendChild(s); })()";
+            js = "javascript:(function(){ " +
+                    "s=document.createElement('script');" +
+                    "s.innerHTML = atob('" + Base64.encodeToString(buffer,Base64.NO_WRAP) + "'); " +
+                    "document.querySelector('head').appendChild(s); " +
+                    "summon.gateway = gateway;" +
+                "})()";
         } catch(Exception e){e.printStackTrace();}
     }
 
