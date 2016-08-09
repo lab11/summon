@@ -99,10 +99,7 @@ bool caching = true;
     if ([theWebView.request.URL.absoluteString hasPrefix:@"file:"]&&[theWebView.request.URL.absoluteString hasSuffix:@".app/www/index.html"]) {
         navbar.window.windowLevel = UIWindowLevelStatusBar-1;
         [navbar removeFromSuperview];
-    } else {
-        [theWebView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"%@ %@",[NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"www/summon.ios" ofType:@"js"] encoding:NSUTF8StringEncoding error:nil]];
-        [theWebView stringByEvaluatingJavaScriptFromString:@"summon.gateway = gateway;"];
-    }
+    } else [theWebView stringByEvaluatingJavaScriptFromString:[NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"www/summon.ios" ofType:@"js"] encoding:NSUTF8StringEncoding error:nil]];
     [self setNavTitle:[NSString stringWithFormat:@"%@ (%@)",[theWebView stringByEvaluatingJavaScriptFromString:@"document.title"],deviceName]];
 }
 

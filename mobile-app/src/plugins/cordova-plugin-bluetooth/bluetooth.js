@@ -177,6 +177,6 @@ module.exports.disconnectDevice = function(success, failure) {
   bluetooth.disconnect(gateway.getDeviceId(), success, failure);
 }
 
-module.exports.woot = function() {
-  console.log("WOOT");
-}
+module.exports.getDeviceId = function() { return gateway.getDeviceId(); }
+module.exports.getDeviceUri = function() { return gateway.getDeviceUri(); }
+module.exports.getDeviceName = function() { return gateway.getDeviceName(); }

@@ -75,7 +75,6 @@ public class MainActivity extends CordovaActivity {
                     "s=document.createElement('script');" +
                     "s.innerHTML = atob('" + Base64.encodeToString(buffer,Base64.NO_WRAP) + "'); " +
                     "document.querySelector('head').appendChild(s); " +
-                    "summon.gateway = gateway;" +
                 "})()";
         } catch(Exception e){e.printStackTrace();}
     }
@@ -100,10 +99,7 @@ public class MainActivity extends CordovaActivity {
 
         @JavascriptInterface
         public String getDeviceName() { try {return (new JSONObject(deviceAdvertisement).getString("name"));} catch (Exception e) {return "";} }
-
-        @JavascriptInterface
-        public String getDeviceAdvertisement() { return deviceAdvertisement;  }
-
+        
         @JavascriptInterface
         public void setDeviceAdvertisement(String s) { deviceAdvertisement = s; }
 
