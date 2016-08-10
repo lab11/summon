@@ -13,7 +13,7 @@ endif
 
 
 
-all: platform link build
+all: platform build link
 
 platform:
 	cordova platform add $(TARGET_PLATFORMS) || true
