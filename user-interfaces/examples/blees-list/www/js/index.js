@@ -41,7 +41,7 @@ var app = {
     },
     // BLE Device Discovered Callback
     onDiscover: function(device) {
-        if (device.name == "BLEES" || 1) {
+        if (device.name == "BLEES") {
             app.log("Found " + device.name + " (" + device.id + ")!");
             if (!$("#"+device.id.replace(/:/g,'')).length) $("#template").clone().attr("id",device.id.replace(/:/g,'')).appendTo(".ui-page");
             app.onParseAdvData(device);
