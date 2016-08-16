@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <GridView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/grid_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:columnWidth="@android:dimen/notification_large_icon_width"
+        android:horizontalSpacing="16dp"
+        android:verticalSpacing="16dp"
+        android:numColumns="auto_fit"
+        android:listSelector="#00000000"
+        android:gravity="center_horizontal" />
+
+    <FrameLayout
+        android:id="@+id/empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#5fff">
+        <ImageView
+            android:src="@drawable/icon"
+            android:layout_width="@android:dimen/notification_large_icon_width"
+            android:layout_height="@android:dimen/notification_large_icon_height"
+            android:layout_gravity="center" />
+    </FrameLayout>
+
+</FrameLayout>
