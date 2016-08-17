@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_item"
+    android:layout_width="@android:dimen/notification_large_icon_width"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/widget_item_app_icon"
+        android:src="@drawable/widget"
+        android:layout_width="@android:dimen/notification_large_icon_width"
+        android:layout_height="@android:dimen/notification_large_icon_height"
+        android:layout_gravity="center_horizontal"
+        android:background="?android:attr/selectableItemBackground"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/widget_item_name"
+        android:textColor="#fff"
+        android:textSize="12sp"
+        android:text="Summon"
+        android:shadowColor="#000"
+        android:shadowRadius="2"
+        android:shadowDx="1"
+        android:shadowDy="1.5"
+        android:ellipsize="marquee"
+        android:layout_gravity="center_horizontal"
+        android:singleLine="true"/>
+
+</LinearLayout>
