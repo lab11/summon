@@ -64,7 +64,9 @@ class AppRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
                 rv.setImageViewBitmap(R.id.widget_item_app_icon,b);
             } catch (Exception e) { rv.setImageViewBitmap(R.id.widget_item_app_icon,BitmapFactory.decodeResource(mContext.getResources(), R.drawable.widget)); }
             try {
-                rv.setOnClickFillInIntent(R.id.widget_item, new Intent());
+                Bundle extras = new Bundle();
+                extras.putString(AppWidget.ITEM_EXTRA, "{'id':'" + wi.id + "','name':'" + wi.name + "','uri':'" + wi.uri.get(0) + "'}");
+                rv.setOnClickFillInIntent(R.id.widget_item, new Intent().putExtras(extras));
             } catch (Exception e) { e.printStackTrace(); }
             return rv;
         } else return null;

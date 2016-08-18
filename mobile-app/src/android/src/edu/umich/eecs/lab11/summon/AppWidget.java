@@ -13,15 +13,16 @@ import android.widget.Toast;
 
 public class AppWidget extends AppWidgetProvider {
     public static final String LAUNCH_ACTION = "edu.umich.eecs.lab11.summon.LAUNCH_ACTION";
-    public static final String ALARM = "edu.umich.eecs.lab11.summon.ALARM";
+    public static final String ITEM_EXTRA = "edu.umich.eecs.lab11.summon.ITEM_EXTRA";
     private Intent alarm;
 
     @Override
     public void onReceive(Context context, Intent intent) {
         AppWidgetManager mgr = AppWidgetManager.getInstance(context);
         if (intent.getAction().equals(LAUNCH_ACTION)) {
-            context.startActivity(new Intent(context,MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-        } else if (intent.getAction().equals(ALARM)) {
+            String viewIndex = intent.getStringExtra(ITEM_EXTRA);
+            context.startActivity(new Intent(context,MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK).putExtra(ITEM_EXTRA,viewIndex));
+        } else if (intent.getAction().equals(ITEM_EXTRA)) {
             ComponentName aw = new ComponentName(context, AppWidget.class);
             mgr.updateAppWidget(aw,new RemoteViews(context.getPackageName(),R.layout.appwidget));
             int appWidgetIds[] = mgr.getAppWidgetIds(aw);
@@ -56,7 +57,7 @@ public class AppWidget extends AppWidgetProvider {
 
     @Override
     public void onEnabled(Context context) {
-        alarm = new Intent(context, AppWidget.class).setAction(ALARM); // Set appwidget update action
+        alarm = new Intent(context, AppWidget.class).setAction(ITEM_EXTRA); // Set appwidget update action
         ((AlarmManager) context.getSystemService(context.ALARM_SERVICE)).setRepeating(AlarmManager.RTC, System.currentTimeMillis()+20000, 60000, PendingIntent.getBroadcast(context, 0, alarm, PendingIntent.FLAG_UPDATE_CURRENT)); // set repeat alarm
         super.onEnabled(context);
     }

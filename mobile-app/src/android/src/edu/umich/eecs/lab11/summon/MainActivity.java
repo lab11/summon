@@ -85,6 +85,14 @@ public class MainActivity extends CordovaActivity {
         return super.onMessage(id, data);
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        String direct = intent.getStringExtra(AppWidget.ITEM_EXTRA);
+        if (direct!=null) deviceAdvertisement = direct;
+        try { loadUrl(new JSONObject(deviceAdvertisement).getString("uri")); } catch (Exception e) {}
+    }
+
     public class JavaScriptInterface {
         private PackageManager pm;
         private List<String> browsers = Arrays.asList("com.android.browser","com.android.chrome","com.android.google.browser","org.mozilla.firefox","com.opera.mini.android");
