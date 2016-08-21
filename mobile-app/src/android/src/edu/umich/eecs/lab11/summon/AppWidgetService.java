@@ -107,10 +107,7 @@ class AppRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
                     index += length;
                 }
                 int gref = uri.indexOf("goo.gl/");
-                if (gref>=0 && J2XUS.contains(uri.substring(gref+7,gref+13))) {
-                    uri = uri.replace("goo.gl","j2x.us");
-                    if (uri.substring(gref+7,gref+13).equals("2ImXWJ")) uri = "http://googledrive.com/host/0B15ruEDqdKuBZDdYcDh3Y2RpaDA"; //"https://rawgit.com/lab11/summon/master/user-interfaces/examples/blees-list/www/index.html";
-                }
+                if (gref>=0 && J2XUS.contains(uri.substring(gref+7,gref+13))) uri = uri.replace("goo.gl","j2x.us");
                 if (uri.length()>0 && !itemExists(uri)) new DataFetch().execute(uri,device);
             } catch (Exception e) {e.printStackTrace();}
         }
