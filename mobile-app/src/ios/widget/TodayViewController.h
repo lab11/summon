@@ -1,11 +1,13 @@
 //
 //  TodayViewController.h
-//  widget
+//  Summon Widget
 //
 
 
 #import <UIKit/UIKit.h>
 
-@interface TodayViewController : UIViewController
+@interface TodayViewController : UIViewController <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
+
+@property(nonatomic, weak) IBOutlet UICollectionView *collectionView;
 
 @end
