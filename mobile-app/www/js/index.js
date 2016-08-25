@@ -112,7 +112,7 @@ var app = {
     if (peripheral.action=="type") cordova.plugins.zeroconf.watch(peripheral.service.qualifiedname,app.onDiscover);
     else if (peripheral.action=="removed") {
       if (typeof app.peripherals[peripheral.service.qualifiedname] != "undefined") {
-        $('li[dev-id="'+peripheral.service.qualifiedname+'"]').remove();
+        $('li[data-id="'+peripheral.service.qualifiedname+'"]').remove();
         delete app.peripherals[peripheral.service.qualifiedname];
       }
     } else {
@@ -120,23 +120,23 @@ var app = {
       if (typeof app.peripherals[peripheral.service.qualifiedname] == "undefined") {
         app.peripherals[peripheral.service.qualifiedname] = $.extend(peripheral,app.peripherals[peripheral.service.qualifiedname]);;
         if (peripheral.service.type.startsWith("_http._tcp.")) {
-          $('li.other[dev-id="'+peripheral.service.qualifiedname+'"]').remove(); 
+          $('li.other[data-id="'+peripheral.service.qualifiedname+'"]').remove(); 
           peripheral.uri = peripheral.service.urls ? peripheral.service.urls[0] : ("http://"+peripheral.service.addresses[0]+":"+peripheral.service.port);
-          if ($('li[dev-id="'+peripheral.service.qualifiedname+'"]:not(.other)').length==0) $("#other").before($("<li>",{class:"nsd item","data-rssi":time*-1e-10,"data-pplr":time,"data-time":time,"dev-id":peripheral.service.qualifiedname}).append($("<a>",{href:"#",style:"opacity:.5; pointer-events:none",onclick:"app.go('"+peripheral.service.qualifiedname+"')"}).append($("<img>",{src:"img/dnssd.svg"})).append($("<h2>").html(peripheral.service.name)).append($("<p>").html(peripheral.uri+"<br/><i class='zmdi zmdi-network-wifi-alt zmd-fw'></i> "+(peripheral.service.server||peripheral.service.hostName)+" ("+(peripheral.service.application||peripheral.service.type)+")"))));
+          if ($('li[data-id="'+peripheral.service.qualifiedname+'"]:not(.other)').length==0) $("#other").before($("<li>",{class:"nsd item","data-rssi":time*-1e-10,"data-pplr":time,"data-time":time,"data-id":peripheral.service.qualifiedname}).append($("<a>",{href:"#",style:"opacity:.5; pointer-events:none",onclick:"app.go('"+peripheral.service.qualifiedname+"')"}).append($("<img>",{src:"img/dnssd.svg"})).append($("<h2>").html(peripheral.service.name)).append($("<p>").html(peripheral.uri+"<br/><i class='zmdi zmdi-network-wifi-alt zmd-fw'></i> "+(peripheral.service.server||peripheral.service.hostName)+" ("+(peripheral.service.application||peripheral.service.type)+")"))));
           if ( (url=app.urls[peripheral.uri]) && (meta=app.meta[url].meta) ) app.attach(peripheral,meta);
           else {
             if (typeof app.cachelist[peripheral.service.qualifiedname] != "undefined" && typeof (app.cachelist[peripheral.service.qualifiedname]).meta != undefined) app.attach(peripheral,(app.cachelist[peripheral.service.qualifiedname]).meta);
             $.post("https://summon-caster.appspot.com/resolve-scan",JSON.stringify({objects:[{url:peripheral.uri}]}),function(data){
               if (data.metadata[0]) app.attach(peripheral,data.metadata[0]);
-              else $('li[dev-id="'+peripheral.service.qualifiedname+'"]').html($("<a>",{href:'#',onclick:"app.go('"+peripheral.service.qualifiedname+"')"}).append($("<img>",{src:peripheral.uri+"/favicon.ico"}).error(function(){$(this).attr("src","img/dnssd.svg")})).append($("<h2>").html(peripheral.service.name)).append($("<p>").html(peripheral.uri+"/<br/><i class='zmdi zmdi-network-wifi-alt zmd-fw'></i> "+(peripheral.service.server||peripheral.service.hostName)+" ("+(peripheral.service.application||peripheral.service.type)+")"))).append($("<a>",{href:"#dialog","data-rel":"popup","data-transition":"pop",class:"zmdi zmdi-more-vert",onclick:"app.infoPopup('"+peripheral.service.qualifiedname+"','nsd')"}));
+              else $('li[data-id="'+peripheral.service.qualifiedname+'"]').html($("<a>",{href:'#',onclick:"app.go('"+peripheral.service.qualifiedname+"')"}).append($("<img>",{src:peripheral.uri+"/favicon.ico"}).error(function(){$(this).attr("src","img/dnssd.svg")})).append($("<h2>").html(peripheral.service.name)).append($("<p>").html(peripheral.uri+"/<br/><i class='zmdi zmdi-network-wifi-alt zmd-fw'></i> "+(peripheral.service.server||peripheral.service.hostName)+" ("+(peripheral.service.application||peripheral.service.type)+")"))).append($("<a>",{href:"#dialog","data-rel":"popup","data-transition":"pop",class:"zmdi zmdi-more-vert",onclick:"app.infoPopup('"+peripheral.service.qualifiedname+"','nsd')"}));
               $("#devs").html($("#devs li").sort(app.sortRule)).listview("refresh");
             }).fail(function(e){
-              $('li[dev-id="'+peripheral.service.qualifiedname+'"]').html($("<a>",{href:'#',onclick:"app.go('"+peripheral.service.qualifiedname+"')"}).append($("<img>",{src:peripheral.uri+"/favicon.ico"}).error(function(){$(this).attr("src","img/dnssd.svg")})).append($("<h2>").html(peripheral.service.name)).append($("<p>").html(peripheral.uri+"/<br/><i class='zmdi zmdi-network-wifi-alt zmd-fw'></i> "+(peripheral.service.server||peripheral.service.hostName)+" ("+(peripheral.service.application||peripheral.service.type)+")"))).append($("<a>",{href:"#dialog","data-rel":"popup","data-transition":"pop",class:"zmdi zmdi-more-vert",onclick:"app.infoPopup('"+peripheral.service.qualifiedname+"','nsd')"}));
+              $('li[data-id="'+peripheral.service.qualifiedname+'"]').html($("<a>",{href:'#',onclick:"app.go('"+peripheral.service.qualifiedname+"')"}).append($("<img>",{src:peripheral.uri+"/favicon.ico"}).error(function(){$(this).attr("src","img/dnssd.svg")})).append($("<h2>").html(peripheral.service.name)).append($("<p>").html(peripheral.uri+"/<br/><i class='zmdi zmdi-network-wifi-alt zmd-fw'></i> "+(peripheral.service.server||peripheral.service.hostName)+" ("+(peripheral.service.application||peripheral.service.type)+")"))).append($("<a>",{href:"#dialog","data-rel":"popup","data-transition":"pop",class:"zmdi zmdi-more-vert",onclick:"app.infoPopup('"+peripheral.service.qualifiedname+"','nsd')"}));
               $("#devs").html($("#devs li").sort(app.sortRule)).listview("refresh");
             });
           }
         } else {
-          $(".other:last-child").hide().after($("<li>",{class:"other nsd item","data-icon":"false",'dev-id':peripheral.service.qualifiedname,"data-rssi":time*-1e-9,"data-pplr":time*1.01,"data-time":time*1.01}).hide().html($("<a>",{href:"#page2","data-transition":"slide","onclick":"app.generate('"+peripheral.service.qualifiedname+"')"}).html("<i class='zmdi zmdi-network-wifi-alt zmd-fw'></i> "+peripheral.service.name+" ("+(peripheral.service.application||peripheral.service.type)+")")));
+          $(".other:last-child").hide().after($("<li>",{class:"other nsd item","data-icon":"false",'data-id':peripheral.service.qualifiedname,"data-rssi":time*-1e-9,"data-pplr":time*1.01,"data-time":time*1.01}).hide().html($("<a>",{href:"#page2","data-transition":"slide","onclick":"app.generate('"+peripheral.service.qualifiedname+"')"}).html("<i class='zmdi zmdi-network-wifi-alt zmd-fw'></i> "+peripheral.service.name+" ("+(peripheral.service.application||peripheral.service.type)+")")));
           if ($("#dv").prop("checked")) $(".other").show();
         }
         $.mobile.loading("hide");
@@ -161,9 +161,9 @@ var app = {
     if (!peripheral.name) peripheral.name = "";
     if (peripheral.id==(d.id||"")) app.updateHead(peripheral,true);
     if (peripheral.uri) {
-      $('li.other[dev-id="'+peripheral.id+'"]').remove(); 
-      if ($('li[dev-id="'+peripheral.id+'"]').length==0 && !app.urls[peripheral.uri]) {
-        $("#other").before($("<li>",{class:"ble item","dev-id":peripheral.id,"data-rssi":peripheral.rssi,"data-pplr":Date.now(),"data-time":Date.now()}).append($("<a>",{href:'#',style:"opacity:.5; pointer-events:none"}).append($("<img>",{src:"img/ble.svg"})).append($("<h2>").html(peripheral.name+" ("+peripheral.id+")")).append($("<p>").html(peripheral.uri+"<br/>"+"<i class='zmdi zmdi-bluetooth zmd-fw'></i> "+peripheral.name+" ("+peripheral.id+")"))));
+      $('li.other[data-id="'+peripheral.id+'"]').remove(); 
+      if ($('li[data-id="'+peripheral.id+'"]').length==0 && !app.urls[peripheral.uri]) {
+        $("#other").before($("<li>",{class:"ble item","data-id":peripheral.id,"data-rssi":peripheral.rssi,"data-pplr":Date.now(),"data-time":Date.now()}).append($("<a>",{href:'#',style:"opacity:.5; pointer-events:none"}).append($("<img>",{src:"img/ble.svg"})).append($("<h2>").html(peripheral.name+" ("+peripheral.id+")")).append($("<p>").html(peripheral.uri+"<br/>"+"<i class='zmdi zmdi-bluetooth zmd-fw'></i> "+peripheral.name+" ("+peripheral.id+")"))));
       }
       if (peripheral.uri != "local") {
         if ( (url=app.urls[peripheral.uri]) && (meta=app.meta[url].meta) ) app.attach(peripheral,meta);
@@ -171,22 +171,22 @@ var app = {
           if (typeof app.cachelist[peripheral.id] != "undefined" && typeof (app.cachelist[peripheral.id]).meta != undefined) app.attach(peripheral,(app.cachelist[peripheral.id]).meta);
           $.post("https://summon-caster.appspot.com/resolve-scan",JSON.stringify({objects:[{url:peripheral.uri}]}),function(data){
             if (data.metadata[0]) app.attach(peripheral,data.metadata[0]);
-            else $('li[dev-id="'+peripheral.id+'"]').addClass("ble").html($("<a>",{href:'#',onclick:"app.go('"+peripheral.id+"')"}).append($("<img>",{src:peripheral.uri+"/favicon.ico"}).error(function(){$(this).attr("src","img/ble.svg")})).append($("<h2>").html(peripheral.name+" ("+peripheral.id+")")).append($("<p>").html(peripheral.uri+"<br/>"+"<i class='zmdi zmdi-bluetooth zmd-fw'></i> "+peripheral.name+" ("+peripheral.id+")"))).append($("<a>",{href:'#dialog',"data-rel":'popup',"data-transition":"pop",class:'zmdi zmdi-more-vert',onclick:"app.infoPopup('"+peripheral.id+"','ble')"}));
+            else $('li[data-id="'+peripheral.id+'"]').addClass("ble").html($("<a>",{href:'#',onclick:"app.go('"+peripheral.id+"')"}).append($("<img>",{src:peripheral.uri+"/favicon.ico"}).error(function(){$(this).attr("src","img/ble.svg")})).append($("<h2>").html(peripheral.name+" ("+peripheral.id+")")).append($("<p>").html(peripheral.uri+"<br/>"+"<i class='zmdi zmdi-bluetooth zmd-fw'></i> "+peripheral.name+" ("+peripheral.id+")"))).append($("<a>",{href:'#dialog',"data-rel":'popup',"data-transition":"pop",class:'zmdi zmdi-more-vert',onclick:"app.infoPopup('"+peripheral.id+"','ble')"}));
             $("#devs").html($("#devs li").sort(app.sortRule)).listview("refresh");
           }).fail(function(e){
             if (typeof app.cachelist[peripheral.id] != "undefined" && typeof (app.cachelist[peripheral.id]).meta != undefined) app.attach(peripheral,(app.cachelist[peripheral.id]).meta)
-            else if(peripheral.uriFrame==0xFF) $('li[dev-id="'+peripheral.id+'"]').addClass("ble").html($("<a>",{href:'#',onclick:"app.uiLoad('"+peripheral.id+"');"}).append($("<img>",{src:"img/ble.svg"})).append($("<h2>").html(peripheral.name+" ("+peripheral.id+")")).append($("<p>").html(peripheral.uri+"<br/>"+"<i class='zmdi zmdi-bluetooth zmd-fw'></i> "+peripheral.name+" ("+peripheral.id +")"))).append($("<a>",{href:'#dialog',"data-rel":'popup',"data-transition":"pop",class:'zmdi zmdi-more-vert',onclick:"app.infoPopup('"+peripheral.id+"','ble')"})); 
-            else $('li[dev-id="'+peripheral.id+'"] a').attr("style","").click(function(){app.go(peripheral.id);});
+            else if(peripheral.uriFrame==0xFF) $('li[data-id="'+peripheral.id+'"]').addClass("ble").html($("<a>",{href:'#',onclick:"app.uiLoad('"+peripheral.id+"');"}).append($("<img>",{src:"img/ble.svg"})).append($("<h2>").html(peripheral.name+" ("+peripheral.id+")")).append($("<p>").html(peripheral.uri+"<br/>"+"<i class='zmdi zmdi-bluetooth zmd-fw'></i> "+peripheral.name+" ("+peripheral.id +")"))).append($("<a>",{href:'#dialog',"data-rel":'popup',"data-transition":"pop",class:'zmdi zmdi-more-vert',onclick:"app.infoPopup('"+peripheral.id+"','ble')"})); 
+            else $('li[data-id="'+peripheral.id+'"] a').attr("style","").click(function(){app.go(peripheral.id);});
             $("#devs").html($("#devs li").sort(app.sortRule)).listview("refresh");
           });
         }
-      } else $('li[dev-id="'+peripheral.id+'"]').addClass("ble").html($("<a>",{href:'#',onclick:"app.uiLoad('"+peripheral.id+"');"}).append($("<img>",{src:"img/ble.svg"})).append($("<h2>").html(peripheral.name+" ("+peripheral.id+")")).append($("<p>").html(peripheral.uri+"<br/>"+"<i class='zmdi zmdi-bluetooth zmd-fw'></i> "+peripheral.name+" ("+peripheral.id +")"))).append($("<a>",{href:'#dialog',"data-rel":'popup',"data-transition":"pop",class:'zmdi zmdi-more-vert',onclick:"app.infoPopup('"+peripheral.id+"','ble')"})); 
-    } else if (app.cachelist[peripheral.id] && app.cachelist[peripheral.id].meta && $('li[dev-id="'+peripheral.id+'"]:not(.other)').length==0) {
-      $('li.other[dev-id="'+peripheral.id+'"]').remove(); 
-      $("#other").before($("<li>",{class:"ble item","dev-id":peripheral.id,"data-rssi":peripheral.rssi,"data-pplr":(app.cachelist[peripheral.id]).meta.count||Date.now(),"data-time":Date.now()}));
+      } else $('li[data-id="'+peripheral.id+'"]').addClass("ble").html($("<a>",{href:'#',onclick:"app.uiLoad('"+peripheral.id+"');"}).append($("<img>",{src:"img/ble.svg"})).append($("<h2>").html(peripheral.name+" ("+peripheral.id+")")).append($("<p>").html(peripheral.uri+"<br/>"+"<i class='zmdi zmdi-bluetooth zmd-fw'></i> "+peripheral.name+" ("+peripheral.id +")"))).append($("<a>",{href:'#dialog',"data-rel":'popup',"data-transition":"pop",class:'zmdi zmdi-more-vert',onclick:"app.infoPopup('"+peripheral.id+"','ble')"})); 
+    } else if (app.cachelist[peripheral.id] && app.cachelist[peripheral.id].meta && $('li[data-id="'+peripheral.id+'"]:not(.other)').length==0) {
+      $('li.other[data-id="'+peripheral.id+'"]').remove(); 
+      $("#other").before($("<li>",{class:"ble item","data-id":peripheral.id,"data-rssi":peripheral.rssi,"data-pplr":(app.cachelist[peripheral.id]).meta.count||Date.now(),"data-time":Date.now()}));
       app.attach(app.cachelist[peripheral.id],(app.cachelist[peripheral.id]).meta);
     } else if (!app.peripherals[peripheral.id]) { 
-      if ($('li.other[dev-id="'+peripheral.id+'"]').length==0) $(".other:last-child").hide().after($("<li>",{class:"other ble item","data-icon":"false","dev-id":peripheral.id,"data-rssi":peripheral.rssi-1000,"data-pplr":Date.now()*1.01,"data-time":Date.now()*1.01}).hide().append($("<a>",{href:"#page2","data-transition":"slide","onclick":"app.generate('"+peripheral.id+"')"}).html("<i class='zmdi zmdi-bluetooth zmd-fw'></i> "+peripheral.name+" ("+peripheral.id +")")));
+      if ($('li.other[data-id="'+peripheral.id+'"]').length==0) $(".other:last-child").hide().after($("<li>",{class:"other ble item","data-icon":"false","data-id":peripheral.id,"data-rssi":peripheral.rssi-1000,"data-pplr":Date.now()*1.01,"data-time":Date.now()*1.01}).hide().append($("<a>",{href:"#page2","data-transition":"slide","onclick":"app.generate('"+peripheral.id+"')"}).html("<i class='zmdi zmdi-bluetooth zmd-fw'></i> "+peripheral.name+" ("+peripheral.id +")")));
       if ($("#dv").prop("checked")) $(".other").show();
     }
     $("#devs").html($("#devs li").sort(app.sortRule)).listview("refresh");
@@ -195,16 +195,16 @@ var app = {
   },
   attach: function(peripheral,meta) {
     if (app.meta[meta.url]) {
-      if (!$('li[dev-id="'+peripheral.id+'"]').attr("dev-url")) $('li[dev-id="'+peripheral.id+'"]').remove();
+      if (!$('li[data-id="'+peripheral.id+'"]').attr("data-url")) $('li[data-id="'+peripheral.id+'"]').remove();
       app.meta[meta.url].devices = $.unique(app.meta[meta.url].devices.concat(peripheral.id||peripheral.service.qualifiedname).sort());
-      if (app.meta[meta.url].devices.length>1) $('li[dev-url="'+meta.url+'"] .n').html(app.meta[meta.url].devices.length + " Devices");
+      if (app.meta[meta.url].devices.length>1) $('li[data-url="'+meta.url+'"] .n').html(app.meta[meta.url].devices.length + " Devices");
       meta = app.meta[meta.url].meta;
     } else {
       meta.apps = device.platform=="iOS" ? [] : JSON.parse(gateway.checkApps(meta.url));
       meta.permissions = [];
       if (meta.cordova) for (n in meta.cordova) if(!PRMISN[n]||PRMISN[n]!=" ") meta.permissions.push(PRMISN[n]||n);
-      if (peripheral.id) $('li[dev-id="'+peripheral.id+'"]').attr({"dev-url":meta.url,"data-pplr":-meta.count||Date.now()}).html($("<a>",{href:'#',onclick:"app.go('"+peripheral.id+"')"}).append($("<img>",{src:meta.apps.length?meta.apps[0].icon:meta.icon}).error(function(){$(this).attr("src","img/ble.svg")})).append($("<h2>").html(meta.title)).append($("<p>").html(meta.url+"<br/>"+"<i class='zmdi zmdi-bluetooth zmd-fw'></i> <span class='n'>"+peripheral.name+" ("+peripheral.id +")</span>"))).append($("<a>",{href:'#dialog',"data-rel":'popup',"data-transition":"pop",class:'zmdi zmdi-more-vert',onclick:"app.infoPopup('"+peripheral.id+"','ble')"}));
-      else $('li[dev-id="'+peripheral.service.qualifiedname+'"]').attr({"dev-url":meta.url,"data-pplr":-meta.count||Date.now()}).html($("<a>",{href:'#',onclick:"app.go('"+peripheral.service.qualifiedname+"')"}).append($("<img>",{src:meta.apps.length?meta.apps[0].icon:meta.icon}).error(function(){$(this).attr("src","img/dnssd.svg")})).append($("<h2>").html(meta.title)).append($("<p>").html(meta.url+"<br/>"+"<i class='zmdi zmdi-network-wifi-alt zmd-fw'></i> <span class='n'>"+(peripheral.service.server||peripheral.service.hostName)+" ("+(peripheral.service.application||peripheral.service.type)+")</span>"))).append($("<a>",{href:'#dialog',"data-rel":'popup',"data-transition":"pop",class:'zmdi zmdi-more-vert',onclick:"app.infoPopup('"+peripheral.service.qualifiedname+"','nsd')"}));
+      if (peripheral.id) $('li[data-id="'+peripheral.id+'"]').attr({"data-url":meta.url,"data-pplr":-meta.count||Date.now()}).html($("<a>",{href:'#',onclick:"app.go('"+peripheral.id+"')"}).append($("<img>",{src:meta.apps.length?meta.apps[0].icon:meta.icon}).error(function(){$(this).attr("src","img/ble.svg")})).append($("<h2>").html(meta.title)).append($("<p>").html(meta.url+"<br/>"+"<i class='zmdi zmdi-bluetooth zmd-fw'></i> <span class='n'>"+peripheral.name+" ("+peripheral.id +")</span>"))).append($("<a>",{href:'#dialog',"data-rel":'popup',"data-transition":"pop",class:'zmdi zmdi-more-vert',onclick:"app.infoPopup('"+peripheral.id+"','ble')"}));
+      else $('li[data-id="'+peripheral.service.qualifiedname+'"]').attr({"data-url":meta.url,"data-pplr":-meta.count||Date.now()}).html($("<a>",{href:'#',onclick:"app.go('"+peripheral.service.qualifiedname+"')"}).append($("<img>",{src:meta.apps.length?meta.apps[0].icon:meta.icon}).error(function(){$(this).attr("src","img/dnssd.svg")})).append($("<h2>").html(meta.title)).append($("<p>").html(meta.url+"<br/>"+"<i class='zmdi zmdi-network-wifi-alt zmd-fw'></i> <span class='n'>"+(peripheral.service.server||peripheral.service.hostName)+" ("+(peripheral.service.application||peripheral.service.type)+")</span>"))).append($("<a>",{href:'#dialog',"data-rel":'popup',"data-transition":"pop",class:'zmdi zmdi-more-vert',onclick:"app.infoPopup('"+peripheral.service.qualifiedname+"','nsd')"}));
       app.meta[meta.url] = {meta:meta, devices:[peripheral.id||peripheral.service.qualifiedname]};
     }
     peripheral.meta = meta;
@@ -373,7 +373,7 @@ var app = {
     $("#lh .id").html(p.id);
     $("#lh .name").html(p.name||"Unnamed");
     $("#lh .rssi").html("("+p.rssi+")");
-    $('#lm h4').html('Connecting.').attr("dev-id",id);
+    $('#lm h4').html('Connecting.').attr("data-id",id);
     try{$('#lm input').val(0).slider("refresh");} catch(e) {}
     jQuery.mobile.changePage("#page3",{"transition":"slide"});
     $('#lh a').click(function(){bluetooth.disconnect(id);app.onAppReady();});
