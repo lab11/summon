@@ -93,4 +93,5 @@
     <plugin name="cordova-plugin-camera" spec="^2.2.0" />
     <plugin name="cordova-plugin-zeroconf" spec="src/plugins/cordova-plugin-zeroconf" />
     <plugin name="cordova-plugin-bluetooth" spec="src/plugins/cordova-plugin-bluetooth"/>
+    <plugin name="jxcore-cordova" spec="src/plugins/jxcore-cordova" />
 </widget>

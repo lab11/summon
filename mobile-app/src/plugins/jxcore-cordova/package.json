@@ -1,0 +1,31 @@
+{
+  "name": "jxcore-cordova",
+  "version": "0.1.1",
+  "description": "Cordova JXcore Plugin to run node apps on Android and iOS",
+  "cordova": {
+    "id": "io.jxcore.node",
+    "platforms": [
+      "ios",
+      "android"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jxcore/jxcore-cordova.git"
+  },
+  "keywords": [
+    "cordova",
+    "jxcore",
+    "node.js",
+    "mobile",
+    "ecosystem:cordova",
+    "cordova-ios",
+    "cordova-android"
+  ],
+  "author": "JXcore Contributors",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jxcore/jxcore-cordova/issues"
+  },
+  "homepage": "https://github.com/jxcore/jxcore-cordova#readme"
+}
