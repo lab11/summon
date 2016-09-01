@@ -12,8 +12,7 @@ var dirUrl = null;
 var prfocus = false;
 
 var app = {
-  initialize: function() { this.bindEvents(); },
-  bindEvents: function() {
+  initialize: function() {
     document.addEventListener("deviceready", app.onAppReady, false);
     document.addEventListener('resume', app.onAppReady, false);
     document.addEventListener('pause', app.onPause, false);
@@ -202,7 +201,7 @@ var app = {
     } else {
       meta.apps = device.platform=="iOS" ? [] : JSON.parse(gateway.checkApps(meta.url));
       meta.permissions = [];
-      if (meta.requests) for (n in meta.requests) if(!PRMISN[n]||PRMISN[n]!=" ") meta.permissions.push(PRMISN[n]||n);
+      if (meta.cordova) for (n in meta.cordova) if(!PRMISN[n]||PRMISN[n]!=" ") meta.permissions.push(PRMISN[n]||n);
       if (peripheral.id) $('li[data-id="'+peripheral.id+'"]').attr({"data-url":meta.url,"data-pplr":-meta.count||Date.now()}).html($("<a>",{href:'#',onclick:"app.go('"+peripheral.id+"')"}).append($("<img>",{src:meta.apps.length?meta.apps[0].icon:meta.icon}).error(function(){$(this).attr("src","img/ble.svg")})).append($("<h2>").html(meta.title)).append($("<p>").html(meta.url+"<br/>"+"<i class='zmdi zmdi-bluetooth zmd-fw'></i> <span class='n'>"+peripheral.name+" ("+peripheral.id +")</span>"))).append($("<a>",{href:'#dialog',"data-rel":'popup',"data-transition":"pop",class:'zmdi zmdi-more-vert',onclick:"app.infoPopup('"+peripheral.id+"','ble')"}));
       else $('li[data-id="'+peripheral.service.qualifiedname+'"]').attr({"data-url":meta.url,"data-pplr":-meta.count||Date.now()}).html($("<a>",{href:'#',onclick:"app.go('"+peripheral.service.qualifiedname+"')"}).append($("<img>",{src:meta.apps.length?meta.apps[0].icon:meta.icon}).error(function(){$(this).attr("src","img/dnssd.svg")})).append($("<h2>").html(meta.title)).append($("<p>").html(meta.url+"<br/>"+"<i class='zmdi zmdi-network-wifi-alt zmd-fw'></i> <span class='n'>"+(peripheral.service.server||peripheral.service.hostName)+" ("+(peripheral.service.application||peripheral.service.type)+")</span>"))).append($("<a>",{href:'#dialog',"data-rel":'popup',"data-transition":"pop",class:'zmdi zmdi-more-vert',onclick:"app.infoPopup('"+peripheral.service.qualifiedname+"','nsd')"}));
       app.meta[meta.url] = {meta:meta, devices:[peripheral.id||peripheral.service.qualifiedname]};
@@ -243,7 +242,7 @@ var app = {
       });
       $("#dm #ui").html("");
       for (n in m.apps) $("#dm #ui").append($("<div>",{"style":"margin:.5em 0; padding:1em .5em .05em .5em; border-radius:3px; background:#eee"}).html("<b>Native App :</b> <img src='"+m.apps[n].icon+"' height=12> "+m.apps[n].name+"<br/>").append($("<a>",{href:"#",class:"ui-btn ui-btn-raised clr-primary","onclick":"app.go('"+id+"',"+n+")"}).html("Open App")));
-      $("#dm #ui").append($("<div>",{"style":"margin:.5em 0; padding:1em .5em .05em .5em; border-radius:3px; background:#eee"}).html((m.requests?"<b>Interactive UI :</b> ":"<b>Website :</b> ")+"<img src='"+m.icon+"' height=12> "+m.title+"<br/><i>"+m.description+"</i><br/>"+(m.permissions&&m.permissions.length ? "<br/><b>Features Used :</b>"+JSON.stringify(m.permissions,null,"<br/>").replace(/[\[\],"]/g,'')+"<br>" : "")).append($("<a>",{href:"#","onclick":"app.go('"+id+"','')","id":"go","class":"ui-btn ui-btn-raised clr-primary"}).html("Open "+(m.requests?"UI":"Site"))));
+      $("#dm #ui").append($("<div>",{"style":"margin:.5em 0; padding:1em .5em .05em .5em; border-radius:3px; background:#eee"}).html((m.cordova?"<b>Interactive UI :</b> ":"<b>Website :</b> ")+"<img src='"+m.icon+"' height=12> "+m.title+"<br/><i>"+m.description+"</i><br/>"+(m.permissions&&m.permissions.length ? "<br/><b>Features Used :</b>"+JSON.stringify(m.permissions,null,"<br/>").replace(/[\[\],"]/g,'')+"<br>" : "")).append($("<a>",{href:"#","onclick":"app.go('"+id+"','')","id":"go","class":"ui-btn ui-btn-raised clr-primary"}).html("Open "+(m.cordova?"UI":"Site"))));
     } else {
       $('#dh img').attr("src",(p.uri+"/favicon.ico")||(comm=="ble"?"img/ble.svg":"img/dnssd.svg"));
       $('#dh h3').html(p.service?p.service.name:p.name);
