@@ -29,7 +29,7 @@
 #pragma mark - UICollectionView Datasource
 
 - (NSInteger)collectionView:(UICollectionView *)view numberOfItemsInSection:(NSInteger)section {
-    return 1;//(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) ? 12 : 8;
+    return 4;//(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) ? 12 : 8;
 }
 
 - (NSInteger)numberOfSectionsInCollectionView: (UICollectionView *)collectionView {
@@ -39,8 +39,8 @@
 - (UICollectionViewCell *)collectionView:(UICollectionView *)cv cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     TodayViewCell *cell = (TodayViewCell*)[cv dequeueReusableCellWithReuseIdentifier:@"TodayViewCell" forIndexPath:indexPath];
     cell.name.text = @"BLEES";
-    cell.icon.image = [UIImage imageNamed:@"AppIcon60x60"];
-    [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:@"https://googledrive.com/host/0B15ruEDqdKuBZDdYcDh3Y2RpaDA/img/blees.ico"]] queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) { cell.icon.image = [UIImage imageWithData:data]; }];
+    cell.icon.image = [UIImage imageNamed:@"icon-ios-152.png"];
+    // [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:@"https://googledrive.com/host/0B15ruEDqdKuBZDdYcDh3Y2RpaDA/img/blees.ico"]] queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) { cell.icon.image = [UIImage imageWithData:data]; }];
     return cell;
     
 }

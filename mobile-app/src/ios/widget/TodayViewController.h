@@ -9,5 +9,6 @@
 @interface TodayViewController : UIViewController <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 
 @property(nonatomic, weak) IBOutlet UICollectionView *collectionView;
+@property (nonatomic, strong) NSArray *dataArray;
 
 @end
