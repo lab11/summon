@@ -52,7 +52,7 @@ var app = {
       else if ($(this).attr("id")=="so") $(this).val(localStorage.getItem("so") || "time").selectmenu("refresh");
       else $(this).prop("checked",localStorage.getItem($(this).attr("id"))!="false").flipswitch("refresh");
     });
-    $('#devs').html($("<li>",{"data-role":"list-divider",id:"other",class:"other","data-rssi":-500,"data-pplr":Date.now()*1.001,"data-time":Date.now()*1.001}).html("Other Devices"));
+    $('#devs').html($("<li>",{"data-role":"list-divider",id:"other",class:"other","data-rssi":-500,"data-pplr":Date.now()*1.001,"data-time":Date.now()*1.001}).html("OTHER DEVICES"));
     $("#other").hide();
     gateway.cache($("#ch").prop("checked"));
     app.peripherals = {}, app.urls = {}, app.meta = {};
@@ -201,7 +201,7 @@ var app = {
     } else {
       meta.apps = device.platform=="iOS" ? [] : JSON.parse(gateway.checkApps(meta.url));
       meta.permissions = [];
-      if (meta.cordova) for (n in meta.cordova) if(!PRMISN[n]||PRMISN[n]!=" ") meta.permissions.push(PRMISN[n]||n);
+      if (meta.cordova) for (n in meta.cordova) if(PRMISN[n]) meta.permissions.push(PRMISN[n]||n);
       if (peripheral.id) $('li[data-id="'+peripheral.id+'"]').attr({"data-url":meta.url,"data-pplr":-meta.count||Date.now()}).html($("<a>",{href:'#',onclick:"app.go('"+peripheral.id+"')"}).append($("<img>",{src:meta.apps.length?meta.apps[0].icon:meta.icon}).error(function(){$(this).attr("src","img/ble.svg")})).append($("<h2>").html(meta.title)).append($("<p>").html(meta.url+"<br/>"+"<i class='zmdi zmdi-bluetooth zmd-fw'></i> <span class='n'>"+peripheral.name+" ("+peripheral.id +")</span>"))).append($("<a>",{href:'#dialog',"data-rel":'popup',"data-transition":"pop",class:'zmdi zmdi-more-vert',onclick:"app.infoPopup('"+peripheral.id+"','ble')"}));
       else $('li[data-id="'+peripheral.service.qualifiedname+'"]').attr({"data-url":meta.url,"data-pplr":-meta.count||Date.now()}).html($("<a>",{href:'#',onclick:"app.go('"+peripheral.service.qualifiedname+"')"}).append($("<img>",{src:meta.apps.length?meta.apps[0].icon:meta.icon}).error(function(){$(this).attr("src","img/dnssd.svg")})).append($("<h2>").html(meta.title)).append($("<p>").html(meta.url+"<br/>"+"<i class='zmdi zmdi-network-wifi-alt zmd-fw'></i> <span class='n'>"+(peripheral.service.server||peripheral.service.hostName)+" ("+(peripheral.service.application||peripheral.service.type)+")</span>"))).append($("<a>",{href:'#dialog',"data-rel":'popup',"data-transition":"pop",class:'zmdi zmdi-more-vert',onclick:"app.infoPopup('"+peripheral.service.qualifiedname+"','nsd')"}));
       app.meta[meta.url] = {meta:meta, devices:[peripheral.id||peripheral.service.qualifiedname]};

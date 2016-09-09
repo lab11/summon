@@ -43,17 +43,24 @@ html, body {
 }
 
 #panel h3 {
-    padding:20px;
+    padding:.6em 10px 0;
+    margin:0;
+    font-family: pacifico;
+    font-size:20px;
+    text-shadow: none;
+    color:#808080 !important;
+    text-align: center;
+    line-height:1.8em;
+}
+
+#panel ul {
+    padding:0;
 }
 
 #panel li {
     color:rgba(0,0,0,.5) !important;
     text-shadow:none;
     padding-top:0; padding-bottom:0; background:none;
-}
-
-#panel li:first-child {
-    margin-top:1em; margin-bottom:1em;
 }
 
 #panel li>a {
@@ -82,10 +89,6 @@ td:last-child {
     background:#ccc;
     top:0 !important;
     box-shadow: inset -5px 0px 5px 0px rgba(0,0,0,0.1);
-}
-
-#page1 h1 {
-    font-family:pacifico;
 }
 
 .ui-content {
@@ -136,6 +139,12 @@ td:last-child {
 
 .item.ble a:active {
     background:#2196F3; color:#fff;
+}
+
+#other, #panel .ui-li-divider {
+    padding-bottom:0;
+    padding-left: 1.25em;
+    font-size:.8em;
 }
 
 .other a {
@@ -236,6 +245,12 @@ h3 {
     overflow-y:visible;
     min-height:inherit; 
     padding:0 1em;
+}
+
+#content ul {
+    min-height:inherit;
+    padding-bottom: 0;
+    margin-bottom: 0;
 }
 
 /* Detail View Dialog */
