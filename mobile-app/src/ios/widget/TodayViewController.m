@@ -38,20 +38,42 @@
 }
 
 - (void)centralManagerDidUpdateState:(CBCentralManager *)central {
-    if (central.state != CBCentralManagerStatePoweredOn) return;
-    if (central.state == CBCentralManagerStatePoweredOn) [_centralManager scanForPeripheralsWithServices:nil options:@{ CBCentralManagerScanOptionAllowDuplicatesKey : @NO }];
+    if (central.state != CBCentralManagerStatePoweredOn) {
+        if (_centralManager.isScanning) [_centralManager stopScan];
+        return;
+    } else {
+        NSLog(@"Powered On");
+        [_centralManager scanForPeripheralsWithServices:nil options:@{ CBCentralManagerScanOptionAllowDuplicatesKey : @NO }];
+    }
 }
 
 - (void)centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary *)advertisementData RSSI:(NSNumber *)RSSI {
     NSLog(@"%@",peripheral);
-    for (int i=0; i<[devices count]; i++)
-        if ([devices[i] isEqual:(peripheral)]) {
-            [[self collectionView] reloadData];
-            return;
-        }
-    [devices addObject:peripheral];
-    [self.collectionView setUserInteractionEnabled:YES];
-    [self.collectionView reloadData];
+    @try {
+        NSData *data = advertisementData[CBAdvertisementDataServiceDataKey][[CBUUID UUIDWithString:@"FEAA"]];
+        if (!data || data.length < 4) return;
+        NSString *uri = [NSString stringWithFormat:@"{\"objects\":[{\"url\":\"%@%.*s\"}]}",PREFIX[((char *)data.bytes)[2]],(uint)(data.length-3),((char *)data.bytes)+3];
+        NSLog(@"%@",uri);
+        for (int i=0; i<((sizeof J2XUS)/(sizeof J2XUS[0])); i++) uri = [uri stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"goo.gl/%@",J2XUS[i]] withString:[NSString stringWithFormat:@"j2x.us/%@",J2XUS[i]]];
+        NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:@"https://summon-caster.appspot.com/resolve-scan"]];
+        [request setHTTPMethod:@"POST"];
+        [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
+        [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+        [request setHTTPBody:[uri dataUsingEncoding:NSUTF8StringEncoding]];
+        NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
+        [[session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+            NSString *requestReply = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
+            NSLog(@"requestReply: %@", requestReply);
+            //            for (int i=0; i<[devices count]; i++)
+            //                if ([devices[i] isEqual:(peripheral)]) {
+            //                    [[self collectionView] reloadData];
+            //                    return;
+            //                }
+            [devices addObject:peripheral];
+            [self.collectionView setUserInteractionEnabled:YES];
+            [self.collectionView reloadData];
+        }] resume];
+    } @catch(NSException *e){}
 }
 
 
