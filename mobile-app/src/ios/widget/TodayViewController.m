@@ -16,12 +16,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-}
-
--(void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
     _centralManager = [[CBCentralManager alloc] initWithDelegate:self queue:nil];
-    devices = [[NSMutableArray alloc] init];
 }
 
 -(void)viewWillDisappear:(BOOL)animated {
@@ -38,13 +33,8 @@
 }
 
 - (void)centralManagerDidUpdateState:(CBCentralManager *)central {
-    if (central.state != CBCentralManagerStatePoweredOn) {
-        if (_centralManager.isScanning) [_centralManager stopScan];
-        return;
-    } else {
-        NSLog(@"Powered On");
-        [_centralManager scanForPeripheralsWithServices:nil options:@{ CBCentralManagerScanOptionAllowDuplicatesKey : @NO }];
-    }
+    if (central.state != CBCentralManagerStatePoweredOn) { if (_centralManager.isScanning) [_centralManager stopScan]; }
+    else [_centralManager scanForPeripheralsWithServices:@[[CBUUID UUIDWithString:@"FEAA"]] options:nil];
 }
 
 - (void)centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary *)advertisementData RSSI:(NSNumber *)RSSI {
@@ -52,30 +42,28 @@
     @try {
         NSData *data = advertisementData[CBAdvertisementDataServiceDataKey][[CBUUID UUIDWithString:@"FEAA"]];
         if (!data || data.length < 4) return;
-        NSString *uri = [NSString stringWithFormat:@"{\"objects\":[{\"url\":\"%@%.*s\"}]}",PREFIX[((char *)data.bytes)[2]],(uint)(data.length-3),((char *)data.bytes)+3];
-        NSLog(@"%@",uri);
+        NSString *uri = [NSString stringWithFormat:@"%@%.*s",PREFIX[((char *)data.bytes)[2]],(uint)(data.length-3),((char *)data.bytes)+3];
         for (int i=0; i<((sizeof J2XUS)/(sizeof J2XUS[0])); i++) uri = [uri stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"goo.gl/%@",J2XUS[i]] withString:[NSString stringWithFormat:@"j2x.us/%@",J2XUS[i]]];
+        if ([self itemExists:uri]) return;
         NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:@"https://summon-caster.appspot.com/resolve-scan"]];
         [request setHTTPMethod:@"POST"];
         [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
         [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-        [request setHTTPBody:[uri dataUsingEncoding:NSUTF8StringEncoding]];
-        NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
-        [[session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-            NSString *requestReply = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
-            NSLog(@"requestReply: %@", requestReply);
-            //            for (int i=0; i<[devices count]; i++)
-            //                if ([devices[i] isEqual:(peripheral)]) {
-            //                    [[self collectionView] reloadData];
-            //                    return;
-            //                }
-            [devices addObject:peripheral];
-            [self.collectionView setUserInteractionEnabled:YES];
+        [request setHTTPBody:[[NSString stringWithFormat:@"{\"objects\":[{\"url\":\"%@\"}]}",uri] dataUsingEncoding:NSUTF8StringEncoding]];
+        [[[NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]] dataTaskWithRequest:request completionHandler:^(NSData *body, NSURLResponse *response, NSError *error) {
+            NSDictionary *md = [NSJSONSerialization JSONObjectWithData:body options:0 error:nil][@"metadata"][0];
+            if ([self itemExists:md[@"displayUrl"]]) return;
+            [devices addObject:[@{@"id":peripheral.identifier, @"name":peripheral.name?peripheral.name:@"Unnamed", @"ico":md[@"icon"], @"title":md[@"title"], @"uri":@[md[@"displayUrl"],md[@"id"]]} mutableCopy]];
+//            [self.collectionView setUserInteractionEnabled:YES];
             [self.collectionView reloadData];
         }] resume];
     } @catch(NSException *e){}
 }
 
+- (BOOL)itemExists:(NSString*)uri {
+    for (NSMutableDictionary *d in devices) if ([(NSArray*)d[@"uri"] containsObject:uri]) return true;
+    return false;
+}
 
 #pragma mark - UICollectionView Datasource
 
@@ -89,10 +77,14 @@
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)cv cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     TodayViewCell *cell = (TodayViewCell*)[cv dequeueReusableCellWithReuseIdentifier:@"TodayViewCell" forIndexPath:indexPath];
-    CBPeripheral *peripheral = devices[indexPath.item];
-    cell.name.text = peripheral.name;
-    cell.icon.image = [UIImage imageNamed:@"icon-ios-152.png"];
-    [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:@"https://googledrive.com/host/0B15ruEDqdKuBZDdYcDh3Y2RpaDA/img/blees.ico"]] queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) { cell.icon.image = [UIImage imageWithData:data]; }];
+    if (cell.icon.image != nil) return cell;
+    NSMutableDictionary *d = devices[indexPath.item]; NSLog(@"Peripheral: %@",d);
+    cell.name.text = d[@"title"];
+    cell.icon.image = (d[@"icoData"]!=nil) ? [UIImage imageWithData:d[@"icoData"]] : [UIImage imageNamed:@"icon-ios-152.png"];
+    [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:d[@"ico"]]] queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+        cell.icon.image = [UIImage imageWithData:data];
+        d[@"icoData"] = data;
+    }];
     return cell;
     
 }
