@@ -16,11 +16,15 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+//    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"Devices"];
     _centralManager = [[CBCentralManager alloc] initWithDelegate:self queue:nil];
 }
 
 -(void)viewWillDisappear:(BOOL)animated {
     [_centralManager stopScan];
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:[NSKeyedArchiver archivedDataWithRootObject:devices] forKey:@"Devices"];
+    [defaults synchronize];
     [super viewWillDisappear:animated];
 }
 
@@ -29,6 +33,10 @@
     // If an error is encountered, use NCUpdateResultFailed
     // If there's no update required, use NCUpdateResultNoData
     // If there's an update, use NCUpdateResultNewData
+    NSData *archive = [[NSUserDefaults standardUserDefaults] objectForKey:@"Devices"];
+    if (devices == nil || devices.count==0) devices = [[NSMutableArray alloc] init];
+    if (archive != nil) devices = [NSKeyedUnarchiver unarchiveObjectWithData:archive];
+    [self.collectionView reloadData];
     completionHandler(NCUpdateResultNewData);
 }
 
