@@ -295,9 +295,12 @@ import Foundation
             let addresses: [String] = IP(netService.addresses)
             
             var txtRecord: [String: String] = [:]
-            let dict = NSNetService.dictionaryFromTXTRecordData(netService.TXTRecordData()!)
-            for (key, data) in dict {
-                txtRecord[key] = String(data: data, encoding:NSUTF8StringEncoding)
+            if (!(netService.TXTRecordData()?.isKindOfClass(NSNull))!) {
+                print(netService.TXTRecordData());
+                let dict = NSNetService.dictionaryFromTXTRecordData(netService.TXTRecordData()!)
+                for (key, data) in dict {
+                    txtRecord[key] = String(data: data, encoding:NSUTF8StringEncoding)
+                }
             }
             
             let service: NSDictionary = NSDictionary(
