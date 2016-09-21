@@ -18,11 +18,15 @@
     [super viewDidLoad];
 //    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"Devices"];
     _devices = [[NSMutableArray alloc] init];
+    _service = [[NSMutableArray alloc] init];
     _centralManager = [[CBCentralManager alloc] initWithDelegate:self queue:nil];
+    _serviceBrowser = [[NSNetServiceBrowser alloc] init];
+    [_serviceBrowser setDelegate:self];
 }
 
 -(void)viewWillDisappear:(BOOL)animated {
     [_centralManager stopScan];
+    [_serviceBrowser stop];
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setObject:[NSKeyedArchiver archivedDataWithRootObject:_devices] forKey:@"Devices"];
     [defaults synchronize];
@@ -37,6 +41,7 @@
     NSData *archdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"Devices"];
     if (archdata != nil) _archive = [NSKeyedUnarchiver unarchiveObjectWithData:archdata];
     NSLog(@"%@",_archive);
+    [_serviceBrowser searchForServicesOfType:@"_http._tcp" inDomain:@""];
     completionHandler(NCUpdateResultNewData);
 }
 
@@ -76,6 +81,20 @@
     } @catch(NSException *e){}
 }
 
+- (void)netServiceBrowser:(NSNetServiceBrowser *)browser didFindService:(NSNetService *)s moreComing:(BOOL)moreComing {
+    [_service addObject:s];
+    [s setDelegate:self];
+    [s resolveWithTimeout:0];
+}
+
+-(void)netServiceDidResolveAddress:(NSNetService *)s {
+    NSLog(@"Service Discovered: %@, %@, %@, %@",s.hostName, s.domain,s.type,s.name);
+    NSString *url = [NSString stringWithFormat:@"http://%@",s.hostName];
+    if ([self itemExists:url]) return;
+    [_devices addObject:[@{@"id":s.hostName, @"name":s.name, @"ico":[NSString stringWithFormat:@"%@/favicon.ico",url], @"title":s.name, @"uri":@[url]} mutableCopy]];
+    [self.collectionView reloadData];
+}
+
 - (BOOL)itemExists:(NSString*)uri {
     for (NSMutableDictionary *d in _devices) if ([(NSArray*)d[@"uri"] containsObject:uri]) return true;
     return false;
@@ -103,8 +122,10 @@
     cell.name.text = d[@"title"];
     cell.icon.image = (d[@"icoData"]!=nil) ? [UIImage imageWithData:d[@"icoData"]] : [UIImage imageNamed:@"icon-ios-152.png"];
     [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:d[@"ico"]]] queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-        cell.icon.image = [UIImage imageWithData:data];
-        d[@"icoData"] = data;
+        if (data!=nil) {
+            cell.icon.image = [UIImage imageWithData:data];
+            d[@"icoData"] = data;
+        }
     }];
     return cell;
     
