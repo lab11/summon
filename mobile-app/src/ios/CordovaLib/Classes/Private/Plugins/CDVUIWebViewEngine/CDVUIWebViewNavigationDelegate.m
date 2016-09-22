@@ -226,7 +226,8 @@ bool caching = true;
 }
 
 -(void) back {
-    [wv goBack];
+    if (wv.canGoBack != nil && wv.canGoBack)[wv goBack];
+    else [wv loadRequest:[NSURLRequest requestWithURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"www/index" ofType:@"html"]isDirectory:NO]]];
 }
 
 

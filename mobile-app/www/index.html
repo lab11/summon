@@ -8,6 +8,13 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <script> // Temporary
+      var handleOpenURL = function(url) { try {
+          params = url.split(/[&,?]\w*=\b/,4);
+          gateway.setDeviceAdvertisement( { id:params[1], name:params[2], uri:params[3] } );
+          location=params[3];
+      } catch (e) {} }
+    </script>
     <link rel="stylesheet" href="css/themes/default/jquery.mobile-1.4.5.min.css">
     <link rel="stylesheet" href="theme/css/nativedroid2.css">
     <link rel="stylesheet" href="theme/css/nativedroid2.color.amber.css">

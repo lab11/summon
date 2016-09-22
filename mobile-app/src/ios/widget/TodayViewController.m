@@ -131,6 +131,11 @@
     
 }
 
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    NSMutableDictionary *d = _devices[indexPath.item];
+    [self.extensionContext openURL:[NSURL URLWithString:[NSString stringWithFormat:@"summon://?id=%@&name=%@&uri=%@",d[@"id"],d[@"name"],d[@"uri"][0]]] completionHandler:nil];
+}
+
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
     return [[UICollectionReusableView alloc] init];
 }
