@@ -73,7 +73,6 @@
                     NSDictionary *md = [NSJSONSerialization JSONObjectWithData:body options:0 error:nil][@"metadata"][0];
                     if ([self itemExists:md[@"displayUrl"]]) return;
                     [_devices addObject:[@{@"id":peripheral.identifier, @"name":peripheral.name?peripheral.name:@"Unnamed", @"ico":md[@"icon"], @"title":md[@"title"], @"uri":@[md[@"displayUrl"],md[@"id"]]} mutableCopy]];
-        //            [self.collectionView setUserInteractionEnabled:YES];
                     [self.collectionView reloadData];
                 } @catch(NSException *e){}
             }] resume];
@@ -127,8 +126,8 @@
             d[@"icoData"] = data;
         }
     }];
+    [cv setUserInteractionEnabled:YES];
     return cell;
-    
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
