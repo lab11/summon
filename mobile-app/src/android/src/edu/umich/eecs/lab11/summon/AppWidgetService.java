@@ -26,6 +26,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 public class AppWidgetService extends RemoteViewsService {
     @Override public RemoteViewsFactory onGetViewFactory(Intent intent) { return new AppRemoteViewsFactory(this.getApplicationContext()); }
@@ -33,6 +34,7 @@ public class AppWidgetService extends RemoteViewsService {
 
 class AppRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     private List<WidgetItem> mWidgetItems = new ArrayList<WidgetItem>();
+
     private List<String> J2XUS  = Arrays.asList(new String[]{"6EKY8W","WRzp2g","qtn9V9","WRKqIy","2W2FTt","BA1zPM","8685Uw","hWTo8W","nCQV8C","sbMMHT","9aD6Wi","2ImXWJ","dbhGnF","3YACnH","449K5X","jEKPu9","xWppj1","Edukt0"});
     private String[] PRTCOL = {"","","aaa:","aaas:","about:","acap:","acct:","cap:","cid:","coap:","coaps:","crid:","data:","dav:","dict:","dns:","file:","ftp:","geo:","go:","gopher:","h323:","http:","https:","iax:","icap:","im:","imap:","info:","ipp:","ipps:","iris:","iris.beep:","iris.xpc:","iris.xpcs:","iris.lwz:","jabber:","ldap:","mailto:","mid:","msrp:","msrps:","mtqp:","mupdate:","news:","nfs:","ni:","nih:","nntp:","opaquelocktoken:","pop:","pres:","reload:","rtsp:","rtsps:","rtspu:","service:","session:","shttp:","sieve:","sip:","sips:","sms:","snmp:","soap.beep:","soap.beeps:","stun:","stuns:","tag:","tel:","telnet:","tftp:","thismessage:","tn3270:","tip:","turn:","turns:","tv:","urn:","vemmi:","ws:","wss:","xcon:","xcon-userid:","xmlrpc.beep:","xmlrpc.beeps:","xmpp:","z39.50r:","z39.50s:","acr:","adiumxtra:","afp:","afs:","aim:","apt:","attachment:","aw:","barion:","beshare:","bitcoin:","bolo:","callto:","chrome:","chrome-extension:","com-eventbrite-attendee:","content:","cvs:","dlna-playsingle:","dlna-playcontainer:","dtn:","dvb:","ed2k:","facetime:","feed:","feedready:","finger:","fish:","gg:","git:","gizmoproject:","gtalk:","ham:","hcp:","icon:","ipn:","irc:","irc6:","ircs:","itms:","jar:","jms:","keyparc:","lastfm:","ldaps:","magnet:","maps:","market:","message:","mms:","ms-help:","ms-settings-power:","msnim:","mumble:","mvn:","notes:","oid:","palm:","paparazzi:","pkcs11:","platform:","proxy:","psyc:","query:","res:","resource:","rmi:","rsync:","rtmfp:","rtmp:","secondlife:","sftp:","sgn:","skype:","smb:","smtp:","soldat:","spotify:","ssh:","steam:","submit:","svn:","teamspeak:","teliaeid:","things:","udp:","unreal:","ut2004:","ventrilo:","view-source:","webcal:","wtai:","wyciwyg:","xfire:","xri:","ymsgr:","example:","ms-settings-cloudstorage:"};
     private String[] PREFIX = {"http://www.","https://www.","http://","https://","urn:uuid:"};
@@ -58,11 +60,7 @@ class AppRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         if (wi!=null) {
             RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.item);
             rv.setTextViewText(R.id.widget_item_name, wi.title);
-            if (wi.ico.length() > 0) try {
-                Bitmap b = BitmapFactory.decodeStream(new URL(wi.ico).openConnection().getInputStream());
-                System.out.println("BITMAP " + b.getWidth() + "x" + b.getHeight() + " " + b.getDensity() + " (" + wi.ico + ")");
-                rv.setImageViewBitmap(R.id.widget_item_app_icon,b);
-            } catch (Exception e) { rv.setImageViewBitmap(R.id.widget_item_app_icon,BitmapFactory.decodeResource(mContext.getResources(), R.drawable.widget)); }
+            rv.setImageViewBitmap(R.id.widget_item_app_icon,wi.bmp);
             try {
                 Bundle extras = new Bundle();
                 extras.putString(AppWidget.ITEM_EXTRA, "{'id':'" + wi.id + "','name':'" + wi.name + "','uri':'" + wi.uri.get(0) + "'}");
@@ -83,7 +81,7 @@ class AppRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     public void onDataSetChanged() {
         mBluetoothAdapter = ((BluetoothManager) mContext.getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter();
         if (mBluetoothAdapter != null && mBluetoothAdapter.isEnabled()) {
-            mBluetoothAdapter.startLeScan(mLeScanCallback);
+            mBluetoothAdapter.startLeScan(new UUID[]{UUID.fromString("0000FEAA-0000-1000-8000-00805F9B34FB")},mLeScanCallback);
             new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { @Override public void run() { mBluetoothAdapter.stopLeScan(mLeScanCallback); } }, 15000);
         }
         mNsdManager = (NsdManager) mContext.getSystemService(Context.NSD_SERVICE);
@@ -102,7 +100,7 @@ class AppRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
                     int type = scanRecord[index];
                     if (type == 0) break;
                     byte[] data = Arrays.copyOfRange(scanRecord, index + 1, index + length);
-                    if (type==0x16 && (data[0]==(byte)0xAA||data[0]==(byte)0xD8) && data[1]==(byte)0xFE) uri = PREFIX[data[4]] + new String(Arrays.copyOfRange(data,5,data.length));
+                    if (type==0x16 && data[0]==(byte)0xAA && data[1]==(byte)0xFE) uri = PREFIX[data[4]] + new String(Arrays.copyOfRange(data,5,data.length));
                     else if (type==0x24) uri = PRTCOL[data[0]] + new String(Arrays.copyOfRange(data,1,data.length));
                     index += length;
                 }
@@ -141,9 +139,9 @@ class AppRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
                     while((line = in.readLine()) != null) sb.append(line);
                     in.close();
                     JSONObject meta = new JSONObject(sb.toString()).getJSONArray("metadata").getJSONObject(0);
-                    if (!mWidgetItems.contains(meta.getString("url")) && !mWidgetItems.contains(o[0]))
-                        wi = new WidgetItem(device.getAddress(),meta.getString("icon"),device.getName(),meta.getString("title"),new String[]{meta.getString("url"),(String)o[0]});
-                    else if (!mWidgetItems.contains(o[0])) mWidgetItems.get(mWidgetItems.indexOf(meta.getString("url"))).uri.add((String)o[0]);
+                    if (!itemExists(meta.getString("url")) && !itemExists((String)o[0]))
+                        wi = new WidgetItem(device.getAddress(),meta.getString("icon"),device.getName(),meta.getString("title"),new String[]{meta.getString("url"),(String)o[0]},mContext);
+                    else if (!itemExists((String)o[0])) mWidgetItems.get(mWidgetItems.indexOf(meta.getString("url"))).uri.add((String)o[0]);
                 }
                 conn.disconnect();
             } catch(Exception e) { e.printStackTrace(); }
@@ -168,13 +166,13 @@ class AppRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         @Override public void onServiceResolved(NsdServiceInfo nsi) {
             String uri = "http:/" + nsi.getHost().toString() + ":" + nsi.getPort();
             if (!itemExists(uri))
-                mWidgetItems.add(new WidgetItem(nsi.getServiceName()+nsi.getServiceType()+".local",uri+"/favicon.ico",nsi.getServiceName(),nsi.getServiceName(),new String[]{uri}));
+                mWidgetItems.add(new WidgetItem(nsi.getServiceName()+nsi.getServiceType()+".local",uri+"/favicon.ico",nsi.getServiceName(),nsi.getServiceName(),new String[]{uri},mContext));
         }
         @Override public void onResolveFailed(NsdServiceInfo serviceInfo, int errorCode) { System.out.println("Failed to resolve " + serviceInfo.toString()); }
     };
 
     private boolean itemExists(String uri) {
-        for(WidgetItem o : mWidgetItems) if(o != null && o.uri.contains(uri)) return true;
+        for(WidgetItem o : mWidgetItems) if(o.uri.contains(uri)) return true;
         return false;
     }
 }
@@ -185,11 +183,14 @@ class WidgetItem {
     public String name="";
     public String title="";
     public List<String> uri;
-    public WidgetItem(String id, String ico, String name, String title, String[] uri) {
+    public Bitmap bmp = null;
+    public WidgetItem(String id, String ico, String name, String title, String[] uri, Context c) {
         this.id = id;
         this.ico = ico;
         this.uri = Arrays.asList(uri);
         this.name = (name==null) ? "Unnamed" : name;
         this.title = title;
+        try { this.bmp = BitmapFactory.decodeStream(new URL(this.ico).openConnection().getInputStream()); } catch(Exception e){}
+        if (this.bmp == null) this.bmp = BitmapFactory.decodeResource(c.getResources(), R.drawable.widget);
     }
 }

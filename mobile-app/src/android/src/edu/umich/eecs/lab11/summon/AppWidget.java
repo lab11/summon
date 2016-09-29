@@ -58,7 +58,7 @@ public class AppWidget extends AppWidgetProvider {
     @Override
     public void onEnabled(Context context) {
         alarm = new Intent(context, AppWidget.class).setAction(ITEM_EXTRA); // Set appwidget update action
-        ((AlarmManager) context.getSystemService(context.ALARM_SERVICE)).setRepeating(AlarmManager.RTC, System.currentTimeMillis()+20000, 60000, PendingIntent.getBroadcast(context, 0, alarm, PendingIntent.FLAG_UPDATE_CURRENT)); // set repeat alarm
+        ((AlarmManager) context.getSystemService(context.ALARM_SERVICE)).setRepeating(AlarmManager.RTC, System.currentTimeMillis()+20000, 45000, PendingIntent.getBroadcast(context, 0, alarm, PendingIntent.FLAG_UPDATE_CURRENT)); // set repeat alarm
         super.onEnabled(context);
     }
 
