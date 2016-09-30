@@ -34,7 +34,7 @@ public class AppWidgetService extends RemoteViewsService {
 
 class AppRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     private List<WidgetItem> mWidgetItems = new ArrayList<WidgetItem>();
-
+    private List<WidgetItem> mArchivItems = new ArrayList<WidgetItem>();
     private List<String> J2XUS  = Arrays.asList(new String[]{"6EKY8W","WRzp2g","qtn9V9","WRKqIy","2W2FTt","BA1zPM","8685Uw","hWTo8W","nCQV8C","sbMMHT","9aD6Wi","2ImXWJ","dbhGnF","3YACnH","449K5X","jEKPu9","xWppj1","Edukt0"});
     private String[] PRTCOL = {"","","aaa:","aaas:","about:","acap:","acct:","cap:","cid:","coap:","coaps:","crid:","data:","dav:","dict:","dns:","file:","ftp:","geo:","go:","gopher:","h323:","http:","https:","iax:","icap:","im:","imap:","info:","ipp:","ipps:","iris:","iris.beep:","iris.xpc:","iris.xpcs:","iris.lwz:","jabber:","ldap:","mailto:","mid:","msrp:","msrps:","mtqp:","mupdate:","news:","nfs:","ni:","nih:","nntp:","opaquelocktoken:","pop:","pres:","reload:","rtsp:","rtsps:","rtspu:","service:","session:","shttp:","sieve:","sip:","sips:","sms:","snmp:","soap.beep:","soap.beeps:","stun:","stuns:","tag:","tel:","telnet:","tftp:","thismessage:","tn3270:","tip:","turn:","turns:","tv:","urn:","vemmi:","ws:","wss:","xcon:","xcon-userid:","xmlrpc.beep:","xmlrpc.beeps:","xmpp:","z39.50r:","z39.50s:","acr:","adiumxtra:","afp:","afs:","aim:","apt:","attachment:","aw:","barion:","beshare:","bitcoin:","bolo:","callto:","chrome:","chrome-extension:","com-eventbrite-attendee:","content:","cvs:","dlna-playsingle:","dlna-playcontainer:","dtn:","dvb:","ed2k:","facetime:","feed:","feedready:","finger:","fish:","gg:","git:","gizmoproject:","gtalk:","ham:","hcp:","icon:","ipn:","irc:","irc6:","ircs:","itms:","jar:","jms:","keyparc:","lastfm:","ldaps:","magnet:","maps:","market:","message:","mms:","ms-help:","ms-settings-power:","msnim:","mumble:","mvn:","notes:","oid:","palm:","paparazzi:","pkcs11:","platform:","proxy:","psyc:","query:","res:","resource:","rmi:","rsync:","rtmfp:","rtmp:","secondlife:","sftp:","sgn:","skype:","smb:","smtp:","soldat:","spotify:","ssh:","steam:","submit:","svn:","teamspeak:","teliaeid:","things:","udp:","unreal:","ut2004:","ventrilo:","view-source:","webcal:","wtai:","wyciwyg:","xfire:","xri:","ymsgr:","example:","ms-settings-cloudstorage:"};
     private String[] PREFIX = {"http://www.","https://www.","http://","https://","urn:uuid:"};
@@ -57,6 +57,7 @@ class AppRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     public RemoteViews getViewAt(int position) {
         if (position >= mWidgetItems.size()) return null;
         WidgetItem wi = mWidgetItems.get(position);
+        if (position == mWidgetItems.size()-1) updateArchive();
         if (wi!=null) {
             RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.item);
             rv.setTextViewText(R.id.widget_item_name, wi.title);
@@ -113,38 +114,39 @@ class AppRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
     public class DataFetch extends AsyncTask<Object, Void, WidgetItem> {
         protected WidgetItem doInBackground(Object... o) {
-            WidgetItem wi = null;
-            try {
-                URL url = new URL("https://summon-caster.appspot.com/resolve-scan");
-                BluetoothDevice device = (BluetoothDevice) o[1];
+            WidgetItem wi = getArchivItem((String)o[0]);
+            if (wi == null)
+                try {
+                    URL url = new URL("https://summon-caster.appspot.com/resolve-scan");
+                    BluetoothDevice device = (BluetoothDevice) o[1];
 
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestProperty("Content-Type", "application/json");
-                conn.setRequestProperty("Accept", "application/json");
-                conn.setRequestMethod("POST");
-                conn.setDoInput(true);
-                conn.setDoOutput(true);
-                conn.connect();
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    conn.setRequestProperty("Content-Type", "application/json");
+                    conn.setRequestProperty("Accept", "application/json");
+                    conn.setRequestMethod("POST");
+                    conn.setDoInput(true);
+                    conn.setDoOutput(true);
+                    conn.connect();
 
-                OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
-                writer.write("{\"objects\":[{\"url\":\"" + o[0] + "\"}]}");
-                writer.close();
+                    OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
+                    writer.write("{\"objects\":[{\"url\":\"" + o[0] + "\"}]}");
+                    writer.close();
 
-                int responseCode=conn.getResponseCode();
+                    int responseCode=conn.getResponseCode();
 
-                if (responseCode == HttpURLConnection.HTTP_OK) {
-                    BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                    StringBuffer sb = new StringBuffer("");
-                    String line="";
-                    while((line = in.readLine()) != null) sb.append(line);
-                    in.close();
-                    JSONObject meta = new JSONObject(sb.toString()).getJSONArray("metadata").getJSONObject(0);
-                    if (!itemExists(meta.getString("url")) && !itemExists((String)o[0]))
-                        wi = new WidgetItem(device.getAddress(),meta.getString("icon"),device.getName(),meta.getString("title"),new String[]{meta.getString("url"),(String)o[0]},mContext);
-                    else if (!itemExists((String)o[0])) mWidgetItems.get(mWidgetItems.indexOf(meta.getString("url"))).uri.add((String)o[0]);
-                }
-                conn.disconnect();
-            } catch(Exception e) { e.printStackTrace(); }
+                    if (responseCode == HttpURLConnection.HTTP_OK) {
+                        BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                        StringBuffer sb = new StringBuffer("");
+                        String line="";
+                        while((line = in.readLine()) != null) sb.append(line);
+                        in.close();
+                        JSONObject meta = new JSONObject(sb.toString()).getJSONArray("metadata").getJSONObject(0);
+                        if (!itemExists(meta.getString("url")) && !itemExists((String)o[0]))
+                            wi = new WidgetItem(device.getAddress(),meta.getString("icon"),device.getName(),meta.getString("title"),new String[]{meta.getString("url"),(String)o[0]},mContext);
+                        else if (!itemExists((String)o[0])) mWidgetItems.get(mWidgetItems.indexOf(meta.getString("url"))).uri.add((String)o[0]);
+                    }
+                    conn.disconnect();
+                } catch(Exception e) { e.printStackTrace(); }
             return wi;
         }
 
@@ -174,6 +176,16 @@ class AppRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     private boolean itemExists(String uri) {
         for(WidgetItem o : mWidgetItems) if(o.uri.contains(uri)) return true;
         return false;
+    }
+
+    private WidgetItem getArchivItem(String uri) {
+        for(WidgetItem o : mArchivItems) if(o.uri.contains(uri)) return o;
+        return null;
+    }
+
+    private void updateArchive() {
+        for(WidgetItem o : mWidgetItems) if(!mArchivItems.contains(o)) mArchivItems.add(o);
+        mWidgetItems.clear();
     }
 }
 
