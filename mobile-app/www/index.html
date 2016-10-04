@@ -58,6 +58,7 @@
             <li><select id="so" name="so" class="pref" data-native-menu="false"><option value="time">Sort by Time</option><option value="rssi">Sort by RSSI</option><option value="pplr">Sort by Popularity</option></select></li>
             <li><table><tr><td><label for="dv">See Other Devices:</label></td><td><input type="checkbox" class="pref" id="dv" name="dv" data-role="flipswitch"/></td></tr></table></li>
             <li><table><tr><td><label for="ch">Allow Caching:    </label></td><td><input type="checkbox" class="pref" id="ch" name="ch" data-role="flipswitch"/></td></tr></table></li>
+            <li><a href="#page4" style="background-image:none !important; padding-left:1em;"><i class="zmdi zmdi-star-circle zmd-lg zmd-fw"></i> Favorites</a></li>
             <li class="pa"><a href="https://github.com/lab11/summon"> Summon Project</a></li>
             <li class="pa"><a href="http://lab11.eecs.umich.edu" style="background-image:url(img/lab11.svg) !important;"> Lab11</a></li>
           </ul>
@@ -82,6 +83,16 @@
       <div role="main" id="lm">
         <h4></h4>
         <input type="range" value="0" min="0" max="100" data-highlight="true">
+      </div>
+    </div>
+        <div data-role="page" id="page4">
+      <div data-role="header" data-position="fixed" data-tap-toggle="false" class="fh">
+        <a href="#page1" data-rel="back" class="ui-btn ui-btn-left" data-transition="slide" data-direction="reverse"><i class="zmdi zmdi-arrow-back zmd-lg"></i></a>
+        <h1>Favorites</h1>
+      </div>
+      <div data-role="content" style="padding:15px">
+        <ul data-role="listview" id="faves" data-split-icon="delete"></ul>
+        <center>Favorites may automatically connect with associated devices and send/recieve data online while the app is in the background.</center>
       </div>
     </div>
     <script src="theme/js/nativedroid2.js"></script>

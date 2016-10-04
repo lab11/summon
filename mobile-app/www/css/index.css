@@ -114,7 +114,7 @@ td:last-child {
     overflow:hidden;
 }
 
-.item {
+.item, #page4 li {
     background:#fff;
     margin:.5em !important;
     border-radius:2px !important;

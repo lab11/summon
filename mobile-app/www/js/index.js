@@ -18,7 +18,7 @@ var app = {
     document.addEventListener('pause', app.onPause, false);
     $('#content').xpull({'callback':app.onAppReady,'spinnerTimeout':10,'pullThreshold':100});
     $(".pref").change(app.onPrefChange);
-    $("#panel a").click(function(e){e.preventDefault();window.open($(this).attr("href"),'_system');return false;});
+    $("#panel .pa").click(function(e){e.preventDefault();window.open($(this).attr("href"),'_system');return false;});
     $(document).bind('swiperight', function () { try {$.mobile.back();} catch(e) {} });
     $.mobile.changePage.defaults.transition = 'slide';
     $.mobile.popup.prototype.options.history = false;
@@ -56,6 +56,7 @@ var app = {
     $("#other").hide();
     gateway.cache($("#ch").prop("checked"));
     app.peripherals = {}, app.urls = {}, app.meta = {};
+    app.bookmarks = app.getStoredObject("bookmarks")||{};
     app.cachelist = app.getStoredObject("peripherals")||{};
     app.readQueue=[];
     $.mobile.loading("show");
@@ -71,6 +72,7 @@ var app = {
     }
     $('#content').data('plugin_xpull').reset();
     $("body").pagecontainer({ beforeshow: function(e,ui) { if (ui.toPage.attr("id")=="page1") app.onAppReady(); } });
+    $("body").pagecontainer({ beforeshow: function(e,ui) { if (ui.toPage.attr("id")=="page4") app.loadFaves(); } });
   },
   onPause: function() {
     bluetooth.disconnect(d.id||"");
@@ -127,7 +129,7 @@ var app = {
             if (typeof app.cachelist[peripheral.service.qualifiedname] != "undefined" && typeof (app.cachelist[peripheral.service.qualifiedname]).meta != undefined) app.attach(peripheral,(app.cachelist[peripheral.service.qualifiedname]).meta);
             $.post("https://summon-caster.appspot.com/resolve-scan",JSON.stringify({objects:[{url:peripheral.uri}]}),function(data){
               if (data.metadata[0]) app.attach(peripheral,data.metadata[0]);
-              else $('li[data-id="'+peripheral.service.qualifiedname+'"]').html($("<a>",{href:'#',onclick:"app.go('"+peripheral.service.qualifiedname+"')"}).append($("<img>",{src:peripheral.uri+"/favicon.ico"}).error(function(){$(this).attr("src","img/dnssd.svg")})).append($("<h2>").html(peripheral.service.name)).append($("<p>").html(peripheral.uri+"/<br/><i class='zmdi zmdi-network-wifi-alt zmd-fw'></i> "+(peripheral.service.server||peripheral.service.hostName)+" ("+(peripheral.service.application||peripheral.service.type)+")"))).append($("<a>",{href:"#dialog","data-rel":"popup","data-transition":"pop",class:"zmdi zmdi-more-vert",onclick:"app.infoPopup('"+peripheral.service.qualifiedname+"','nsd')"}));
+              else $('li[data-id="'+peripheral.service.qualifiedname+'"]').html($("<a>",{href:'#',onclick:"app.go('"+peripheral.service.qualifiedname+"')"}).append($("<img>",{src:peripheral.uri+"/favicon.ico"}).error(function(){$(this).attr("src","img/dnssd.svg")})).append($("<h2>").html("<a class='zmdi zmdi-star"+(app.bookmarks[peripheral.uri]?"":"-border")+" zmd-lg' style='float:right; position:relative; z-index:1000' onclick='app.bookmark(\""+peripheral.uri+"\")'></a> "+peripheral.service.name)).append($("<p>").html(peripheral.uri+"/<br/><i class='zmdi zmdi-network-wifi-alt zmd-fw'></i> "+(peripheral.service.server||peripheral.service.hostName)+" ("+(peripheral.service.application||peripheral.service.type)+")"))).append($("<a>",{href:"#dialog","data-rel":"popup","data-transition":"pop",class:"zmdi zmdi-more-vert",onclick:"app.infoPopup('"+peripheral.service.qualifiedname+"','nsd')"}));
               $("#devs").html($("#devs li").sort(app.sortRule)).listview("refresh");
             }).fail(function(e){
               $('li[data-id="'+peripheral.service.qualifiedname+'"]').html($("<a>",{href:'#',onclick:"app.go('"+peripheral.service.qualifiedname+"')"}).append($("<img>",{src:peripheral.uri+"/favicon.ico"}).error(function(){$(this).attr("src","img/dnssd.svg")})).append($("<h2>").html(peripheral.service.name)).append($("<p>").html(peripheral.uri+"/<br/><i class='zmdi zmdi-network-wifi-alt zmd-fw'></i> "+(peripheral.service.server||peripheral.service.hostName)+" ("+(peripheral.service.application||peripheral.service.type)+")"))).append($("<a>",{href:"#dialog","data-rel":"popup","data-transition":"pop",class:"zmdi zmdi-more-vert",onclick:"app.infoPopup('"+peripheral.service.qualifiedname+"','nsd')"}));
@@ -202,9 +204,9 @@ var app = {
       meta.apps = device.platform=="iOS" ? [] : JSON.parse(gateway.checkApps(meta.url));
       meta.permissions = [];
       if (meta.cordova) for (n in meta.cordova) if(PRMISN[n]) meta.permissions.push(PRMISN[n]||n);
-      if (peripheral.id) $('li[data-id="'+peripheral.id+'"]').attr({"data-url":meta.url,"data-pplr":-meta.count||Date.now()}).html($("<a>",{href:'#',onclick:"app.go('"+peripheral.id+"')"}).append($("<img>",{src:meta.apps.length?meta.apps[0].icon:meta.icon}).error(function(){$(this).attr("src","img/ble.svg")})).append($("<h2>").html(meta.title)).append($("<p>").html(meta.url+"<br/>"+"<i class='zmdi zmdi-bluetooth zmd-fw'></i> <span class='n'>"+peripheral.name+" ("+peripheral.id +")</span>"))).append($("<a>",{href:'#dialog',"data-rel":'popup',"data-transition":"pop",class:'zmdi zmdi-more-vert',onclick:"app.infoPopup('"+peripheral.id+"','ble')"}));
-      else $('li[data-id="'+peripheral.service.qualifiedname+'"]').attr({"data-url":meta.url,"data-pplr":-meta.count||Date.now()}).html($("<a>",{href:'#',onclick:"app.go('"+peripheral.service.qualifiedname+"')"}).append($("<img>",{src:meta.apps.length?meta.apps[0].icon:meta.icon}).error(function(){$(this).attr("src","img/dnssd.svg")})).append($("<h2>").html(meta.title)).append($("<p>").html(meta.url+"<br/>"+"<i class='zmdi zmdi-network-wifi-alt zmd-fw'></i> <span class='n'>"+(peripheral.service.server||peripheral.service.hostName)+" ("+(peripheral.service.application||peripheral.service.type)+")</span>"))).append($("<a>",{href:'#dialog',"data-rel":'popup',"data-transition":"pop",class:'zmdi zmdi-more-vert',onclick:"app.infoPopup('"+peripheral.service.qualifiedname+"','nsd')"}));
       app.meta[meta.url] = {meta:meta, devices:[peripheral.id||peripheral.service.qualifiedname]};
+      if (peripheral.id) $('li[data-id="'+peripheral.id+'"]').attr({"data-url":meta.url,"data-pplr":-meta.count||Date.now()}).html($("<a>",{href:'#',onclick:"app.go('"+peripheral.id+"')"}).append($("<img>",{src:meta.apps.length?meta.apps[0].icon:meta.icon}).error(function(){$(this).attr("src","img/ble.svg")})).append($("<h2>").html("<a class='zmdi zmdi-star"+(app.bookmarks[meta.url]?"":"-border")+" zmd-lg' style='float:right; position:relative; z-index:1000' onclick='app.bookmark(\""+meta.url+"\")'></a> "+meta.title)).append($("<p>").html(meta.url+"<br/>"+"<i class='zmdi zmdi-bluetooth zmd-fw'></i> <span class='n'>"+peripheral.name+" ("+peripheral.id +")</span>"))).append($("<a>",{href:'#dialog',"data-rel":'popup',"data-transition":"pop",class:'zmdi zmdi-more-vert',onclick:"app.infoPopup('"+peripheral.id+"','ble')"}));
+      else $('li[data-id="'+peripheral.service.qualifiedname+'"]').attr({"data-url":meta.url,"data-pplr":-meta.count||Date.now()}).html($("<a>",{href:'#',onclick:"app.go('"+peripheral.service.qualifiedname+"')"}).append($("<img>",{src:meta.apps.length?meta.apps[0].icon:meta.icon}).error(function(){$(this).attr("src","img/dnssd.svg")})).append($("<h2>").html("<a class='zmdi zmdi-star"+(app.bookmarks[meta.url]?"":"-border")+" zmd-lg' style='float:right; position:relative; z-index:1000' onclick='app.bookmark(\""+meta.url+"\")'></a> "+meta.title)).append($("<p>").html(meta.url+"<br/>"+"<i class='zmdi zmdi-network-wifi-alt zmd-fw'></i> <span class='n'>"+(peripheral.service.server||peripheral.service.hostName)+" ("+(peripheral.service.application||peripheral.service.type)+")</span>"))).append($("<a>",{href:'#dialog',"data-rel":'popup',"data-transition":"pop",class:'zmdi zmdi-more-vert',onclick:"app.infoPopup('"+peripheral.service.qualifiedname+"','nsd')"}));
     }
     peripheral.meta = meta;
     $("#devs").html($("#devs li").sort(app.sortRule)).listview("refresh");
@@ -212,6 +214,17 @@ var app = {
     app.peripherals[peripheral.id||peripheral.service.qualifiedname] = $.extend(peripheral,app.peripherals[peripheral.id||peripheral.service.qualifiedname]);
     if ($("#ch").prop("checked")) app.cachelist[peripheral.id||peripheral.service.qualifiedname] = peripheral;
     localStorage.setItem("peripherals",JSON.stringify(app.cachelist));
+  },
+  bookmark: function(url) {
+    console.log("Bookmark " + url);
+    if (app.bookmarks[url]) {
+      delete app.bookmarks[url];
+      $("li[data-url='"+url+"'] h2 a").removeClass("zmdi-star-border").addClass("zmdi-star");
+    } else {
+      app.bookmarks[url] = app.meta[url].meta.title
+      $("li[data-url='"+url+"'] h2 a").removeClass("zmdi-star").addClass("zmdi-star-border");
+    }
+    localStorage.setItem("bookmarks",JSON.stringify(app.bookmarks));
   },
   sortRule: function(a,b) {
     switch ($("#so").val()) {
@@ -343,6 +356,11 @@ var app = {
       if (app.blacklist.indexOf(app.readQueue[0].service)>=0) app.onRWError();
       else bluetooth.read(d.id,app.readQueue[0].service,app.readQueue[0].characteristic,app.onRead,app.onRWError);
     } else if (!app.writeQueue.length) bluetooth.isConnected(d.id,function(){bluetooth.disconnect(d.id||""); app.readQueue=[]; d.count=0; $("#page2 .status").click(app.connect).html($("<i>",{class:"zmdi zmd-lg zmdi-replay"}));},function(){app.readQueue=[]});
+  },
+  loadFaves: function(e) {
+    $("#faves").html("");
+    for (n in app.bookmarks) $("#faves").append($("<li>").html("<a href='#'><h3>"+app.bookmarks[n]+"</h3><p>"+n+"</p></a><a href='#' style='background:#a00;'></a>"));
+    $("#faves").listview("refresh");
   },
   read: function(characteristic) {
     app.readQueue.push(characteristic);
