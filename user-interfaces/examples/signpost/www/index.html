@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Signpost</title>
+    <style>
+      html, body { height:100%; margin:0; padding:0; background:url(img/bg.jpg) center center / cover; overflow:hidden; }
+      svg { max-height:100%; max-width:100%; font-family: monospace; display:inline-block; margin-bottom:-5px; }
+    </style>
+    <summon request="bluetooth" />
+  </head>
+  <body>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 700">
+      <defs>
+        <linearGradient id="d" x1="1" x2="0" y2="1">
+          <stop offset="10%" stop-color="#159"/>
+          <stop offset="90%" stop-color="#136"/>
+        </linearGradient>
+        <linearGradient id="b">
+          <stop offset="2%" stop-color="#555"/>
+          <stop offset="7%" stop-color="#777"/>
+          <stop offset="93%" stop-color="#777"/>
+          <stop offset="98%" stop-color="#999"/>
+        </linearGradient>
+        <pattern id="a" x="215" y="10" width="70" height="40" patternUnits="userSpaceOnUse">
+          <path fill="#fff" d="M0 0h70v40H0z"/>
+          <circle fill="#999" cx="35" cy="20" r="9"/>
+          <circle cx="35" cy="20" r="7"/>
+        </pattern>
+        <mask id="c">
+          <rect width="100%" height="100%" fill="url(#a)"/>
+        </mask>
+      </defs>
+      <path fill="url(#b)" mask="url(#c)" d="M215 0h70v700h-70z"/>
+      <rect fill="url(#d)" height="670" width="470" ry="13" rx="13" x="15" y="15" opacity=".95"/>
+      <path fill="rgba(0,0,0,.7)" d="M210 315v17h6v26h-6v17h30v-17h-6v-17l16 24 16-24v17h-6v17h30v-17h-6v-26h6v-17h-24l-16 24-16-24h-24z"/>
+      <text fill="rgba(0,0,0,.7)" text-anchor="middle" alignment-baseline="central" x="250" y="385">SIGNPOST</text>
+      <!-- MODULE 0 -->
+      <rect fill="rgba(128,200,225,.2)" height="130" width="130" ry="13" rx="13" x="60" y="60"/>
+      <text fill="rgba(0,0,0,.7)" text-anchor="middle" alignment-baseline="central" x="125" y="125">MODULE 0</text>
+      <!-- MODULE 1 -->
+      <rect fill="rgba(128,200,225,.2)" height="130" width="130" ry="13" rx="13" x="310" y="60"/>
+      <text fill="rgba(0,0,0,.7)" text-anchor="middle" alignment-baseline="central" x="375" y="125">MODULE 1</text>
+      <!-- MODULE 2 -->
+      <rect fill="rgba(128,200,225,.2)" height="130" width="130" ry="13" rx="13" x="60" y="210"/>
+      <text fill="rgba(0,0,0,.7)" text-anchor="middle" alignment-baseline="central" x="125" y="275">MODULE 2</text>
+      <!-- CONTROL -->
+      <rect fill="rgba(128,200,225,.2)" height="130" width="130" ry="13" rx="13" x="310" y="210"/>
+      <text fill="rgba(0,0,0,.7)" text-anchor="middle" alignment-baseline="central" x="375" y="275">CONTROL</text>
+      <!-- POWER -->
+      <rect fill="rgba(128,200,225,.2)" height="130" width="130" ry="13" rx="13" x="60" y="360"/>
+      <text fill="rgba(0,0,0,.7)" text-anchor="middle" alignment-baseline="central" x="125" y="425">POWER</text>
+      <!-- MODULE 5 -->
+      <rect fill="rgba(128,200,225,.2)" height="130" width="130" ry="13" rx="13" x="310" y="360"/>
+      <text fill="rgba(0,0,0,.7)" text-anchor="middle" alignment-baseline="central" x="375" y="425">MODULE 5</text>
+      <!-- MODULE 6 -->
+      <rect fill="rgba(128,200,225,.2)" height="130" width="130" ry="13" rx="13" x="60" y="510"/>
+      <text fill="rgba(0,0,0,.7)" text-anchor="middle" alignment-baseline="central" x="125" y="575">MODULE 6</text>
+      <!-- MODULE 7 -->
+      <rect fill="rgba(128,200,225,.2)" height="130" width="130" ry="13" rx="13" x="310" y="510"/>
+      <text fill="rgba(0,0,0,.7)" text-anchor="middle" alignment-baseline="central" x="375" y="575">MODULE 7</text>
+    </svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 700">
+      <defs>
+        <pattern id="a" x="215" y="30" width="70" height="40" patternUnits="userSpaceOnUse">
+          <path fill="#fff" d="M0 0h70v40H0z"/>
+          <circle fill="#999" cx="35" cy="20" r="9"/>
+          <circle cx="35" cy="20" r="7"/>
+        </pattern>
+        <mask id="c">
+          <rect width="100%" height="100%" fill="url(#a)"/>
+        </mask>
+      </defs>
+      <path fill="url(#b)" mask="url(#c)" d="M215-20h70v700h-70z"/>
+    </svg>
+    <script type="text/javascript" src="js/index.js"></script>
+  </body>
+</html>
