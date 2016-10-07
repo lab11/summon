@@ -182,10 +182,34 @@ td:last-child {
     background:#4cf !important;
     color:#aaa !important;
     border-radius:0 !important;
+    height:50% !important; 
+    bottom:0 !important; 
+    top:auto !important;
 }
 
 .ui-icon-info:active {
     background:#39b !important;
+}
+
+
+.zmdi-star {
+    position: absolute !important;
+    width: 2.5em;
+    height: 50%;
+    text-align: center;
+    top: 0;
+    right: 0;
+    background:#ccc;
+    color:#fff;
+    z-index: 2;
+    font-size:16px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.fav {
+    background: #fb0;
 }
 
 h3 {
