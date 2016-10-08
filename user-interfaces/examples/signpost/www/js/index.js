@@ -1,4 +1,4 @@
-/* JavaScript for ESS Summon UI */
+/* JavaScript for Signpost Summon UI */
 
 var app = {
     // Application Constructor
