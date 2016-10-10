@@ -357,9 +357,9 @@ var app = {
       else bluetooth.read(d.id,app.readQueue[0].service,app.readQueue[0].characteristic,app.onRead,app.onRWError);
     } else if (!app.writeQueue.length) bluetooth.isConnected(d.id,function(){bluetooth.disconnect(d.id||""); app.readQueue=[]; d.count=0; $("#page2 .status").click(app.connect).html($("<i>",{class:"zmdi zmd-lg zmdi-replay"}));},function(){app.readQueue=[]});
   },
-  loadFaves: function(e) {
+  loadFaves: function() {
     $("#faves").html("");
-    for (n in app.bookmarks) $("#faves").append($("<li>").html("<a href='#'><h3>"+app.bookmarks[n]+"</h3><p>"+n+"</p></a><a href='#' style='background:#a00;'></a>"));
+    for (n in app.bookmarks) $("#faves").append($("<li>").html("<a href='#'><h3>"+app.bookmarks[n]+"</h3><p>"+n+"</p></a><a href='#' style='background:#a00;' onclick='app.bookmark(\""+n+"\");app.loadFaves();'></a>"));
     $("#faves").listview("refresh");
   },
   read: function(characteristic) {
