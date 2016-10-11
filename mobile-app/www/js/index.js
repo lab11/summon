@@ -78,6 +78,7 @@ var app = {
     bluetooth.disconnect(d.id||"");
     bluetooth.stopScan();
     cordova.plugins.zeroconf.close();
+    gateway.bookmark(JSON.stringify(app.bookmarks));
     // nfc.removeNdefListener(app.onNfcFound);
   },
   onPrefChange: function() {

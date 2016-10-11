@@ -46,6 +46,7 @@ import java.util.List;
 
 public class MainActivity extends CordovaActivity {
     private String deviceAdvertisement = "";
+    private String bookmarks = "";
     private String js = "";
     private WebView wv;
 
@@ -121,6 +122,9 @@ public class MainActivity extends CordovaActivity {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         }
+
+        @JavascriptInterface
+        public void bookmark(String s) { bookmarks = s; }
 
         @JavascriptInterface
         public String checkApps(String s) {
