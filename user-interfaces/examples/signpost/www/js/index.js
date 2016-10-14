@@ -7,6 +7,14 @@ var app = {
         document.addEventListener("deviceready", app.onAppReady, false);
         document.addEventListener("resume", app.onAppReady, false);
         document.addEventListener("pause", app.onPause, false);
+
+        var map = d3.select("#mod6").append("svg").attr("width",130).attr("height",65);
+        d3.json("js/map.json",function(e,geodata) { // Create GPS module map
+          if (e) return console.log(e);
+          map.selectAll("path")
+            .data(topojson.feature(geodata,geodata.objects.collection).features).enter().append("path")
+            .attr("d",d3.geo.path().projection(d3.geo.equirectangular().scale(20).translate([130/2,65/2])));
+        });
     },
     // App Ready Event Handler
     onAppReady: function() {
@@ -16,15 +24,14 @@ var app = {
     },
     // App Paused Event Handler
     onPause: function() {
-        app.log("on Pause");                                                           // if user leaves app, stop BLE
+        app.log("Pause");                                                             // if user leaves app, stop BLE
         summon.bluetooth.stopScan();
     },
     // Bluetooth Enabled Callback
     onEnable: function() {
-        app.log("onEnable");
         app.onPause();                                                                 // halt any previously running BLE processes
         summon.bluetooth.startScan([], app.onDiscover, app.onAppReady);                // start BLE scan; if device discovered, goto: onDiscover
-        app.log("Searching ");
+        app.log("Searching");
     },
     // BLE Device Discovered Callback
     onDiscover: function(device) {

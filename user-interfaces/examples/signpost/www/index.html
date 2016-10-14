@@ -4,7 +4,7 @@
     <title>Signpost</title>
     <style>
       html, body { height:100%; margin:0; padding:0; background:url(img/bg.jpg) center center / cover; overflow:hidden; }
-      svg { max-height:100%; max-width:100%; font-family: monospace; display:inline-block; margin-bottom:-5px; }
+      svg { max-height:100%; max-width:100%; font-family: monospace; display:inline-block; margin-bottom:-5px; fill:rgba(0,0,0,.5); }
       b {font-size:10px; font-weight:normal;}
       .mod { height:90%; width:90%; padding:5%; text-align:center; color:rgba(255,255,255,.7); background:rgba(128,200,225,.2); border-radius:13px;}
     </style>
@@ -82,7 +82,8 @@
       </defs>
       <path fill="url(#b)" mask="url(#c)" d="M215-20h70v700h-70z"/>
     </svg>
-    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <script src="http://d3js.org/topojson.v1.min.js"></script>
     <script type="text/javascript" src="js/index.js"></script>
   </body>
 </html>
