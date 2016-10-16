@@ -4,9 +4,12 @@
     <title>Signpost</title>
     <style>
       html, body { height:100%; margin:0; padding:0; background:url(img/bg.jpg) center center / cover; overflow:hidden; }
-      svg { max-height:200%; max-width:100%; font-family: monospace; display:inline-block; margin-bottom:-5px; fill:rgba(0,0,0,.5); }
-      b {font-size:10px; font-weight:normal;}
-      .mod { height:90%; width:90%; padding:5%; text-align:center; color:rgba(255,255,255,.7); background:rgba(128,200,225,.2); border-radius:13px;}
+      svg { max-height:200%; max-width:100%; font-family: monospace; display:inline-block; margin-bottom:-5px; }
+      line { stroke:rgba(255,255,255,.7); }
+      b {font-size:8px; font-weight:normal; }
+      text { fill:rgba(255,255,255,.7); text-anchor:middle; font-size:9px; }
+      .mod { height:120px; width:120px; padding:5px; text-align:center; color:rgba(255,255,255,.7); background:rgba(128,200,225,.2); border-radius:13px; }
+      #mod6 { fill:rgba(128,200,225,.4); width:120px; height:90px; }
     </style>
     <summon request="bluetooth" />
   </head>
