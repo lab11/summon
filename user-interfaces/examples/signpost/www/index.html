@@ -3,18 +3,19 @@
   <head>
     <title>Signpost</title>
     <style>
-      html, body { height:100%; margin:0; padding:0; background:url(img/bg.jpg) center center / cover; overflow:hidden; }
+      html, body { height:100%; margin:0; padding:0; background:url(img/bg.jpg) center center / cover; overflow:hidden; transition:all .3s;}
       svg { max-height:200%; max-width:100%; font-family: monospace; display:inline-block; margin-bottom:-5px; }
       line { stroke:rgba(255,255,255,.7); }
       b {font-size:8px; font-weight:normal; }
       text { fill:rgba(255,255,255,.7); text-anchor:middle; font-size:9px; }
       .mod { height:120px; width:120px; padding:5px; text-align:center; color:rgba(255,255,255,.7); background:rgba(128,200,225,.2); border-radius:13px; }
       #mod6 { fill:rgba(128,200,225,.4); width:120px; height:90px; }
+      #rect {height:100%; width:100%;}
     </style>
     <summon request="bluetooth" />
   </head>
   <body>
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 1400">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 1400" id="sign">
       <defs>
         <linearGradient id="d" x1="1" x2="0" y2="1">
           <stop offset="10%" stop-color="#159"/>
@@ -46,6 +47,7 @@
       <circle fill="url(#b)" stroke="#555" r="7" cx="250" cy="30"/>
       <path fill="url(#b)" d="M257 682h-14l-7-12 7-12h14l7 12z"/>
       <circle fill="url(#b)" stroke="#555" r="7" cx="250" cy="670"/>
+      <foreignobject width="500" height="1400" x="0" y="0"><div id="rect"></div></foreignobject>
       <!-- MODULES -->
       <foreignobject width="130" height="130" x="60" y="60">
         <div class="mod"><b>MODULE 0</b><br/>Audio Frequency<svg id="mod0"></svg></div>
