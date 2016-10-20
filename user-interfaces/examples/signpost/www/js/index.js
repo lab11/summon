@@ -14,7 +14,7 @@ var app = {
         for (i=0; i<8; i++) document.querySelectorAll(".mod")[i].addEventListener("click", app.onClick);
 
         // Map for GPS module
-        var map = d3.select("#mod6");
+        var map = d3.select("#mod3");
         var projection = d3.geo.equirectangular();
         d3.json("js/map.json",function(e,geodata) {
             if (e) return console.log(e);
@@ -40,7 +40,7 @@ var app = {
         // Chart for Audio Fequency module
         var x = d3.scale.ordinal().rangeRoundBands([0, width], 0.1, 0.2);
         var y = d3.scale.linear().range([height, 0]);
-        var svg = d3.select("#mod0").append("g").attr("transform","translate("+margin.left+","+margin.top+")");
+        var svg = d3.select("#mod5").append("g").attr("transform","translate("+margin.left+","+margin.top+")");
         x.domain(xAudioFreq);
         y.domain([0,4095]);
         svg.append("g").attr("class","x axis").attr("transform", "translate(0,"+height+")").call(d3.svg.axis().scale(x).orient("bottom"));
@@ -57,7 +57,7 @@ var app = {
         // Chart for RF Spectrum module
         var x = d3.scale.ordinal().rangeRoundBands([0, width], 0.1, 0.2);
         var y = d3.scale.linear().range([height, 0]);
-        var svg = d3.select("#mod5").append("g").attr("transform","translate("+margin.left+","+margin.top+")");
+        var svg = d3.select("#mod0").append("g").attr("transform","translate("+margin.left+","+margin.top+")");
         x.domain(xRFSpectrm);
         y.domain([0,30]);
         svg.append("g").attr("class","x axis").attr("transform", "translate(0,"+height+")").call(d3.svg.axis().scale(x).orient("bottom"));
