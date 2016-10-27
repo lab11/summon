@@ -3,9 +3,21 @@ Making Interactive User Interfaces
 
 In addition to opening regular websites, Summon can open app-like web UIs that use [Apache Cordova](https://cordova.apache.org/) framework plugins. These UIs are still developed using standard web tools, but they are able to interact directly over Bluetooth and perform native application functions through provided Javascript APIs. Once the UI is hosted online, a peripheral can advertise a link to it, as with an ordinary website. UIs may request and use the native smartphone APIs listed below.
 
-Example implementations of apps can be found in [`examples/`](examples).
 You can use the content in [`examples/template/www/`](examples/template/www/) to get started.
 
+Examples
+--------
+Example implementations of apps can be found in [`examples/`](examples). 
+In addition, several Lab11 projects include their own Summon apps:
+- [AudiBLE](https://github.com/lab11/audiBLE/tree/master/software/summon/audible)
+- [BLEES](https://github.com/lab11/blees/tree/master/summon/blees-demo)
+- [Blink](https://github.com/lab11/blees/tree/master/summon/squall-pir)
+- [E-Ink](https://github.com/lab11/eink/tree/master/software/summon)
+- [Monoxalyze](https://github.com/lab11/monoxalyze/tree/master/software/summon/monoxalyze-collect)
+- [Polypoint](https://github.com/lab11/polypoint/tree/master/phone/tritag-summon)
+- [PowerBlade](https://github.com/lab11/powerblade/tree/master/software/summon)
+- [Signpost](https://github.com/lab11/signpost/tree/master/summon/demo)
+- [Torch](https://github.com/lab11/torch/tree/master/summon/torch)
 
 APIs
 ----
