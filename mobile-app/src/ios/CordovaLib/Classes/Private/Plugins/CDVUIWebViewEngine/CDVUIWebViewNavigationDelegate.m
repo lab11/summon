@@ -28,6 +28,7 @@
 NSString *deviceId = @"";
 NSString *deviceUri = @"";
 NSString *deviceName = @"";
+NSString *bookmarks = @"";
 UINavigationBar *navbar;
 UIWebView *wv;
 int cacheSizeMemory = 8 * 1024 * 1024; // 8MB
@@ -89,6 +90,7 @@ bool caching = true;
             getDeviceId: function() {return '%@'},\
             getDeviceUri: function() {return '%@'},\
             getDeviceName: function() {return '%@'},\
+            bookmark: function(e) {t.setAttribute('src','gateway:'+JSON.stringify({'bookmark':e}))},\
             cache: function(e) {t.setAttribute('src','gateway:'+JSON.stringify({'cache':e}))},\
             setDeviceAdvertisement: function(e) {t.setAttribute('src','gateway:'+JSON.stringify(e))}\
         };\
@@ -151,6 +153,8 @@ bool caching = true;
                 caching =[parameters[@"cache"] boolValue];
                 if (caching) [NSURLCache setSharedURLCache:[[NSURLCache alloc] initWithMemoryCapacity:cacheSizeMemory diskCapacity:cacheSizeDisk diskPath:@"nsurlcache"]];
                 else [NSURLCache setSharedURLCache:[[NSURLCache alloc] initWithMemoryCapacity:0 diskCapacity:0 diskPath:nil]];
+            } else if (parameters[@"bookmark"]!=nil) {
+                bookmarks = [parameters valueForKey:@"bookmark"];
             } else {
                 deviceId = [parameters valueForKey:@"id"];
                 deviceUri = [parameters valueForKey:@"uri"];
