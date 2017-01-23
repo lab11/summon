@@ -91,7 +91,7 @@
     <plugin name="cordova-plugin-device-orientation" spec="^1.0.3" />
     <plugin name="cordova-plugin-geolocation" spec="^2.2.0" />
     <plugin name="cordova-plugin-camera" spec="^2.2.0" />
+    <plugin name="cordova-plugin-ble" spec="^2.0.1" />
     <plugin name="cordova-plugin-zeroconf" spec="src/plugins/cordova-plugin-zeroconf" />
     <plugin name="cordova-plugin-bluetooth" spec="src/plugins/cordova-plugin-bluetooth"/>
-    <!-- <plugin name="io.jxcore.node" spec="io.jxcore.node" /> -->
 </widget>
