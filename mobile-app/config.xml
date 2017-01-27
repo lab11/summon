@@ -18,7 +18,7 @@
     <allow-intent href="geo:*" />
     <hook type="after_prepare" src="src/scripts/beforeCompile.js" />
     <preference name="SplashScreenDelay" value="0" />
-    <preference name="FadeSplashScreen" value="false"/>
+    <preference name="FadeSplashScreen" value="false"/> 
     <preference name="FadeSplashScreenDuration" value="0"/>
     <preference name="StatusBarOverlaysWebView" value="false" />
     <preference name="StatusBarBackgroundColor" value="#F2A507" />
