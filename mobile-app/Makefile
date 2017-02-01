@@ -22,7 +22,7 @@ link:
 	ln -fs $(PWD)/src/android/src/edu/umich/eecs/lab11/summon/* platforms/android/src/edu/umich/eecs/lab11/summon/.
 	ln -fs $(PWD)/res/icon-ios-180.png platforms/android/res/drawable-mdpi/widget.png
 	ln -fs $(PWD)/src/android/res/layout platforms/android/res/.
-	ln -fs $(PWD)/src/ios/CordovaLib/Classes/Private/Plugins/CDVUIWebViewEngine/CsDVUIWebViewNavigationDelegate.m platforms/ios/CordovaLib/Classes/Private/Plugins/CDVUIWebViewEngine/.
+	ln -fs $(PWD)/src/ios/CordovaLib/Classes/Private/Plugins/CDVUIWebViewEngine/CDVUIWebViewNavigationDelegate.m platforms/ios/CordovaLib/Classes/Private/Plugins/CDVUIWebViewEngine/.
 	ln -fs $(PWD)/src/ios/widget platforms/ios/.
 
 build:
