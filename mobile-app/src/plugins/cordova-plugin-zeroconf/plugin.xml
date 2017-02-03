@@ -2,10 +2,10 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
     xmlns:android="http://schemas.android.com/apk/res/android"
     id="cordova-plugin-zeroconf"
-    version="1.1.2">
+    version="1.2.2">
     <name>ZeroConf</name>
     <description>ZeroConf plugin for Cordova/Phonegap</description>
-    <author>Thomas Zachariah, Sylvain Brejeon</author>
+    <author>Sylvain Brejeon</author>
     <keywords>cordova,plugin,network,zeroconf,bonjour,mdns,service,discovery</keywords>
     <license>MIT</license>
 
@@ -29,8 +29,7 @@
             </feature>
         </config-file>
         <source-file src="src/android/net/becvert/cordova/ZeroConf.java" target-dir="src/net/becvert/cordova" />
-        <source-file src="src/android/libs/jmdns-3.5.0.jar" target-dir="libs" />
-        <framework src="org.slf4j:slf4j-android:1.7+" />
+        <framework src="org.jmdns:jmdns:3.5.1" />
     </platform>
 
     <platform name="ios">
@@ -39,10 +38,12 @@
                 <param name="ios-package" value="ZeroConf"/>
             </feature>
         </config-file>
-        <header-file src="src/ios/ZeroConf-Bridging-Header.h" />
-        <source-file src="src/ios/ZeroConf.swift" />
+        <header-file src="src/ios/ZeroConf-Bridging-Header.h"/>
+        <source-file src="src/ios/ZeroConf.swift"/>
+        <header-file src="src/ios/Hostname.h"/>
+        <source-file src="src/ios/Hostname.m"/>
     </platform>
     
-    <dependency id="cordova-plugin-add-swift-support" url="https://github.com/akofman/cordova-plugin-add-swift-support"/>
+    <dependency id="cordova-plugin-add-swift-support"/>
 
 </plugin>

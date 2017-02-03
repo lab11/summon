@@ -1,10 +1,25 @@
 # Cordova ZeroConf Plugin
 
-A modified version of (cordova-plugin-zeroconf)[https://github.com/becvert/cordova-plugin-zeroconf/tree/master] for Summon.
-
 This plugin allows you to browse and publish ZeroConf/Bonjour/mDNS services from applications developed using PhoneGap/Cordova 3.0 or newer.
 
 This is not a background service. When the cordova view is destroyed/terminated, publish and watch operations are stopped.
+
+## Changelog ##
+
+#### 1.2.2
+- android: re-registering while DNS entry is still cached causes IllegalStateException
+
+#### 1.2.1
+- android: check that NetworkInterface.supportsMulticast
+- iOS: add Hostname.m to the target
+
+#### 1.2.0
+
+- new getHostname function
+- added parameter for domain
+- added success/failure callbacks
+- normalized service object
+- more ipv6 support
 
 ## Installation ##
 
@@ -20,36 +35,60 @@ cordova plugin add cordova-plugin-zeroconf
 var zeroconf = cordova.plugins.zeroconf;
 ```
 
-#### `register(type, name, port, txtRecord)`
-Publishes a new service.
+#### `getHostname(success, failure)`
+Returns this device's hostname.
 
 ```javascript
-zeroconf.register('_http._tcp.local.', 'Tom\'s iPad', 80, {
-    'foo' : 'bar'
+zeroconf.getHostname(function success(hostname){
+    console.log(hostname); // ipad-of-becvert.local.
 });
 ```
 
-#### `unregister(type, name)`
+#### `register(type, domain, name, port, txtRecord, success, failure)`
+Publishes a new service.
+
+```javascript
+zeroconf.register('_http._tcp.', 'local.', 'Becvert\'s iPad', 80, {
+    'foo' : 'bar'
+}, function success(result){
+    var action = result.action; // 'registered'
+    var service = result.service;
+});
+```
+
+#### `unregister(type, domain, name, success, failure)`
 Unregisters a service.
 
 ```javascript
-zeroconf.unregister('_http._tcp.local.', 'Tom\'s iPad');
+zeroconf.unregister('_http._tcp.', 'local.', 'Becvert\'s iPad');
 ```
 
-#### `stop()`
+#### `stop(success, failure)`
 Unregisters all published services.
 
 ```javascript
 zeroconf.stop();
 ```
 
-#### `watch(type, callback)`
+#### `watch(type, domain, success, failure)`
 Starts watching for services of the specified type.
 
 ```javascript
-zeroconf.watch('_http._tcp.local.', function(result) {
+zeroconf.watch('_http._tcp.', 'local.', function(result) {
     var action = result.action;
     var service = result.service;
+    /* service : {
+        'domain' : 'local.',
+        'type' : '_http._tcp.',
+        'name': 'Becvert\'s iPad',
+        'port' : 80,
+        'hostname' : 'ipad-of-becvert.local',
+        'ipv4Addresses' : [ '192.168.1.125' ], 
+        'ipv6Addresses' : [ '2001:0:5ef5:79fb:10cb:1dbf:3f57:feb0' ],
+        'txtRecord' : {
+            'foo' : 'bar'
+        }
+    } */
     if (action == 'added') {
         console.log('service added', service);
     } else {
@@ -58,21 +97,14 @@ zeroconf.watch('_http._tcp.local.', function(result) {
 });
 ```
 
-To detect all services, specify the "Service Type Enumeration" meta-query type:
-
-```javascript
-zeroconf.watch("_services._dns-sd._udp.local.",function(result){...});
-```
-
-
-#### `unwatch(type)`
+#### `unwatch(type, domain, success, failure)`
 Stops watching for services of the specified type.
 
 ```javascript
-zeroconf.unwatch('_http._tcp.local.')
+zeroconf.unwatch('_http._tcp.', 'local.')
 ```
 
-#### `close()`
+#### `close(success, failure)`
 Closes the service browser and stops watching.
 
 ```javascript
@@ -82,12 +114,12 @@ zeroconf.close()
 ## Credits
 
 #### Android
-It depends on [the JmDNS library](http://jmdns.sourceforge.net/). Bundles [the jmdns.jar](https://github.com/twitwi/AndroidDnssdDemo/) library.
+It depends on [the JmDNS library](http://jmdns.sourceforge.net/)
 
 Many thanks to [cambiocreative](https://github.com/cambiocreative/cordova-plugin-zeroconf) that got me started
 
 #### iOS
-See https://developer.apple.com/bonjour/
+Implements https://developer.apple.com/bonjour/
 
 ## Licence ##
 
