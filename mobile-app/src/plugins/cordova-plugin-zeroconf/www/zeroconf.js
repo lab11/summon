@@ -1,41 +1,41 @@
 /*
  * Cordova ZeroConf Plugin
  *
- * ZeroConf plugin for Cordova/Phonegap 
+ * ZeroConf plugin for Cordova/Phonegap
  * by Sylvain Brejeon
  */
 
 'use strict';
 var exec = require('cordova/exec');
 
-var fail = function(o) {
-    console.error("Error " + JSON.stringify(o));
-}
-
 var ZeroConf = {
 
-    register : function(type, name, port, props) {
-        return exec(null, fail, "ZeroConf", "register", [ type, name, port, props ]);
+    getHostname : function(success, failure) {
+        return exec(success, failure, "ZeroConf", "getHostname", []);
     },
 
-    unregister : function(type, name) {
-        return exec(null, fail, "ZeroConf", "unregister", [ type, name ]);
+    register : function(type, domain, name, port, props, success, failure) {
+        return exec(success, failure, "ZeroConf", "register", [ type, domain, name, port, props ]);
     },
 
-    stop : function(type, name) {
-        return exec(null, fail, "ZeroConf", "stop", []);
+    unregister : function(type, domain, name, success, failure) {
+        return exec(success, failure, "ZeroConf", "unregister", [ type, domain, name ]);
     },
 
-    watch : function(type, success) {
-        return exec(success, fail, "ZeroConf", "watch", [ type ]);
+    stop : function(success, failure) {
+        return exec(success, failure, "ZeroConf", "stop", []);
     },
 
-    unwatch : function(type) {
-        return exec(null, fail, "ZeroConf", "unwatch", [ type ]);
+    watch : function(type, domain, success, failure) {
+        return exec(success, failure, "ZeroConf", "watch", [ type, domain ]);
     },
 
-    close : function() {
-        return exec(null, fail, "ZeroConf", "close", []);
+    unwatch : function(type, domain, success, failure) {
+        return exec(success, failure, "ZeroConf", "unwatch", [ type, domain ]);
+    },
+
+    close : function(success, failure) {
+        return exec(success, failure, "ZeroConf", "close", []);
     }
 
 };
