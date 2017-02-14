@@ -67,8 +67,8 @@ var app = {
     }
     // nfc.addNdefListener(app.onNfcFound, function(){console.log("nfc success")}, function(){console.log("nfc fail")});
     if($("#br").val()!="ble" && navigator.network.connection.type != Connection.NONE && cordova && cordova.plugins) {
-      cordova.plugins.zeroconf.watch("_http._tcp.local.",app.onDiscover); 
-      cordova.plugins.zeroconf.watch("_services._dns-sd._udp.local.",app.onDiscover);
+      cordova.plugins.zeroconf.watch("_http._tcp.","local.",app.onDiscover);
+      cordova.plugins.zeroconf.watch("_services._dns-sd._udp",".local.",app.onDiscover);
     }
     $('#content').data('plugin_xpull').reset();
     $("body").pagecontainer({ beforeshow: function(e,ui) { if (ui.toPage.attr("id")=="page1") app.onAppReady(); } });
@@ -111,7 +111,7 @@ var app = {
   },
   onDiscover: function(peripheral) {
     peripheral.service.qualifiedname = peripheral.service.name + "." + peripheral.service.type;
-    if (peripheral.action=="type") cordova.plugins.zeroconf.watch(peripheral.service.qualifiedname,app.onDiscover);
+    if (peripheral.action=="type") cordova.plugins.zeroconf.watch(peripheral.service.qualifiedname,peripheral.service.domain,app.onDiscover);
     else if (peripheral.action=="removed") {
       if (typeof app.peripherals[peripheral.service.qualifiedname] != "undefined") {
         $('li[data-id="'+peripheral.service.qualifiedname+'"]').remove();
