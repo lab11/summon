@@ -60,7 +60,7 @@ var app = {
 
         // Get all influx related settings
         plugins.appPreferences.fetch(function (value) {
-            if (value == '') value = '{}';
+            if (!value || !value.length) value = '{}';
             _influx_settings = JSON.parse(value);
             console.log('GOT INFLUX SETTINGS');
             console.log(value);
@@ -99,7 +99,6 @@ var app = {
 
     // Called for each BLE advertisement
     on_discover: function (evothings_device) {
-
         // Increment count of total BLE advertisements seen.
         var count = parseInt($('#total-packets').text()) + 1;
         $('#total-packets').text(count);
@@ -132,7 +131,6 @@ var app = {
                     var parse_advertisement_done = function (adv_obj, local_obj) {
                         // only continue if the result was valid
                         if (adv_obj) {
-
                             // Increment the number of parsed packets.
                             var count = parseInt($('#parsed-packets').text()) + 1;
                             $('#parsed-packets').text(count);
