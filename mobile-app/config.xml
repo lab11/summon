@@ -76,7 +76,7 @@
     <plugin name="cordova-plugin-bluetooth" spec="src/plugins/cordova-plugin-bluetooth">
         <variable name="BLUETOOTH_USAGE_DESCRIPTION" value="Scans for peripherals and enables interactions with associated devices" />
     </plugin>
-    <plugin name="cordova-plugin-ble" spec="~2.0.1">
+    <plugin name="cordova-plugin-ble" spec="src/plugins/cordova-plugin-ble">
         <variable name="BLUETOOTH_USAGE_DESCRIPTION" value="Scans for peripherals and enables interactions with associated devices" />
     </plugin>
     <plugin name="cordova-plugin-ble-central" spec="~1.1.4">
