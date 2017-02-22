@@ -153,14 +153,14 @@ typedef void (^EVOCommandBlock)(void);
 
 @property NSNumber* handle;
 @property CBPeripheral* peripheral;
-@property EVOBLE* ble;
+@property EVOBLE* evoble;
 @property NSMutableDictionary* objects; // Handle to object table
 @property NSString* connectCallbackId;
 @property EVOQueue* commands; // Contains EVOCommand objects
 @property NSMutableDictionary* characteristicsCallbacks; // Contains EVOCallbackInfo objects
 
 // Class method (constructor).
-+ (EVOPeripheral*) withBLE: (EVOBLE*) ble periperal: (CBPeripheral*) peripheral;
++ (EVOPeripheral*) withBLE: (EVOBLE*) evoble periperal: (CBPeripheral*) peripheral;
 
 // Initialising.
 - (EVOPeripheral*) init;

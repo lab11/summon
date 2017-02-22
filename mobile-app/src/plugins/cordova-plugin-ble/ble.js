@@ -139,11 +139,11 @@ exports.startScan = function(arg1, arg2, arg3, arg4)
 	if (Array.isArray(serviceUUIDs))
 	{
 		serviceUUIDs = getCanonicalUUIDArray(serviceUUIDs);
-		exec(onSuccess, onFail, 'BLE', 'startScan', [serviceUUIDs]);
+		exec(onSuccess, onFail, 'EVOBLE', 'startScan', [serviceUUIDs]);
 	}
 	else
 	{
-		exec(onSuccess, onFail, 'BLE', 'startScan', []);
+		exec(onSuccess, onFail, 'EVOBLE', 'startScan', []);
 	}
 };
 
@@ -243,7 +243,7 @@ function getCanonicalUUIDArray(uuidArray)
 exports.stopScan = function()
 {
 	isScanning = false;
-	exec(null, null, 'BLE', 'stopScan', []);
+	exec(null, null, 'EVOBLE', 'stopScan', []);
 };
 
 // Create closure for parseAdvertisementData and helper functions.
@@ -577,7 +577,7 @@ function littleEndianToUint8(data, offset)
  */
 exports.getBondedDevices = function(success, fail, options)
 {
-	exec(success, fail, 'BLE', 'getBondedDevices', [options.serviceUUIDs]);
+	exec(success, fail, 'EVOBLE', 'getBondedDevices', [options.serviceUUIDs]);
 }
 
 /**
@@ -628,7 +628,7 @@ exports.getBondState = function(device, success, fail, options)
 	{
 		// On Android we call the native getBondState function.
 		// Note that serviceUUID is ignored on Android.
-		exec(success, fail, 'BLE', 'getBondState', [device.address, serviceUUID]);
+		exec(success, fail, 'EVOBLE', 'getBondState', [device.address, serviceUUID]);
 	}
 	else
 	{
@@ -695,7 +695,7 @@ exports.getBondState = function(device, success, fail, options)
  */
 exports.bond = function(device, success, fail)
 {
-	exec(success, fail, 'BLE', 'bond', [device.address]);
+	exec(success, fail, 'EVOBLE', 'bond', [device.address]);
 }
 
 /**
@@ -733,7 +733,7 @@ exports.bond = function(device, success, fail)
  */
 exports.unbond = function(device, success, fail)
 {
-	exec(success, fail, 'BLE', 'unbond', [device.address]);
+	exec(success, fail, 'EVOBLE', 'unbond', [device.address]);
 }
 
 /**
@@ -765,7 +765,7 @@ exports.connect = function(deviceOrAddress, success, fail)
 	if (typeof deviceOrAddress == 'string')
 	{
 		var address = deviceOrAddress;
-		exec(success, fail, 'BLE', 'connect', [address]);
+		exec(success, fail, 'EVOBLE', 'connect', [address]);
 	}
 	else
 	if (typeof deviceOrAddress == 'object')
@@ -777,7 +777,7 @@ exports.connect = function(deviceOrAddress, success, fail)
 			device.handle = connectInfo.deviceHandle;
 			success(connectInfo);
 		}
-		exec(onSuccess, fail, 'BLE', 'connect', [device.address]);
+		exec(onSuccess, fail, 'EVOBLE', 'connect', [device.address]);
 	}
 	else
 	{
@@ -911,7 +911,7 @@ exports.connectToDevice = function(device, connected, disconnected, fail, option
     }
 
     // Connect to device.
-	exec(onConnectEvent, fail, 'BLE', 'connect', [device.address]);
+	exec(onConnectEvent, fail, 'EVOBLE', 'connect', [device.address]);
 };
 
 /**
@@ -955,7 +955,7 @@ function objectHandle(objectOrHandle)
  */
 exports.close = function(deviceOrHandle)
 {
-	exec(null, null, 'BLE', 'close', [objectHandle(deviceOrHandle)]);
+	exec(null, null, 'EVOBLE', 'close', [objectHandle(deviceOrHandle)]);
 };
 
 /**
@@ -977,7 +977,7 @@ exports.close = function(deviceOrHandle)
  */
 exports.rssi = function(deviceOrHandle, success, fail)
 {
-	exec(deviceOrHandle, success, fail, 'BLE', 'rssi', [objectHandle(deviceOrHandle)]);
+	exec(deviceOrHandle, success, fail, 'EVOBLE', 'rssi', [objectHandle(deviceOrHandle)]);
 };
 
 /**
@@ -1013,7 +1013,7 @@ exports.rssi = function(deviceOrHandle, success, fail)
  */
 exports.services = function(deviceOrHandle, success, fail)
 {
-	exec(success, fail, 'BLE', 'services', [objectHandle(deviceOrHandle)]);
+	exec(success, fail, 'EVOBLE', 'services', [objectHandle(deviceOrHandle)]);
 };
 
 /**
@@ -1072,7 +1072,7 @@ exports.serviceType = {
  */
 exports.characteristics = function(deviceOrHandle, serviceOrHandle, success, fail)
 {
-	exec(success, fail, 'BLE', 'characteristics',
+	exec(success, fail, 'EVOBLE', 'characteristics',
 		[objectHandle(deviceOrHandle),
 		 objectHandle(serviceOrHandle)]);
 };
@@ -1228,7 +1228,7 @@ exports.writeType = {
  */
 exports.descriptors = function(deviceOrHandle, characteristicOrHandle, success, fail)
 {
-	exec(success, fail, 'BLE', 'descriptors',
+	exec(success, fail, 'EVOBLE', 'descriptors',
 		[objectHandle(deviceOrHandle),
 		 objectHandle(characteristicOrHandle)]);
 };
@@ -1275,7 +1275,7 @@ exports.descriptors = function(deviceOrHandle, characteristicOrHandle, success, 
  */
 exports.readCharacteristic = function(deviceOrHandle, characteristicOrHandle, success, fail)
 {
-	exec(success, fail, 'BLE', 'readCharacteristic',
+	exec(success, fail, 'EVOBLE', 'readCharacteristic',
 		[objectHandle(deviceOrHandle),
 		 objectHandle(characteristicOrHandle)]);
 };
@@ -1301,7 +1301,7 @@ exports.readCharacteristic = function(deviceOrHandle, characteristicOrHandle, su
  */
 exports.readDescriptor = function(deviceOrHandle, descriptorOrHandle, success, fail)
 {
-	exec(success, fail, 'BLE', 'readDescriptor',
+	exec(success, fail, 'EVOBLE', 'readDescriptor',
 		[objectHandle(deviceOrHandle),
 		 objectHandle(descriptorOrHandle)]);
 };
@@ -1330,7 +1330,7 @@ exports.readDescriptor = function(deviceOrHandle, descriptorOrHandle, success, f
  */
 exports.writeCharacteristic = function(deviceOrHandle, characteristicOrHandle, data, success, fail)
 {
-	exec(success, fail, 'BLE', 'writeCharacteristic',
+	exec(success, fail, 'EVOBLE', 'writeCharacteristic',
 		[objectHandle(deviceOrHandle),
 		 objectHandle(characteristicOrHandle),
 		 data.buffer]);
@@ -1355,7 +1355,7 @@ exports.writeCharacteristic = function(deviceOrHandle, characteristicOrHandle, d
  */
 exports.writeCharacteristicWithoutResponse = function(deviceOrHandle, characteristicOrHandle, data, success, fail)
 {
-	exec(success, fail, 'BLE', 'writeCharacteristicWithoutResponse',
+	exec(success, fail, 'EVOBLE', 'writeCharacteristicWithoutResponse',
 		[objectHandle(deviceOrHandle),
 		 objectHandle(characteristicOrHandle),
 		 data.buffer]);
@@ -1372,7 +1372,7 @@ exports.writeCharacteristicWithoutResponse = function(deviceOrHandle, characteri
  */
 exports.writeDescriptor = function(deviceOrHandle, descriptorOrHandle, data, success, fail)
 {
-	exec(success, fail, 'BLE', 'writeDescriptor',
+	exec(success, fail, 'EVOBLE', 'writeDescriptor',
 		[objectHandle(deviceOrHandle),
 		 objectHandle(descriptorOrHandle),
 		 data.buffer]);
@@ -1424,7 +1424,7 @@ exports.enableNotification = function(deviceOrHandle, characteristicOrHandle, su
 	{
 		var flags = 1; // Don't write config descriptor.
 	}
-	exec(success, fail, 'BLE', 'enableNotification',
+	exec(success, fail, 'EVOBLE', 'enableNotification',
 		[objectHandle(deviceOrHandle),
 		 objectHandle(characteristicOrHandle),
 		 flags]);
@@ -1468,7 +1468,7 @@ exports.disableNotification = function(deviceOrHandle, characteristicOrHandle, s
 	{
 		var flags = 1; // Don't write config descriptor.
 	}
-	exec(success, fail, 'BLE', 'disableNotification',
+	exec(success, fail, 'EVOBLE', 'disableNotification',
 		[objectHandle(deviceOrHandle),
 		 objectHandle(characteristicOrHandle),
 		 flags]);
@@ -1492,7 +1492,7 @@ exports.disableNotification = function(deviceOrHandle, characteristicOrHandle, s
  */
 exports.testCharConversion = function(i, success)
 {
-	exec(success, null, 'BLE', 'testCharConversion', [i]);
+	exec(success, null, 'EVOBLE', 'testCharConversion', [i]);
 };
 
 /**
@@ -1507,7 +1507,7 @@ exports.testCharConversion = function(i, success)
  */
 exports.reset = function(success, fail)
 {
-	exec(success, fail, 'BLE', 'reset', []);
+	exec(success, fail, 'EVOBLE', 'reset', []);
 };
 
 /**
@@ -1939,7 +1939,7 @@ function gattServerCallbackHandler(winFunc, settings) {
 * @param {failCallback} fail
 */
 exports.peripheral.startGattServer = function(settings, win, fail) {
-	exec(gattServerCallbackHandler(win, settings), fail, 'BLE', 'startGattServer', [settings]);
+	exec(gattServerCallbackHandler(win, settings), fail, 'EVOBLE', 'startGattServer', [settings]);
 };
 
 // GattSettings
@@ -2010,7 +2010,7 @@ exports.peripheral.startGattServer = function(settings, win, fail) {
 * @param {failCallback} fail
 */
 exports.peripheral.stopGattServer = function(win, fail) {
-	exec(win, fail, 'BLE', 'stopGattServer', []);
+	exec(win, fail, 'EVOBLE', 'stopGattServer', []);
 };
 
 /** Sends a response to a read or write request.
@@ -2021,7 +2021,7 @@ exports.peripheral.stopGattServer = function(win, fail) {
 * @param {failCallback} fail
 */
 exports.peripheral.sendResponse = function(deviceHandle, requestId, data, win, fail) {
-	exec(win, fail, 'BLE', 'sendResponse', [deviceHandle, requestId, data.buffer]);
+	exec(win, fail, 'EVOBLE', 'sendResponse', [deviceHandle, requestId, data.buffer]);
 }
 
 /** Sends a notification to a remote device that a characteristic's value has been updated.
@@ -2032,7 +2032,7 @@ exports.peripheral.sendResponse = function(deviceHandle, requestId, data, win, f
 * @param {failCallback} fail
 */
 exports.peripheral.notify = function(deviceHandle, characteristic, data, win, fail) {
-	exec(win, fail, 'BLE', 'notify', [deviceHandle, characteristic, data.buffer]);
+	exec(win, fail, 'EVOBLE', 'notify', [deviceHandle, characteristic, data.buffer]);
 };
 
 /*	// never mind, just use close().
@@ -2050,7 +2050,7 @@ exports.closeClient = function(clientHandle, win, fail) {
 * @param {failCallback} fail
 */
 exports.peripheral.startAdvertise = function(settings, win, fail) {
-	exec(win, fail, 'BLE', 'startAdvertise', [settings]);
+	exec(win, fail, 'EVOBLE', 'startAdvertise', [settings]);
 }
 
 /** Stops BLE advertise.
@@ -2059,7 +2059,7 @@ exports.peripheral.startAdvertise = function(settings, win, fail) {
 * @param {failCallback} fail
 */
 exports.peripheral.stopAdvertise = function(win, fail) {
-	exec(win, fail, 'BLE', 'stopAdvertise', []);
+	exec(win, fail, 'EVOBLE', 'stopAdvertise', []);
 }
 
 // AdvertiseSettings

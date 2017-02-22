@@ -45,7 +45,7 @@ import android.provider.Settings.SettingNotFoundException;
 import android.app.AlertDialog;
 import android.text.TextUtils;
 
-public class BLE
+public class EVOBLE
 	extends CordovaPlugin
 	implements LeScanCallback
 {
