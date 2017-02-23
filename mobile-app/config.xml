@@ -82,6 +82,9 @@
     <plugin name="cordova-plugin-ble-central" spec="~1.1.4">
         <variable name="BLUETOOTH_USAGE_DESCRIPTION" value="Scans for peripherals and enables interactions with associated devices" />
     </plugin>
+    <plugin name="cordova-plugin-webbluetooth" spec="src/plugins/cordova-plugin-webbluetooth">
+        <variable name="BLUETOOTH_USAGE_DESCRIPTION" value="Scans for peripherals and enables interactions with associated devices" />
+    </plugin>
     <plugin name="cordova-plugin-statusbar" spec="~2.2.1" />
     <plugin name="cordova-plugin-splashscreen" spec="~4.0.1" />
     <plugin name="cordova-plugin-add-swift-support" spec="~1.6.2" />

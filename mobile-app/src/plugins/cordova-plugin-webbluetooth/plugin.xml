@@ -1,0 +1,15 @@
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+        id="cordova-plugin-webbluetooth" version="0.0.1">
+    <name>WebBluetooth</name>
+    <description>Bluetooth Plugin</description>
+    <author>Thomas Zachariah</author>
+    <license>Apache 2.0</license>
+    <keywords>summon, bluetooth, BLE, bluetooth low energy, bluetooth smart</keywords>
+    <dependency id="cordova-plugin-ble" version="^2.0.1" />
+    <platform name="ios">
+        <preference name="BLUETOOTH_USAGE_DESCRIPTION" default="Scans for peripherals and enables interactions with associated devices" />
+    </platform>
+    <js-module src="bluetooth.js" name="webbluetooth">
+        <clobbers target="webbluetooth" />
+    </js-module>
+</plugin>
