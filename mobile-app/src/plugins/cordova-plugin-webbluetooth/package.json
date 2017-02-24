@@ -1,0 +1,29 @@
+{
+  "name": "cordova-plugin-webbluetooth",
+  "version": "0.0.1",
+  "description": "WebBluetooth Plugin",
+  "cordova": {
+    "id": "cordova-plugin-webbluetooth",
+    "platforms": [
+      "android",
+      "ios"
+    ]
+  },
+  "keywords": [
+    "bluetooth",
+    "ble",
+    "bluetooth low energy",
+    "bluetooth smart",
+    "ecosystem:cordova",
+    "cordova-android",
+    "cordova-ios"
+  ],
+  "engines": [
+    {
+      "name": "cordova",
+      "version": ">=6.0.0"
+    }
+  ],
+  "author": "Thomas Zachariah",
+  "license": "Apache 2.0",
+}
