@@ -14,8 +14,6 @@
 # limitations under the License. Derived from content by Google, Inc.
 #
 
-application: summon-987
-version: 1
 runtime: python27
 api_version: 1
 threadsafe: yes
@@ -28,6 +26,11 @@ handlers:
 - url: /webui
   static_files: static/index.html
   upload: static/index\.html
+
+- url: /privacy
+  mime_type: text/markdown
+  static_files: static/privacy.md
+  upload: static/privacy\.md
 
 - url: .*
   script: handlers.app
