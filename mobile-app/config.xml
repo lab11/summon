@@ -7,7 +7,7 @@
     <author email="tzachari@umich.edu" href="http://lab11.eecs.umich.edu">
         Lab11
     </author>
-    <content src="parsejs/index.html" />
+    <content src="index.html" />
     <allow-navigation href="*" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
