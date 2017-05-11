@@ -4,14 +4,17 @@ Summon
 <img src="mobile-app/res/icon-android.png" alt="Summon" height="80" align="left"><i>The browser for the Web of Things. </i>
 <br />A platform for mobile devices that provides a convenient and scalable mechanism for IoT device interactivity, enabled by web-based interfaces and driven by the devices themselves.
 
-<img src="https://lh3.googleusercontent.com/uDW2QXPCBx3a6gmGh_NUEPz7wNyMpDpMNhpvsXNyBa4VpbfWYqMauiGlVkAsOBWkzFY=h617"/>
-<img src="https://lh3.googleusercontent.com/g9LttUc4AtQ0sbw3-9V9tnXXhUD8XrHybek4gvMi57jmeimFq9tlof4NVndA0dIOl-E=h617"/>
+<img src="https://lh3.googleusercontent.com/uDW2QXPCBx3a6gmGh_NUEPz7wNyMpDpMNhpvsXNyBa4VpbfWYqMauiGlVkAsOBWkzFY=h617"/><img src="https://lh3.googleusercontent.com/g9LttUc4AtQ0sbw3-9V9tnXXhUD8XrHybek4gvMi57jmeimFq9tlof4NVndA0dIOl-E=h617"/>
 
-[<img src='https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png' alt="Google Play Store" height=38 />](https://play.google.com/store/apps/details?id=edu.umich.eecs.lab11.summon)
-[<img src="http://images.apple.com/itunes/link/images/link-badge-appstore.png" alt="iOS App Store" height=40 />](https://itunes.apple.com/us/app/summon-lab11/id1051205682)
+[<img src='https://play.google.com/intl/en_us/badges/images/badge_new.png' alt="Google Play Store" height=40 />](https://play.google.com/store/apps/details?id=edu.umich.eecs.lab11.summon)
+[<img src="https://linkmaker.itunes.apple.com/assets/shared/badges/en-us/appstore-lrg.svg" alt="iOS App Store" height=39 />](https://itunes.apple.com/us/app/summon-lab11/id1051205682)
 
-####Video
+
+Video
+-----
+
 [![Video](http://img.youtube.com/vi/oQLkUcQoUe4/0.jpg)](https://youtu.be/oQLkUcQoUe4)
+
 
 Peripherals
 -----------
